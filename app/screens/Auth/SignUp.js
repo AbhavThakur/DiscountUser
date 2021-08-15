@@ -99,6 +99,10 @@ function SignUp({navigation}) {
             buttonTitle="Confirm OTP"
             onPress={() => confirmCode(code)}
           />
+          <FormButton
+            buttonTitle="Change Contact"
+            onPress={() => setLoading(false)}
+          />
         </View>
       ) : (
         <Formik
