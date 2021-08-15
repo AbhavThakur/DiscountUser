@@ -119,7 +119,7 @@ function Register({navigation}) {
     axios
       .post(url, params, config)
       .then(result => {
-        console.log('result', result);
+        // console.log('result', result);
         setLoading(true);
       })
       .then(() => alert('OTP is sent to your mail check spam'))
@@ -142,7 +142,7 @@ function Register({navigation}) {
     axios
       .post(url, params, config)
       .then(result => {
-        alert(result);
+        alert('Successfully registered');
       })
       .then(() =>
         navigation.reset({
