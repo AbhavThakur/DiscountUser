@@ -2,6 +2,7 @@ import React, {createContext, useState} from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 export const AuthContext = createContext();
 
@@ -14,40 +15,21 @@ export const AuthProvider = ({children, navigation}) => {
       value={{
         user,
         setUser,
-        login: async (email, password) => {
+        googleLogin: async () => {
           try {
-            await auth().signInWithEmailAndPassword(email, password);
+            await GoogleSignin.hasPlayServices();
+            const {accessToken, idToken} = await GoogleSignin.signIn();
+
+            const credential = auth.GoogleAuthProvider.credential(
+              idToken,
+              accessToken,
+            );
+            await auth().signInWithCredential(credential);
           } catch (error) {
             console.log(error);
           }
         },
 
-        register: async (email, password, name, last) => {
-          try {
-            await auth()
-              .createUserWithEmailAndPassword(email, password)
-              .then(() => {
-                firestore()
-                  .collection('users')
-                  .doc(auth().currentUser.uid)
-                  .set({
-                    fname: name,
-                    lname: last,
-                    email: email,
-                    createdAt: firestore.Timestamp.fromDate(new Date()),
-                    userImg: null,
-                  });
-              })
-              .catch(error => {
-                console.log(
-                  'Something went wrong with added user to firestore: ',
-                  error,
-                );
-              });
-          } catch (error) {
-            console.log(error);
-          }
-        },
         phone: async phoneNumber => {
           try {
             const confirmation = await auth().signInWithPhoneNumber(
@@ -61,25 +43,20 @@ export const AuthProvider = ({children, navigation}) => {
         },
         confirmCode: async (code, screen) => {
           try {
-            await confirm.confirm(code).then(() => navigation.navigate(screen));
+            await confirm.confirm(code);
           } catch (error) {
             console.log('Invalid code.');
           }
         },
         logout: async () => {
           try {
+            await GoogleSignin.revokeAccess();
+            await GoogleSignin.signOut();
             auth().signOut();
 
             // setuserInfo([]);
           } catch (error) {
             console.log(error);
-          }
-        },
-        reset: async email => {
-          try {
-            await auth().sendPasswordResetEmail(email);
-          } catch (e) {
-            console.log(e);
           }
         },
       }}>

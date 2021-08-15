@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -7,9 +7,18 @@ import {
   FlatList,
   Text,
   Dimensions,
-  ImageBackground,
+  Alert,
 } from 'react-native';
-import {Avatar, Button, Card, Title, Paragraph} from 'react-native-paper';
+import {
+  Avatar,
+  Button,
+  Card,
+  Paragraph,
+  List,
+  RadioButton,
+  Appbar,
+} from 'react-native-paper';
+import Modal from 'react-native-modal';
 
 const info = [
   {
@@ -59,7 +68,113 @@ const info = [
   },
 ];
 
+const filter = [
+  {
+    id: 1,
+    value: 'Essentials',
+  },
+  {
+    id: 2,
+    value: 'Doctors',
+  },
+  {
+    id: 3,
+    value: 'Restaurants',
+  },
+  {
+    id: 4,
+    value: 'Shopping',
+  },
+  {
+    id: 5,
+    value: 'Hospitals',
+  },
+  {
+    id: 6,
+    value: 'Education',
+  },
+];
+
+const deviceWidth = Dimensions.get('window').width;
+const deviceHeight = Dimensions.get('window').height;
+
 function Socialfeed({navigation}) {
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [data, setdata] = useState([]);
+  const [selected, setselected] = useState(null);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+
+  useEffect(() => {
+    setdata(filter);
+  }, []);
+
+  const onChangeValue = (itemSelected, index) => {
+    const newData = data.map(item => {
+      if (item.id === itemSelected.id) {
+        return {
+          ...item,
+          selected: !item.selected,
+        };
+      }
+      return {
+        ...item,
+        selected: item.selected,
+      };
+    });
+    setdata(newData);
+  };
+  const submit = () => {
+    const listSelected = data.filter(item => item.selected === true);
+
+    console.log('list selecteds value', listSelected);
+
+    setselected(listSelected);
+    toggleModal();
+  };
+
+  const renderItem = ({item, index}) => {
+    return (
+      <View>
+        <RadioButton.Item
+          label={item.value}
+          value={item.selected}
+          status={item.selected ? 'checked' : 'unchecked'}
+          onPress={() => onChangeValue(item, index)}
+        />
+      </View>
+    );
+  };
+
+  const renderItems = ({item, index}) => {
+    return (
+      <TouchableOpacity
+        activeOpacity={0.4}
+        onPress={() => {
+          onChangeValue(item, index);
+          submit();
+        }}
+        style={{
+          backgroundColor: '#D02824',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginBottom: 5,
+          marginStart: 7,
+          padding: 5,
+          height: 30,
+          paddingHorizontal: 10,
+          borderRadius: 8,
+          borderWidth: 0.2,
+        }}>
+        <Text style={{color: '#fff', fontSize: 15}}>{item.value}</Text>
+        <Text style={{color: '#fff', fontSize: 15, marginStart: 15}}>X</Text>
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <>
       <View style={styles.header}>
@@ -69,15 +184,53 @@ function Socialfeed({navigation}) {
           <Image source={require('../../assets/left-arrow.png')} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Social Feeds</Text>
-        <TouchableOpacity
-          onPress={() => console.log('helo')}
-          style={styles.filter}>
+        <TouchableOpacity onPress={toggleModal} style={styles.filter}>
           <Image
             source={require('../../assets/Filter.png')}
             style={{width: 27, height: 25}}
           />
         </TouchableOpacity>
       </View>
+      {/* fliter list */}
+      <View style={{width: '100%', backgroundColor: '#2C3A4A'}}>
+        {selected && (
+          <FlatList
+            keyExtractor={item => item.id}
+            numColumns={3}
+            horizontal={false}
+            data={selected}
+            renderItem={renderItems}
+          />
+        )}
+      </View>
+
+      {/* Modal for filter */}
+      <Modal
+        isVisible={isModalVisible}
+        deviceWidth={deviceWidth}
+        deviceHeight={deviceHeight}>
+        <View style={styles.modalView}>
+          <Card.Title
+            style={{backgroundColor: '#D02824', padding: 10, paddingEnd: 20}}
+            titleStyle={{color: 'white'}}
+            title="Filter by Category"
+            right={props => (
+              <TouchableOpacity {...props} onPress={toggleModal}>
+                <Text style={{fontSize: 25, color: 'white'}}>X</Text>
+              </TouchableOpacity>
+            )}
+          />
+          <FlatList data={data} renderItem={renderItem} />
+          <Button
+            color="#D02824"
+            mode="contained"
+            style={{marginBottom: 10, width: 100, alignSelf: 'center'}}
+            onPress={submit}>
+            submit
+          </Button>
+        </View>
+      </Modal>
+
       <View style={{backgroundColor: '#2C3A4A', flex: 1}}>
         <FlatList
           data={info}
@@ -161,6 +314,31 @@ const styles = StyleSheet.create({
   },
   cardcontainer: {
     width: Dimensions.get('window').width * 0.97,
+  },
+
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
   },
 });
 

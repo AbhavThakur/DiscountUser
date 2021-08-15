@@ -58,8 +58,8 @@ function OnBoardingScreen({navigation}) {
       bottomBarHighlight={false}
       containerStyles={{paddingBottom: 175}}
       titleStyles={styles.title}
-      onDone={() => navigation.replace('App')}
-      onSkip={() => navigation.replace('App')}
+      onDone={() => navigation.replace('SignUp')}
+      onSkip={() => navigation.replace('SignUp')}
       pages={[
         {
           backgroundColor: 'white',

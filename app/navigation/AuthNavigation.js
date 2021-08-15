@@ -6,6 +6,7 @@ import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import OnBoardingScreen from '../screens/OnBoardingScreen';
 
 import BottomNavigator from './BottomNavigator';
+import SignUp from '../screens/Auth/SignUp';
 
 const Stack = createStackNavigator();
 
@@ -22,12 +23,12 @@ function AuthNavigation() {
         setIsFirstLaunch(false);
       }
     });
-    // GoogleSignin.configure({
-    //   scopes: ['email'], // what API you want to access on behalf of the user, default is email and profile
-    //   webClientId:
-    //     '432625471246-v0t28iarr07k24amatg4v2r51cbpqmfe.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
-    //   offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-    // });
+    GoogleSignin.configure({
+      scopes: ['email'], // what API you want to access on behalf of the user, default is email and profile
+      webClientId:
+        '432625471246-v0t28iarr07k24amatg4v2r51cbpqmfe.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+      offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+    });
 
     console.log('authnavigation');
   }, []);
@@ -37,7 +38,7 @@ function AuthNavigation() {
   } else if (isFirstLaunch === true) {
     routeName = 'OnBoard';
   } else {
-    routeName = 'App';
+    routeName = 'SignUp';
   }
   return (
     <Stack.Navigator
@@ -46,7 +47,7 @@ function AuthNavigation() {
         headerShown: false,
       }}>
       <Stack.Screen name="OnBoard" component={OnBoardingScreen} />
-      <Stack.Screen name="App" component={BottomNavigator} />
+      <Stack.Screen name="SignUp" component={SignUp} />
     </Stack.Navigator>
   );
 }
