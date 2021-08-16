@@ -20,7 +20,7 @@ function Subscriptions({navigation}) {
           onPress={() => navigation.goBack()}>
           <Image source={require('../../assets/left-arrow.png')} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Subscriptions</Text>
+        <Text style={styles.headerTitle}>Subscriptions value</Text>
       </View>
     </>
   );

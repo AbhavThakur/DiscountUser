@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -6,11 +6,67 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+
 import FormButton from '../../components/FormButton';
 import FormText from '../../components/FormText';
 
 function Profile({navigation}) {
+  const [name, setName] = useState('');
+  const [last, setLast] = useState('');
+  const [mail, setEmail] = useState('');
+  const [address, setAddress] = useState('');
+  const [contact, setContact] = useState('');
+  const [img, setImg] = useState(null);
+
+  const {uid} = auth().currentUser;
+
+  const [date, setdate] = useState('');
+  const [joindate, setjoindate] = useState();
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+
+    const subscriber = firestore()
+      .collection('Discountusers')
+      .doc(uid)
+      .onSnapshot(documentSnapshot => {
+        const userData = documentSnapshot.data();
+        setName(userData.fname);
+        setLast(userData.lname);
+        setEmail(userData.email);
+        setAddress(userData.address);
+        setContact(userData.contact);
+        setImg(userData.userImg);
+        setdate(userData.dob);
+        setjoindate(
+          new Date(userData.createdAt.toDate())
+            .toDateString()
+            .split(' ')
+            .slice(1)
+            .join(' '),
+        );
+      });
+
+    setLoading(false);
+
+    return () => subscriber();
+  }, []);
+
+  const logout = async () => {
+    try {
+      auth().signOut();
+
+      // setuserInfo([]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <View
@@ -24,7 +80,7 @@ function Profile({navigation}) {
           <Image source={require('../../assets/left-arrow.png')} />
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => navigation.navigate('EditProfile')}
+          onPress={() => navigation.navigate('EditProfileScreen')}
           style={{
             padding: 10,
             flexDirection: 'row',
@@ -45,41 +101,53 @@ function Profile({navigation}) {
       </View>
 
       <ScrollView contentContainerStyle={styles.container}>
-        <View>
-          <View style={styles.imgcontainer}>
-            <Image
+        {loading ? (
+          <ActivityIndicator
+            //visibility of Overlay Loading Spinner
+            visible={loading}
+            //Text with the Spinner
+            textContent={'Loading...'}
+            size="large"
+            color="#D02824"
+            //Text style of the Spinner Text
+            textStyle={styles.spinnerTextStyle}
+          />
+        ) : (
+          <View>
+            <View style={styles.imgcontainer}>
+              {/* <Image
               style={styles.image}
               source={require('../../assets/abhav.jpg')}
-            />
-
-            <Text style={styles.imgtxt}>USER SINCE {'Aug 2021'}</Text>
-          </View>
-          <View>
-            <View style={{flexDirection: 'row'}}>
-              <View style={{width: '50%'}}>
-                <FormText
-                  title="First Name"
-                  value={'Ananaya'}
-                  style={{width: '95%'}}
-                />
-              </View>
-              <View style={{width: '50%'}}>
-                <FormText title="Last Name" value={'Roy'} />
-              </View>
+            /> */}
+              {img === null ? null : (
+                <Image style={styles.image} source={{uri: img}} />
+              )}
+              <Text style={styles.imgtxt}>USER SINCE {joindate}</Text>
             </View>
+            <View>
+              <View style={{flexDirection: 'row'}}>
+                <View style={{width: '50%'}}>
+                  <FormText
+                    title="First Name"
+                    value={name}
+                    style={{width: '95%'}}
+                  />
+                </View>
+                <View style={{width: '50%'}}>
+                  <FormText title="Last Name" value={last} />
+                </View>
+              </View>
 
-            <FormText value={'Ananya12@gmail.com'} title="Email" />
+              <FormText title="Email" value={mail} />
 
-            <FormText
-              title="Address"
-              value="B2-11/3, Sector - 3, Thane - 403821 "
-            />
-            <FormText title="Date of birth" value="8 May 2000" />
-            <FormText title="Mobile Number" value="1234567970" />
+              <FormText title="Address" value={address} />
+              <FormText title="Date of birth" value={date} />
+              <FormText title="Mobile Number" value={' +91' + ' ' + contact} />
+            </View>
           </View>
-        </View>
+        )}
 
-        <FormButton buttonTitle="Logout" />
+        <FormButton buttonTitle="Logout" onPress={() => logout()} />
       </ScrollView>
     </>
   );

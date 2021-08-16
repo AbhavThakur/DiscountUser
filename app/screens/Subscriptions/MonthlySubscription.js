@@ -12,7 +12,7 @@ import {
 import FormButton from '../../components/FormButton';
 import {List, Paragraph} from 'react-native-paper';
 
-function MonthlySubscription(props) {
+function MonthlySubscription({navigation}) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <ImageBackground
@@ -26,7 +26,7 @@ function MonthlySubscription(props) {
       </ImageBackground>
       <View flexDirection="row" style={styles.amount}>
         <Text style={styles.text}>{'\u20B9'} 800</Text>
-        <Text>/Annual</Text>
+        <Text>/Monthly</Text>
       </View>
       <View style={{padding: 15}}>
         <List.Section>
@@ -66,7 +66,10 @@ function MonthlySubscription(props) {
             )}
           />
         </List.Section>
-        <FormButton buttonTitle="Subscribe" />
+        <FormButton
+          buttonTitle="Subscribe"
+          onPress={() => navigation.navigate('SubscriptionsCard')}
+        />
       </View>
     </ScrollView>
   );

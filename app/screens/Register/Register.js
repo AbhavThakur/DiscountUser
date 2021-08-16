@@ -40,8 +40,6 @@ function Register({navigation}) {
 
   const logout = async () => {
     try {
-      await GoogleSignin.revokeAccess();
-      await GoogleSignin.signOut();
       auth().signOut();
 
       // setuserInfo([]);

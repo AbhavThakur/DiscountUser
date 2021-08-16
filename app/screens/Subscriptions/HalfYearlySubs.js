@@ -12,7 +12,7 @@ import {
 import FormButton from '../../components/FormButton';
 import {List, Paragraph} from 'react-native-paper';
 
-function HalfYearlySubs(props) {
+function HalfYearlySubs({navigation}) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <ImageBackground
@@ -26,7 +26,7 @@ function HalfYearlySubs(props) {
       </ImageBackground>
       <View flexDirection="row" style={styles.amount}>
         <Text style={styles.text}>{'\u20B9'} 3000</Text>
-        <Text>/Annual</Text>
+        <Text>/Halfyearly</Text>
       </View>
       <View style={{padding: 15}}>
         <List.Section>
@@ -66,7 +66,10 @@ function HalfYearlySubs(props) {
             )}
           />
         </List.Section>
-        <FormButton buttonTitle="Subscribe" />
+        <FormButton
+          buttonTitle="Subscribe"
+          onPress={() => navigation.navigate('SubscriptionsCard')}
+        />
       </View>
     </ScrollView>
   );
