@@ -11,7 +11,7 @@ import {
 function Category(props) {
   return (
     <View style={styles.container}>
-      <Text>he</Text>
+      <Text>hello its a category section</Text>
     </View>
   );
 }
