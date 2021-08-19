@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -6,29 +6,39 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
+  Linking,
+  PermissionsAndroid,
+  Platform,
 } from 'react-native';
+import {Title} from 'react-native-paper';
+import FormButton from '../../components/FormButton';
 
 function Subscriptions({navigation}) {
   return (
-    <>
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={{
-            padding: 10,
-            marginEnd: Dimensions.get('window').width * 0.25,
-          }}
-          onPress={() => navigation.goBack()}>
-          <Image source={require('../../assets/left-arrow.png')} />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Subscriptions value</Text>
+    <View style={styles.container}>
+      <Title>Hurray!! Get your products</Title>
+      <Title>at max discount !!</Title>
+      <View>
+        <Image source={require('../../assets/cardlogo.png')} />
       </View>
-    </>
+
+      <FormButton
+        buttonTitle="Card Renewal"
+        onPress={() => console.log('card')}
+      />
+
+      <FormButton
+        buttonTitle="QR Code"
+        onPress={() => console.log('QR Code')}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
   },
   header: {
     backgroundColor: '#2C3A4A',
@@ -40,6 +50,13 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 20,
     marginTop: 10,
+  },
+  textStyle: {
+    color: 'black',
+    fontSize: 16,
+    textAlign: 'center',
+    padding: 10,
+    marginTop: 16,
   },
 });
 

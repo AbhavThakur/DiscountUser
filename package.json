@@ -33,6 +33,7 @@
     "react-native-onboarding-swiper": "^1.1.4",
     "react-native-pager-view": "^5.4.0",
     "react-native-paper": "^4.9.2",
+    "react-native-qrcode-scanner": "^1.5.4",
     "react-native-reanimated": "^2.2.0",
     "react-native-safe-area-context": "^3.3.0",
     "react-native-screens": "^3.5.0",
