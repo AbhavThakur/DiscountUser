@@ -1,11 +1,45 @@
 import React from 'react';
-import {Image, View, TouchableOpacity, Text} from 'react-native';
+import {Image, View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 
 import {createStackNavigator} from '@react-navigation/stack';
-import {NavigationContainer} from '@react-navigation/native';
 import Home from '../screens/Home/Home';
+import Category from '../screens/Home/Category';
+import GroceryList from '../screens/Home/GroceryList';
+import ShopView from '../screens/Home/ShopView';
 
 const Stack = createStackNavigator();
+
+const Headerleft = () => (
+  <View style={styles.headerstyle}>
+    <TouchableOpacity>
+      <Image
+        source={require('../assets/menu.png')}
+        style={{width: 25, height: 25, marginEnd: 10}}
+      />
+    </TouchableOpacity>
+    <Image
+      source={require('../assets/discounticon.png')}
+      style={{width: 50, height: 50}}
+    />
+  </View>
+);
+
+const Headerright = () => (
+  <View style={styles.headerrightstyle}>
+    <TouchableOpacity
+      onPress={() => console.log('notfy')}
+      style={{marginEnd: 10}}>
+      <Image
+        source={require('../assets/notification.png')}
+        style={{width: 25, height: 30}}
+      />
+    </TouchableOpacity>
+    <Image
+      source={require('../assets/card.png')}
+      style={{width: 50, height: 50}}
+    />
+  </View>
+);
 
 const HomeNavigation = ({navigation}) => {
   return (
@@ -14,53 +48,55 @@ const HomeNavigation = ({navigation}) => {
         name="HomeScreen"
         component={Home}
         options={{
-          headerLeft: () => (
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginStart: 10,
-                justifyContent: 'center',
-              }}>
-              <TouchableOpacity>
-                <Image
-                  source={require('../assets/menu.png')}
-                  style={{width: 25, height: 25, marginEnd: 10}}
-                />
-              </TouchableOpacity>
-              <Image
-                source={require('../assets/discounticon.png')}
-                style={{width: 50, height: 50}}
-              />
-            </View>
-          ),
+          headerLeft: () => <Headerleft />,
           headerTitle: ' ',
-          headerRight: () => (
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginEnd: 10,
-              }}>
-              <TouchableOpacity
-                onPress={() => console.log('notfy')}
-                style={{marginEnd: 10}}>
-                <Image
-                  source={require('../assets/notification.png')}
-                  style={{width: 25, height: 30}}
-                />
-              </TouchableOpacity>
-              <Image
-                source={require('../assets/card.png')}
-                style={{width: 50, height: 50}}
-              />
-            </View>
-          ),
+          headerRight: () => <Headerright />,
           headerShown: true,
+        }}
+      />
+      <Stack.Screen
+        name="CategoryScreen"
+        component={Category}
+        options={{
+          headerLeft: () => <Headerleft />,
+          headerTitle: ' ',
+          headerRight: () => <Headerright />,
+          headerShown: true,
+        }}
+      />
+      <Stack.Screen
+        name="Grocery"
+        component={GroceryList}
+        options={{
+          headerLeft: () => <Headerleft />,
+          headerTitle: ' ',
+          headerRight: () => <Headerright />,
+          headerShown: true,
+        }}
+      />
+      <Stack.Screen
+        name="Shop"
+        component={ShopView}
+        options={{
+          headerShown: false,
         }}
       />
     </Stack.Navigator>
   );
 };
+
+const styles = StyleSheet.create({
+  headerstyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginStart: 10,
+    justifyContent: 'center',
+  },
+  headerrightstyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginEnd: 10,
+  },
+});
 
 export default HomeNavigation;

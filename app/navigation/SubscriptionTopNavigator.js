@@ -27,7 +27,7 @@ function SubscriptionTopNavigator(props) {
       }}>
       <Tab.Screen name="Annual" component={AnnualSubscription} />
       <Tab.Screen name="Half Yearly" component={HalfYearlySubs} />
-      <Tab.Screen name="Monthly" component={MonthlySubscription} />
+      {/* <Tab.Screen name="Monthly" component={MonthlySubscription} /> */}
     </Tab.Navigator>
   );
 }

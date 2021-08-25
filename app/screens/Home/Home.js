@@ -43,7 +43,10 @@ function Home(props) {
             horizontal={false}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({item}) => (
-              <TouchableOpacity activeOpacity={0.4} style={styles.subcategory}>
+              <TouchableOpacity
+                activeOpacity={0.4}
+                style={styles.subcategory}
+                onPress={() => props.navigation.navigate(item.screen)}>
                 <Image
                   source={item.img}
                   style={{width: item.width, height: item.height}}

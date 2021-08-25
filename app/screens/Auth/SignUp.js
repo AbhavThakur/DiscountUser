@@ -66,15 +66,7 @@ function SignUp({navigation}) {
 
   return (
     <SafeAreaView style={styles.scrollView}>
-      <View
-        style={{
-          width: windowWidth / 2.2,
-          height: windowHeight / 4.5,
-          justifyContent: 'center',
-          alignItems: 'center',
-          borderRadius: 40,
-          marginTop: 30,
-        }}>
+      <View style={styles.img}>
         <Image
           style={{width: windowWidth / 2.4, height: windowHeight / 4.5}}
           source={require('../../assets/Logo.png')}
@@ -129,7 +121,7 @@ function SignUp({navigation}) {
           }) => (
             <View>
               <FormInput
-                title="Contact Details"
+                title="Contact Detail"
                 value={values.contact}
                 onChangeText={handleChange('contact')}
                 onBlur={() => setFieldTouched('contact')}
@@ -165,6 +157,14 @@ const styles = StyleSheet.create({
     padding: 20,
     flex: 1,
   },
+  img: {
+    width: windowWidth / 2.2,
+    height: windowHeight / 4.5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 40,
+    marginTop: 30,
+  },
   txt: {
     color: '#ccc',
     fontSize: 22,
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#2C3A4A',
-    padding: 20,
+    padding: 10,
   },
 });
 

@@ -18,8 +18,37 @@ function Subscriptions({navigation}) {
     <View style={styles.container}>
       <Title>Hurray!! Get your products</Title>
       <Title>at max discount !!</Title>
-      <View>
+      <View style={styles.imgContainer}>
         <Image source={require('../../assets/cardlogo.png')} />
+        <View
+          style={{
+            position: 'absolute',
+            bottom: 10,
+            padding: 10,
+            left: 150,
+          }}>
+          <Text
+            style={{
+              color: 'white',
+              fontSize: 20,
+            }}>
+            1334 2348 3482 2334
+          </Text>
+          <Text
+            style={{
+              color: 'white',
+              fontSize: 16,
+            }}>
+            Abhav Thakur
+          </Text>
+          <Text
+            style={{
+              color: 'white',
+              fontSize: 14,
+            }}>
+            Valid Date - 10/04/22
+          </Text>
+        </View>
       </View>
 
       <FormButton
@@ -29,6 +58,7 @@ function Subscriptions({navigation}) {
 
       <FormButton
         buttonTitle="QR Code"
+        btnstyle={{marginTop: 20}}
         onPress={() => console.log('QR Code')}
       />
     </View>
@@ -39,24 +69,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-  },
-  header: {
-    backgroundColor: '#2C3A4A',
-    height: 55,
-    width: Dimensions.get('window').width,
-    flexDirection: 'row',
-  },
-  headerTitle: {
-    color: '#fff',
-    fontSize: 20,
-    marginTop: 10,
-  },
-  textStyle: {
-    color: 'black',
-    fontSize: 16,
-    textAlign: 'center',
     padding: 10,
-    marginTop: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  imgContainer: {
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    height: 210,
+    justifyContent: 'center',
+    marginVertical: 50,
   },
 });
 
