@@ -205,6 +205,8 @@ dependencies {
     implementation "androidx.browser:browser:1.3.0"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     implementation(project(":react-native-google-signin"))
+    implementation project(':react-native-razorpay')
+    implementation project(':lottie-react-native')
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
