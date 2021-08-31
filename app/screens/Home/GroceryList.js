@@ -124,21 +124,9 @@ function GroceryList({navigation}) {
       <Modal
         style={{justifyContent: 'flex-end', alignSelf: 'center', margin: 0}}
         isVisible={isModalVisible}>
-        <View
-          style={{
-            backgroundColor: '#fff',
-            width: WindowWidth,
-            height: WindowHeight * 0.8,
-          }}>
+        <View style={styles.modelContaner}>
           {/* header */}
-          <View
-            style={{
-              flexDirection: 'row',
-              backgroundColor: '#D02824',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: 8,
-            }}>
+          <View style={styles.modaelheader}>
             <Text style={{fontSize: 22, color: '#fff'}}>Filters</Text>
             <TouchableOpacity
               style={{position: 'absolute', right: 20}}
@@ -196,6 +184,19 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  modelContaner: {
+    backgroundColor: '#fff',
+    width: WindowWidth,
+    height: WindowHeight * 0.8,
+  },
+
+  modaelheader: {
+    flexDirection: 'row',
+    backgroundColor: '#D02824',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 8,
   },
 });
 

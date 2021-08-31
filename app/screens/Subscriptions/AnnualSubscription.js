@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -9,10 +9,120 @@ import {
   ImageBackground,
   ScrollView,
 } from 'react-native';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import FormButton from '../../components/FormButton';
-import {List, Paragraph} from 'react-native-paper';
+import {ActivityIndicator, List, Paragraph} from 'react-native-paper';
+import RazorpayCheckout from 'react-native-razorpay';
+import axios from 'axios';
+import {useIsFocused} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import {RazorpayApiKey} from '../../config/config';
+import Animations from '../../components/Animations';
 
 function AnnualSubscription({navigation}) {
+  const [loading, setloading] = useState(false);
+
+  const {uid} = auth().currentUser;
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (isFocused) {
+      firestore()
+        .collection('Subscribed')
+        .doc(uid)
+        .get()
+        .then(async function (documentSnapshot) {
+          if (documentSnapshot.exists === false) {
+            console.log('unsubscribed');
+          }
+
+          console.log('User subscribed: ', documentSnapshot.exists);
+
+          if (documentSnapshot.exists === true) {
+            navigation.replace('SubscriptionsCard');
+          }
+        });
+    }
+  }, []);
+
+  const createOrder = async () => {
+    const {data} = await axios.post(
+      'https://discountaddapaymentserver.herokuapp.com/createOrder',
+      {
+        amount: 6000 * 100,
+        currency: 'INR',
+      },
+    );
+    return data;
+  };
+  const verifyPayment = async (orderID, transaction) => {
+    const {data} = await axios.post(
+      'https://discountaddapaymentserver.herokuapp.com/verifySignature',
+      {
+        orderID: orderID,
+        transaction: transaction,
+      },
+    );
+    return data.validSignature;
+  };
+
+  const onPay = async () => {
+    setloading(true);
+
+    const order = await createOrder();
+    var options = {
+      name: 'Welocme to DiscountAdda',
+      description: 'Payment to Discount Adda',
+      order_id: order.id,
+      key: RazorpayApiKey,
+      prefill: {
+        email: '',
+        contact: '',
+        name: '',
+      },
+      theme: {color: '#a29bfe'},
+    };
+    RazorpayCheckout.open(options)
+      .then(async transaction => {
+        const validSignature = await verifyPayment(order.id, transaction);
+        const fname = await AsyncStorage.getItem('fname');
+        const lname = await AsyncStorage.getItem('lname');
+        console.log('Is Valid Payment: ' + validSignature);
+        setloading(false);
+        // alert('Successfully registered');
+        var code = Math.floor(
+          Math.pow(10, 12 - 1) +
+            Math.random() * (Math.pow(10, 12) - Math.pow(10, 12 - 1) - 1),
+        );
+        var cardno = code
+          .toString()
+          .replace(/(\d{4})/g, '$1 ')
+          .replace(/(^\s+|\s+$)/, '');
+
+        firestore()
+          .collection('Subscribed')
+          .doc(auth().currentUser.uid)
+          .set({
+            subscribed: true,
+            amount: 6000,
+            cardno: cardno,
+            fname: fname,
+            lname: lname,
+            subscription: 'Annual',
+            createdAt: firestore.Timestamp.fromDate(new Date()),
+          })
+          .catch(() => alert('Regiration Failed'));
+      })
+      .then(() => navigation.replace('SubscriptionsCard'))
+      .catch(() => {
+        alert('Payment Failed.');
+        navigation.navigate('SubscriptionsScreen');
+        setloading(false);
+      });
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <ImageBackground
@@ -28,49 +138,50 @@ function AnnualSubscription({navigation}) {
         <Text style={styles.text}>{'\u20B9'} 6000</Text>
         <Text>/Annual</Text>
       </View>
-      <View style={{padding: 15}}>
-        <List.Section>
-          <Text style={{fontSize: 16, marginBottom: 10}}>
-            In addition to all the features in Half Yearly, Annual also
-            includes:
-          </Text>
-          <List.Item
-            title="Access on all types of shops"
-            left={props => (
-              <Image
-                {...props}
-                source={require('../../assets/checked.png')}
-                style={{width: 25, height: 25}}
-              />
-            )}
-          />
-          <List.Item
-            title="Special Discounts on shop above worth  rupee 5000"
-            titleNumberOfLines={2}
-            left={props => (
-              <Image
-                {...props}
-                source={require('../../assets/checked.png')}
-                style={{width: 25, height: 25}}
-              />
-            )}
-          />
-          <List.Item
-            title="50% off on 1st shop using the card"
-            left={props => (
-              <Image
-                {...props}
-                source={require('../../assets/checked.png')}
-                style={{width: 25, height: 25}}
-              />
-            )}
-          />
-        </List.Section>
-        <FormButton
-          buttonTitle="Subscribe"
-          onPress={() => navigation.navigate('SubscriptionsCard')}
-        />
-      </View>
+      {loading ? (
+        <Animations source={require('../../assets/Animation/loading.json')} />
+      ) : (
+        <View style={{padding: 15}}>
+          <List.Section>
+            <Text style={{fontSize: 16, marginBottom: 10}}>
+              In addition to all the features in Half Yearly, Annual also
+              includes:
+            </Text>
+            <List.Item
+              title="Access on all types of shops"
+              left={props => (
+                <Image
+                  {...props}
+                  source={require('../../assets/checked.png')}
+                  style={{width: 25, height: 25}}
+                />
+              )}
+            />
+            <List.Item
+              title="Special Discounts on shop above worth  rupee 5000"
+              titleNumberOfLines={2}
+              left={props => (
+                <Image
+                  {...props}
+                  source={require('../../assets/checked.png')}
+                  style={{width: 25, height: 25}}
+                />
+              )}
+            />
+            <List.Item
+              title="50% off on 1st shop using the card"
+              left={props => (
+                <Image
+                  {...props}
+                  source={require('../../assets/checked.png')}
+                  style={{width: 25, height: 25}}
+                />
+              )}
+            />
+          </List.Section>
+          <FormButton buttonTitle="Subscribe" onPress={() => onPay()} />
+        </View>
+      )}
     </ScrollView>
   );
 }

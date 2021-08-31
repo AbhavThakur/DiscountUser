@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -9,6 +9,13 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+
+import {useIsFocused} from '@react-navigation/native';
+import Modal from 'react-native-modal';
+import {Card, Title, Paragraph, Button} from 'react-native-paper';
+
 import Discount from '../../utils/Discount';
 import ImageCarousel from '../../utils/ImageCarousel';
 import {Info} from '../../constants/Categories';
@@ -17,6 +24,35 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 function Home(props) {
+  const [isModalVisible, setModalVisible] = useState(true);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+  const {uid} = auth().currentUser;
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (isFocused) {
+      firestore()
+        .collection('Subscribed')
+        .doc(uid)
+        .get()
+        .then(async function (documentSnapshot) {
+          if (documentSnapshot.exists === false) {
+            setModalVisible(true);
+          }
+
+          console.log('User subscribed: ', documentSnapshot.exists);
+
+          if (documentSnapshot.exists === true) {
+            console.log('subscribed');
+            setModalVisible(false);
+          }
+        });
+    }
+  }, []);
+
   return (
     <>
       <View style={styles.header}>
@@ -58,6 +94,39 @@ function Home(props) {
         </View>
         {/* top categories */}
         <Discount />
+        <Modal
+          style={{justifyContent: 'flex-end', alignSelf: 'center', margin: 0}}
+          isVisible={isModalVisible}>
+          <View style={styles.modelContaner}>
+            {/* header */}
+            <View style={styles.modaelheader}>
+              <Text style={{fontSize: 22, color: '#fff'}}>Subscribe</Text>
+            </View>
+            <Card>
+              <Card.Content>
+                <Title>Subscribe to discount adda </Title>
+                <Paragraph>
+                  Please subscribe to the discount adda to avail all the offer
+                </Paragraph>
+              </Card.Content>
+              <Card.Actions
+                style={{alignItems: 'center', justifyContent: 'space-around'}}>
+                <Button
+                  mode="contained"
+                  style={{backgroundColor: '#D02824'}}
+                  onPress={() => props.navigation.navigate('Subscriptions')}>
+                  Now
+                </Button>
+                <Button
+                  mode="contained"
+                  style={{backgroundColor: '#D02824'}}
+                  onPress={toggleModal}>
+                  Not Now
+                </Button>
+              </Card.Actions>
+            </Card>
+          </View>
+        </Modal>
       </ScrollView>
     </>
   );
@@ -111,6 +180,19 @@ const styles = StyleSheet.create({
   },
   subtxt: {
     color: '#293645',
+  },
+  modelContaner: {
+    backgroundColor: '#fff',
+    width: windowWidth,
+    height: windowHeight * 0.3,
+  },
+
+  modaelheader: {
+    flexDirection: 'row',
+    backgroundColor: '#D02824',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 8,
   },
 });
 

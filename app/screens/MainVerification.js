@@ -3,6 +3,9 @@ import {StyleSheet, Dimensions, ActivityIndicator, View} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {useIsFocused} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import Animations from '../components/Animations';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -29,6 +32,8 @@ function MainVerification({navigation}) {
               index: 0,
               routes: [{name: 'Bottom'}],
             });
+            await AsyncStorage.setItem('fname', documentSnapshot.data().fname);
+            await AsyncStorage.setItem('lname', documentSnapshot.data().lname);
           }
         });
     }
@@ -36,7 +41,7 @@ function MainVerification({navigation}) {
 
   return (
     <View style={styles.container}>
-      <ActivityIndicator size="large" color="#D02824" />
+      <Animations source={require('../assets/Animation/loader.json')} />
     </View>
   );
 }
