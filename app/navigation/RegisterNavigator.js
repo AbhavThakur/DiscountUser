@@ -16,7 +16,6 @@ const RegisterNavigator = () => {
       <Stack.Screen name="Main" component={MainVerification} />
       <Stack.Screen name="Bottom" component={BottomNavigator} />
       <Stack.Screen name="register" component={Register} />
-      <Stack.Screen name="verify" component={VerifyCode} />
     </Stack.Navigator>
   );
 };

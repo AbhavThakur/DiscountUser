@@ -18,6 +18,7 @@ import * as yup from 'yup';
 import {Formik} from 'formik';
 import FormInput from '../../components/FormInput';
 import FormButton from '../../components/FormButton';
+import Animations from '../../components/Animations';
 
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
@@ -26,26 +27,24 @@ function SignUp({navigation}) {
   // const [info, setInfo] = useState(null);
   const [confirm, setConfirm] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [number, setnumber] = useState('');
+  const [timerCount, setTimer] = useState(30);
 
   const [code, setCode] = useState('');
 
-  // const googleLogin = async () => {
-  //   try {
-  //     await GoogleSignin.hasPlayServices();
-  //     const {accessToken, idToken} = await GoogleSignin.signIn();
-
-  //     const credential = auth.GoogleAuthProvider.credential(
-  //       idToken,
-  //       accessToken,
-  //     );
-  //     await auth().signInWithCredential(credential);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
   const startLoading = db => {
     signInWithPhoneNumber(db.contact);
+    setnumber(db.contact);
     setLoading(true);
+    let interval = setInterval(() => {
+      setTimer(lastTimerCount => {
+        lastTimerCount <= 1 && clearInterval(interval);
+        return lastTimerCount - 1;
+        8;
+      });
+    }, 1000); //each count lasts for a second
+    //cleanup the interval on complete
+    return () => clearInterval(interval);
   };
 
   async function signInWithPhoneNumber(phoneNumber) {
@@ -66,19 +65,26 @@ function SignUp({navigation}) {
 
   return (
     <SafeAreaView style={styles.scrollView}>
-      <View style={styles.img}>
-        <Image
-          style={{width: windowWidth / 2.4, height: windowHeight / 4.5}}
-          source={require('../../assets/Logo.png')}
-        />
-      </View>
+      {loading ? null : (
+        <View style={styles.img}>
+          <Image
+            style={{width: windowWidth / 2.4, height: windowHeight / 4.5}}
+            source={require('../../assets/Logo.png')}
+          />
+        </View>
+      )}
 
-      <View style={{marginTop: 30, marginBottom: 80}}>
-        <Text style={styles.txt}>Welcome to Discounts Adda </Text>
-        {/* <Text style={styles.txt}>DiscountAdda</Text> */}
+      <View style={{marginTop: 30, marginBottom: loading ? 50 : 70}}>
+        {loading ? null : (
+          <Text style={styles.txt}>Welcome to Discounts Adda </Text>
+        )}
       </View>
       {loading ? (
         <View style={styles.screen}>
+          <View style={styles.animation}>
+            <Animations source={require('../../assets/Animation/otp.json')} />
+          </View>
+
           <FormInput
             title="Enter OTP"
             autoFocus
@@ -87,14 +93,28 @@ function SignUp({navigation}) {
             placeholderText="Enter your OTP here"
             keyboardType="numeric"
           />
+          <Text style={{color: '#fff', fontSize: 15}}>
+            Get otp in {timerCount}
+          </Text>
           <FormButton
             buttonTitle="Confirm OTP"
+            btnstyle={{width: 150}}
             onPress={() => confirmCode(code)}
           />
-          <FormButton
-            buttonTitle="Change Contact"
-            onPress={() => setLoading(false)}
-          />
+          <View style={{flexDirection: 'row'}}>
+            {timerCount === 0 ? (
+              <FormButton
+                buttonTitle="Resend OTP"
+                btnstyle={{width: 140, marginEnd: 20}}
+                onPress={() => signInWithPhoneNumber(number)}
+              />
+            ) : null}
+            <FormButton
+              buttonTitle="Change Contact"
+              btnstyle={{width: 160}}
+              onPress={() => setLoading(false)}
+            />
+          </View>
         </View>
       ) : (
         <Formik
@@ -121,7 +141,7 @@ function SignUp({navigation}) {
           }) => (
             <View>
               <FormInput
-                title="Contact Detail"
+                title="Login \ Register"
                 value={values.contact}
                 onChangeText={handleChange('contact')}
                 onBlur={() => setFieldTouched('contact')}
@@ -129,7 +149,7 @@ function SignUp({navigation}) {
                 keyboardType="phone-pad"
               />
               {touched.contact && errors.contact && (
-                <Text style={{fontSize: 12, color: '#FF0D10'}}>
+                <Text style={{fontSize: 15, color: '#FF0D10'}}>
                   {errors.contact}
                 </Text>
               )}
@@ -164,6 +184,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 40,
     marginTop: 30,
+  },
+  animation: {
+    width: windowWidth,
+    height: windowHeight / 3.5,
   },
   txt: {
     color: '#ccc',
