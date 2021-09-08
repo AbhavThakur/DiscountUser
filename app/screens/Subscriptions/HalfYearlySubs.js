@@ -15,7 +15,6 @@ import FormButton from '../../components/FormButton';
 import {ActivityIndicator, List, Paragraph} from 'react-native-paper';
 import RazorpayCheckout from 'react-native-razorpay';
 import axios from 'axios';
-import {useIsFocused} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {RazorpayApiKey} from '../../config/config';
@@ -23,29 +22,6 @@ import Animations from '../../components/Animations';
 
 function HalfYearlySubs({navigation}) {
   const [loading, setloading] = useState(false);
-
-  const {uid} = auth().currentUser;
-  const isFocused = useIsFocused();
-
-  useEffect(() => {
-    if (isFocused) {
-      firestore()
-        .collection('Subscribed')
-        .doc(uid)
-        .get()
-        .then(async function (documentSnapshot) {
-          if (documentSnapshot.exists === false) {
-            console.log('unsubscribed');
-          }
-
-          console.log('User subscribed: ', documentSnapshot.exists);
-
-          if (documentSnapshot.exists === true) {
-            navigation.replace('SubscriptionsCard');
-          }
-        });
-    }
-  }, []);
 
   const createOrder = async () => {
     const {data} = await axios.post(

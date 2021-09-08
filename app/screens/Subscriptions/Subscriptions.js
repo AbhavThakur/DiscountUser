@@ -6,14 +6,13 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
-  Linking,
+  TextInput,
   PermissionsAndroid,
   Platform,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {Title, ActivityIndicator} from 'react-native-paper';
-import QRCode from 'react-native-qrcode-generator';
 
 import FormButton from '../../components/FormButton';
 
@@ -55,7 +54,6 @@ function Subscriptions({navigation}) {
     <View style={styles.container}>
       <Title>Hurray!! Get your products</Title>
       <Title>at max discount !!</Title>
-      <QRCode value={cardno} size={60} bgColor="black" fgColor="white" />
 
       {loading ? (
         <ActivityIndicator animating={true} color="#D02824" />
@@ -63,7 +61,6 @@ function Subscriptions({navigation}) {
         <View style={styles.imgContainer}>
           <Image source={require('../../assets/cardlogo.png')} />
           <View style={styles.detailsContainer}>
-            <QRCode value={cardno} size={60} bgColor="black" fgColor="white" />
             <Text style={styles.cardno}>{cardno}</Text>
             <Text style={styles.username}>
               {name} {last}

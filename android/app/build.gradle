@@ -137,6 +137,7 @@ android {
         versionCode 1
         versionName "1.0"
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
     }
     splits {
         abi {
@@ -207,7 +208,8 @@ dependencies {
     implementation(project(":react-native-google-signin"))
     implementation project(':react-native-razorpay')
     implementation project(':lottie-react-native')
-
+    implementation 'androidx.multidex:multidex:2.0.1'
+    
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
     }
