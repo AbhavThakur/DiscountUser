@@ -28,12 +28,12 @@ function MainVerification({navigation}) {
           console.log('User exists: ', documentSnapshot.exists);
 
           if (documentSnapshot.exists === true) {
-            navigation.reset({
-              index: 0,
-              routes: [{name: 'Bottom'}],
-            });
             await AsyncStorage.setItem('fname', documentSnapshot.data().fname);
             await AsyncStorage.setItem('lname', documentSnapshot.data().lname);
+            navigation.reset({
+              index: 0,
+              routes: [{name: 'Drawer'}],
+            });
           }
         });
     }

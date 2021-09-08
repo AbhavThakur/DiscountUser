@@ -9,9 +9,9 @@ import ShopView from '../screens/Home/ShopView';
 
 const Stack = createStackNavigator();
 
-const Headerleft = () => (
+const Headerleft = ({onPress}) => (
   <View style={styles.headerstyle}>
-    <TouchableOpacity>
+    <TouchableOpacity onPress={onPress}>
       <Image
         source={require('../assets/menu.png')}
         style={{width: 25, height: 25, marginEnd: 10}}
@@ -48,7 +48,9 @@ const HomeNavigation = ({navigation}) => {
         name="HomeScreen"
         component={Home}
         options={{
-          headerLeft: () => <Headerleft />,
+          headerLeft: () => (
+            <Headerleft onPress={() => navigation.openDrawer()} />
+          ),
           headerTitle: ' ',
           headerRight: () => <Headerright />,
           headerShown: true,
@@ -58,7 +60,9 @@ const HomeNavigation = ({navigation}) => {
         name="CategoryScreen"
         component={Category}
         options={{
-          headerLeft: () => <Headerleft />,
+          headerLeft: () => (
+            <Headerleft onPress={() => navigation.openDrawer()} />
+          ),
           headerTitle: ' ',
           headerRight: () => <Headerright />,
           headerShown: true,
@@ -68,7 +72,9 @@ const HomeNavigation = ({navigation}) => {
         name="Grocery"
         component={GroceryList}
         options={{
-          headerLeft: () => <Headerleft />,
+          headerLeft: () => (
+            <Headerleft onPress={() => navigation.openDrawer()} />
+          ),
           headerTitle: ' ',
           headerRight: () => <Headerright />,
           headerShown: true,

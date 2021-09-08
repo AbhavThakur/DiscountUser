@@ -145,7 +145,7 @@ function Register({navigation}) {
       .then(() =>
         navigation.reset({
           index: 0,
-          routes: [{name: 'Bottom'}],
+          routes: [{name: 'Drawer'}],
         }),
       )
       .catch(err => {

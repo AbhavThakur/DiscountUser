@@ -4,7 +4,6 @@ import {Avatar, Title, Caption, Drawer} from 'react-native-paper';
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import {AuthContext} from './AuthProvider';
 
 function DrawerContent(props) {
   const [name, setName] = useState('');
@@ -41,8 +40,6 @@ function DrawerContent(props) {
         }
       });
 
-    // Stop listening for updates when no longer required
-
     return () => subscriber();
   }, []);
 
@@ -76,20 +73,44 @@ function DrawerContent(props) {
             <DrawerItem
               icon={() => (
                 <Image
-                  source={require('../assets/home.png')}
-                  style={{width: 15, height: 15}}
+                  source={require('../assets/Home.png')}
+                  style={{width: 15, height: 15, tintColor: '#c9c9c9'}}
                 />
               )}
               label="Home"
               onPress={() => {
-                props.navigation.navigate('Home');
+                props.navigation.navigate('HomeScreen');
               }}
             />
             <DrawerItem
               icon={() => (
                 <Image
-                  source={require('../assets/user.png')}
-                  style={{width: 15, height: 15}}
+                  source={require('../assets/rss.png')}
+                  style={{width: 15, height: 15, tintColor: '#c9c9c9'}}
+                />
+              )}
+              label="Social Feeds"
+              onPress={() => {
+                props.navigation.navigate('Social_Feeds');
+              }}
+            />
+            <DrawerItem
+              icon={() => (
+                <Image
+                  source={require('../assets/subscription.png')}
+                  style={{width: 15, height: 15, tintColor: '#c9c9c9'}}
+                />
+              )}
+              label="Subscriptions"
+              onPress={() => {
+                props.navigation.navigate('Subscriptions');
+              }}
+            />
+            <DrawerItem
+              icon={() => (
+                <Image
+                  source={require('../assets/profile.png')}
+                  style={{width: 15, height: 15, tintColor: '#c9c9c9'}}
                 />
               )}
               label="Profile"
@@ -97,18 +118,6 @@ function DrawerContent(props) {
                 props.navigation.navigate('Profile');
               }}
             />
-            {/* <DrawerItem
-              icon={() => (
-                <Image
-                  source={require('../assets/settings.png')}
-                  style={{width: 15, height: 15}}
-                />
-              )}
-              label="Settings"
-              onPress={() => {
-                props.navigation.navigate('Settings');
-              }}
-            /> */}
           </Drawer.Section>
         </View>
       </DrawerContentScrollView>

@@ -139,7 +139,9 @@ function AnnualSubscription({navigation}) {
         <Text>/Annual</Text>
       </View>
       {loading ? (
-        <Animations source={require('../../assets/Animation/waiting.json')} />
+        <View style={{flex: 1, backgroundColor: '#fff'}}>
+          <Animations source={require('../../assets/Animation/waiting.json')} />
+        </View>
       ) : (
         <View style={{padding: 15}}>
           <List.Section>

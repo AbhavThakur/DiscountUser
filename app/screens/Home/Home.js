@@ -26,9 +26,9 @@ const windowHeight = Dimensions.get('window').height;
 function Home(props) {
   const [isModalVisible, setModalVisible] = useState(false);
 
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
-  };
+  // const toggleModal = () => {
+  //   setModalVisible(!isModalVisible);
+  // };
   const {uid} = auth().currentUser;
   const isFocused = useIsFocused();
 
@@ -42,7 +42,6 @@ function Home(props) {
           if (documentSnapshot.exists === false) {
             setModalVisible(true);
           }
-
           console.log('User subscribed: ', documentSnapshot.exists);
 
           if (documentSnapshot.exists === true) {
@@ -71,34 +70,8 @@ function Home(props) {
         nestedScrollEnabled={true}
         contentContainerStyle={styles.container}>
         <ImageCarousel />
-        <View style={styles.category}>
-          <FlatList
-            data={Info}
-            numColumns={4}
-            nestedScrollEnabled={true}
-            horizontal={false}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({item}) => (
-              <TouchableOpacity
-                activeOpacity={0.4}
-                style={styles.subcategory}
-                onPress={() => props.navigation.navigate(item.screen)}>
-                <Image
-                  source={item.img}
-                  style={{width: item.width, height: item.height}}
-                />
-                <Text style={styles.subtxt}>{item.name}</Text>
-              </TouchableOpacity>
-            )}
-          />
-        </View>
-        {/* top categories */}
-        <Discount />
-        <Modal
-          style={{justifyContent: 'flex-end', alignSelf: 'center', margin: 0}}
-          isVisible={isModalVisible}>
-          <View style={styles.modelContaner}>
-            {/* header */}
+        {isModalVisible ? (
+          <View style={styles.category}>
             <View style={styles.modaelheader}>
               <Text style={{fontSize: 22, color: '#fff'}}>Subscribe</Text>
             </View>
@@ -113,20 +86,39 @@ function Home(props) {
                 style={{alignItems: 'center', justifyContent: 'space-around'}}>
                 <Button
                   mode="contained"
-                  style={{backgroundColor: '#D02824'}}
+                  style={{backgroundColor: '#D02824', width: 100}}
                   onPress={() => props.navigation.navigate('Subscriptions')}>
                   Now
-                </Button>
-                <Button
-                  mode="contained"
-                  style={{backgroundColor: '#D02824'}}
-                  onPress={toggleModal}>
-                  Not Now
                 </Button>
               </Card.Actions>
             </Card>
           </View>
-        </Modal>
+        ) : (
+          <View style={styles.category}>
+            <FlatList
+              data={Info}
+              numColumns={4}
+              nestedScrollEnabled={true}
+              horizontal={false}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({item}) => (
+                <TouchableOpacity
+                  activeOpacity={0.4}
+                  style={styles.subcategory}
+                  onPress={() => props.navigation.navigate(item.screen)}>
+                  <Image
+                    source={item.img}
+                    style={{width: item.width, height: item.height}}
+                  />
+                  <Text style={styles.subtxt}>{item.name}</Text>
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        )}
+
+        {/* top categories */}
+        <Discount />
       </ScrollView>
     </>
   );
@@ -188,7 +180,7 @@ const styles = StyleSheet.create({
   },
 
   modaelheader: {
-    flexDirection: 'row',
+    marginHorizontal: 10,
     backgroundColor: '#D02824',
     alignItems: 'center',
     justifyContent: 'center',

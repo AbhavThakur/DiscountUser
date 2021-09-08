@@ -10,6 +10,7 @@ import {
   FlatList,
 } from 'react-native';
 import Modal from 'react-native-modal';
+import firestore from '@react-native-firebase/firestore';
 import {List, Card} from 'react-native-paper';
 
 import StoreCard from '../../components/StoreCard';
@@ -110,6 +111,22 @@ function GroceryList({navigation}) {
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+  useEffect(() => {
+    firestore()
+      .collection('StoreName')
+      .get()
+      .then(querySnapshot => {
+        console.log('Total users: ', querySnapshot.size);
+
+        querySnapshot.forEach(documentSnapshot => {
+          console.log(
+            'User ID: ',
+            documentSnapshot.id,
+            documentSnapshot.data(),
+          );
+        });
+      });
+  });
   return (
     <View style={styles.container}>
       <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>

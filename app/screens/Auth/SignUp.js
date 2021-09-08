@@ -36,15 +36,6 @@ function SignUp({navigation}) {
     signInWithPhoneNumber(db.contact);
     setnumber(db.contact);
     setLoading(true);
-    let interval = setInterval(() => {
-      setTimer(lastTimerCount => {
-        lastTimerCount <= 1 && clearInterval(interval);
-        return lastTimerCount - 1;
-        8;
-      });
-    }, 1000); //each count lasts for a second
-    //cleanup the interval on complete
-    return () => clearInterval(interval);
   };
 
   async function signInWithPhoneNumber(phoneNumber) {
@@ -53,6 +44,14 @@ function SignUp({navigation}) {
     );
     setConfirm(confirmation);
     await AsyncStorage.setItem('contact', phoneNumber);
+    let interval = setInterval(() => {
+      setTimer(lastTimerCount => {
+        lastTimerCount <= 1 && clearInterval(interval);
+        return lastTimerCount - 1;
+      });
+    }, 1000); //each count lasts for a second
+    //cleanup the interval on complete
+    return () => clearInterval(interval);
   }
 
   async function confirmCode() {
