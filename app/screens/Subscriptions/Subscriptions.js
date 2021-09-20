@@ -13,7 +13,7 @@ import {
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {Title, ActivityIndicator} from 'react-native-paper';
-
+import QRCode from 'react-native-qrcode-svg';
 import FormButton from '../../components/FormButton';
 
 function Subscriptions({navigation}) {
@@ -36,13 +36,7 @@ function Subscriptions({navigation}) {
         setName(userData.fname);
         setLast(userData.lname);
         setcardno(userData.cardno);
-        setjoindate(
-          new Date(userData.createdAt.toDate())
-            .toDateString()
-            .split(' ')
-            .slice(1)
-            .join(' '),
-        );
+        setjoindate(new Date(userData.createdAt));
       });
 
     setLoading(false);
@@ -61,11 +55,17 @@ function Subscriptions({navigation}) {
         <View style={styles.imgContainer}>
           <Image source={require('../../assets/cardlogo.png')} />
           <View style={styles.detailsContainer}>
+            <QRCode
+              value={cardno}
+              logoSize={30}
+              color="black"
+              logoBackgroundColor="transparent"
+            />
             <Text style={styles.cardno}>{cardno}</Text>
             <Text style={styles.username}>
               {name} {last}
             </Text>
-            <Text style={styles.date}>Valid Date - 10/04/22</Text>
+            <Text style={styles.date}>Valid Date -</Text>
           </View>
         </View>
       )}

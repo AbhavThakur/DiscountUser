@@ -8,6 +8,7 @@ import {useIsFocused} from '@react-navigation/native';
 
 import Subscriptions from '../screens/Subscriptions/Subscriptions';
 import SubscriptionTopNavigator from './SubscriptionTopNavigator';
+import Animations from '../components/Animations';
 
 const Stack = createStackNavigator();
 
@@ -39,7 +40,11 @@ const SubscriptionNavigator = ({navigation}) => {
   }, []);
 
   if (subscribe === null) {
-    return null;
+    return (
+      <View style={{flex: 1, backgroundColor: '#fff'}}>
+        <Animations source={require('../assets/Animation/waiting.json')} />
+      </View>
+    );
   } else if (subscribe === true) {
     routeName = 'SubscriptionsCard';
   } else {

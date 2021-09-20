@@ -15,7 +15,7 @@ const data1 = [
     title: 'App under maintenance',
     desc: 'Your card is about to expire.Please renew to enjoy the discounts.',
     date: '10 Feb 2021',
-    img: require('./images/Vector.png'),
+    img: require('../../assets/cardlogo.png'),
     card: 0,
   },
   {
@@ -23,7 +23,7 @@ const data1 = [
     title: 'App under maintenance',
     desc: 'Your card is about to expire.Please renew to enjoy the discounts.',
     date: '10 Feb 2021',
-    img: require('./images/Vector.png'),
+    img: require('../../assets/cardlogo.png'),
     card: 0,
   },
 ];
@@ -34,7 +34,7 @@ const data2 = [
     title: 'Card expiry status',
     desc: 'Your card is about to expire.Please renew to enjoy the discounts.',
     date: '10 Feb 2021',
-    img: require('./images/Vector.png'),
+    img: require('../../assets/cardlogo.png'),
     card: 1,
   },
   {
@@ -42,7 +42,7 @@ const data2 = [
     title: 'App under maintenance',
     desc: 'Your card is about to expire.Please renew to enjoy the discounts.',
     date: '10 Feb 2021',
-    img: require('./images/Vector.png'),
+    img: require('../../assets/cardlogo.png'),
     card: 0,
   },
   {
@@ -50,7 +50,7 @@ const data2 = [
     title: 'Card expiry status',
     desc: 'Your card is about to expire.Please renew to enjoy the discounts.',
     date: '10 Feb 2021',
-    img: require('./images/Vector.png'),
+    img: require('../../assets/cardlogo.png'),
     card: 1,
   },
 ];
@@ -67,6 +67,7 @@ const Notification = () => {
           <Text style={styles.header}>Today</Text>
           <View style={styles.line}></View>
           <FlatList
+            nestedScrollEnabled
             data={data1}
             keyExtractor={item => item.id}
             renderItem={({item}) =>
@@ -130,6 +131,7 @@ const Notification = () => {
           <View style={styles.line}></View>
           <FlatList
             data={data2}
+            nestedScrollEnabled
             keyExtractor={item => item.id}
             renderItem={({item}) =>
               item.card == 1 ? (

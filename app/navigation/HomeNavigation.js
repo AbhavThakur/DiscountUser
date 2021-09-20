@@ -6,6 +6,7 @@ import Home from '../screens/Home/Home';
 import Category from '../screens/Home/Category';
 import GroceryList from '../screens/Home/GroceryList';
 import ShopView from '../screens/Home/ShopView';
+import Notification from '../screens/Notification/Notification';
 
 const Stack = createStackNavigator();
 
@@ -24,11 +25,9 @@ const Headerleft = ({onPress}) => (
   </View>
 );
 
-const Headerright = () => (
+const Headerright = ({onPress}) => (
   <View style={styles.headerrightstyle}>
-    <TouchableOpacity
-      onPress={() => console.log('notfy')}
-      style={{marginEnd: 10}}>
+    <TouchableOpacity onPress={onPress} style={{marginEnd: 10}}>
       <Image
         source={require('../assets/notification.png')}
         style={{width: 25, height: 30}}
@@ -52,7 +51,9 @@ const HomeNavigation = ({navigation}) => {
             <Headerleft onPress={() => navigation.openDrawer()} />
           ),
           headerTitle: ' ',
-          headerRight: () => <Headerright />,
+          headerRight: () => (
+            <Headerright onPress={() => navigation.navigate('Notification')} />
+          ),
           headerShown: true,
         }}
       />
@@ -83,6 +84,13 @@ const HomeNavigation = ({navigation}) => {
       <Stack.Screen
         name="Shop"
         component={ShopView}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Notification"
+        component={Notification}
         options={{
           headerShown: false,
         }}
