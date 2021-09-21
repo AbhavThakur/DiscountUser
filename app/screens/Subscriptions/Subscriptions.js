@@ -6,9 +6,6 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
-  TextInput,
-  PermissionsAndroid,
-  Platform,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -42,7 +39,7 @@ function Subscriptions({navigation}) {
     setLoading(false);
 
     return () => subscriber();
-  }, []);
+  }, [uid]);
 
   return (
     <View style={styles.container}>
