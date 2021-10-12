@@ -41,7 +41,7 @@ function DrawerContent(props) {
       });
 
     return () => subscriber();
-  }, []);
+  }, [uid]);
 
   return (
     <View style={{flex: 1}}>

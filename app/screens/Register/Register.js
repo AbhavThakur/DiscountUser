@@ -1,17 +1,12 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
+  Alert,
+  BackHandler,
+  Button,
+  ScrollView,
   StyleSheet,
   Text,
-  ScrollView,
-  TouchableOpacity,
-  Platform,
-  StatusBar,
-  SafeAreaView,
   View,
-  Button,
-  Alert,
-  ActivityIndicator,
-  BackHandler,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -21,13 +16,8 @@ import {Formik} from 'formik';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
-import {
-  GoogleSignin,
-  statusCodes,
-} from '@react-native-google-signin/google-signin';
 
 import FormInput from '../../components/FormInput';
-import {AuthContext} from '../../navigation/AuthProvider';
 import FormButton from '../../components/FormButton';
 
 function Register({navigation}) {
@@ -72,6 +62,7 @@ function Register({navigation}) {
   );
 
   const isFocused = useIsFocused();
+  const UserID = auth().currentUser.uid;
 
   useEffect(() => {
     if (isFocused) {
@@ -84,13 +75,13 @@ function Register({navigation}) {
     }
 
     console.log('Register SCreen');
-  }, []);
+  }, [isFocused]);
 
   const startLoading = db => {
     setLoading(true);
     firestore()
       .collection('Discountusers')
-      .doc(auth().currentUser.uid)
+      .doc(UserID)
       .set({
         fname: db.name,
         lname: db.last,
@@ -150,7 +141,8 @@ function Register({navigation}) {
       )
       .catch(err => {
         console.log('error', err);
-        alert(error);
+
+        alert(err);
       });
   };
 

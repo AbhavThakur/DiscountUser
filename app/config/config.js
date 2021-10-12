@@ -1,1 +1,1 @@
-export const RazorpayApiKey = 'rzp_test_QIWmLybBm6PTA1';
+export const RazorpayApiKey = 'rzp_test_MfnQGqqfptVN03';

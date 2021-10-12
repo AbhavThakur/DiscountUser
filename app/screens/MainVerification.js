@@ -30,6 +30,8 @@ function MainVerification({navigation}) {
           if (documentSnapshot.exists === true) {
             await AsyncStorage.setItem('fname', documentSnapshot.data().fname);
             await AsyncStorage.setItem('lname', documentSnapshot.data().lname);
+            await AsyncStorage.setItem('img', documentSnapshot.data().userImg);
+
             navigation.reset({
               index: 0,
               routes: [{name: 'Drawer'}],
@@ -37,7 +39,7 @@ function MainVerification({navigation}) {
           }
         });
     }
-  }, []);
+  }, [uid, isFocused, navigation]);
 
   return (
     <View style={styles.container}>

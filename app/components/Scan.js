@@ -54,7 +54,8 @@ class Scan extends Component {
             <TouchableOpacity onPress={() => BackHandler.exitApp()}>
               <Image
                 source={require('./assets/back.png')}
-                style={{height: 36, width: 36}}></Image>
+                style={{height: 36, width: 36}}
+              />
             </TouchableOpacity>
             <Text style={styles.textTitle}>Scan QR Code</Text>
           </View>
@@ -62,20 +63,23 @@ class Scan extends Component {
             <View style={styles.cardView}>
               <Image
                 source={require('./assets/camera.png')}
-                style={{height: 36, width: 36}}></Image>
+                style={{height: 36, width: 36}}
+              />
               <Text numberOfLines={8} style={styles.descText}>
                 Please move your camera {'\n'} over the QR Code
               </Text>
               <Image
                 source={require('./assets/qr-code.png')}
-                style={{margin: 20}}></Image>
+                style={{margin: 20}}
+              />
               <TouchableOpacity
                 onPress={this.activeQR}
                 style={styles.buttonScan}>
                 <View style={styles.buttonWrapper}>
                   <Image
                     source={require('./assets/camera.png')}
-                    style={{height: 36, width: 36}}></Image>
+                    style={{height: 36, width: 36}}
+                  />
                   <Text style={{...styles.buttonTextStyle, color: '#2196f3'}}>
                     Scan QR Code
                   </Text>
@@ -96,7 +100,8 @@ class Scan extends Component {
                   <View style={styles.buttonWrapper}>
                     <Image
                       source={require('./assets/camera.png')}
-                      style={{height: 36, width: 36}}></Image>
+                      style={{height: 36, width: 36}}
+                    />
                     <Text style={{...styles.buttonTextStyle, color: '#2196f3'}}>
                       Click to scan again
                     </Text>
@@ -127,7 +132,7 @@ class Scan extends Component {
                       style={styles.buttonScan2}
                       onPress={() => this.scanner.reactivate()}
                       onLongPress={() => this.setState({scan: false})}>
-                      <Image source={require('./assets/camera2.png')}></Image>
+                      <Image source={require('./assets/camera2.png')} />
                     </TouchableOpacity>
                   </ImageBackground>
                 </View>

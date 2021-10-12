@@ -105,7 +105,7 @@ export default function Discount() {
     // Prevent one pixel triggering setIndex in the middle
     // of the transition. With this we have to scroll a bit
     // more to trigger the index change.
-    const isNoMansLand = 0.4 < distance;
+    const isNoMansLand = distance > 0.4;
 
     if (roundIndex !== indexRef.current && !isNoMansLand) {
       setIndex(roundIndex);
@@ -152,7 +152,7 @@ export default function Discount() {
         {...flatListOptimizationProps}
       />
 
-      <Pagination index={index}></Pagination>
+      <Pagination index={index} />
     </View>
   );
 }

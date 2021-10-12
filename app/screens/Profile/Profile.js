@@ -56,7 +56,7 @@ function Profile({navigation}) {
     setLoading(false);
 
     return () => subscriber();
-  }, []);
+  }, [uid]);
 
   const logout = async () => {
     try {

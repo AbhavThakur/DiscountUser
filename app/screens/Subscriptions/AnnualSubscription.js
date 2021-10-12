@@ -1,33 +1,34 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
-  View,
-  StyleSheet,
-  Text,
-  Image,
-  TouchableOpacity,
   Dimensions,
+  Image,
   ImageBackground,
   ScrollView,
+  Text,
+  View,
+  StyleSheet,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import FormButton from '../../components/FormButton';
-import {ActivityIndicator, List, Paragraph} from 'react-native-paper';
+import {List} from 'react-native-paper';
 import RazorpayCheckout from 'react-native-razorpay';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from 'moment';
 
 import {RazorpayApiKey} from '../../config/config';
 import Animations from '../../components/Animations';
+import FormButton from '../../components/FormButton';
 
 function AnnualSubscription({navigation}) {
   const [loading, setloading] = useState(false);
+  const {uid} = auth().currentUser;
 
   const createOrder = async () => {
     const {data} = await axios.post(
       'https://discountaddapaymentserver.herokuapp.com/createOrder',
       {
-        amount: 6000 * 100,
+        amount: 430.7 * 100,
         currency: 'INR',
       },
     );
@@ -65,6 +66,8 @@ function AnnualSubscription({navigation}) {
         const validSignature = await verifyPayment(order.id, transaction);
         const fname = await AsyncStorage.getItem('fname');
         const lname = await AsyncStorage.getItem('lname');
+        const contact = await AsyncStorage.getItem('contact');
+        const img = await AsyncStorage.getItem('img');
         console.log('Is Valid Payment: ' + validSignature);
         setloading(false);
         // alert('Successfully registered');
@@ -76,18 +79,24 @@ function AnnualSubscription({navigation}) {
           .toString()
           .replace(/(\d{4})/g, '$1 ')
           .replace(/(^\s+|\s+$)/, '');
+        var currentDate = moment();
+        var expirydate = moment(currentDate)
+          .add(1, 'year')
+          .format('DD/MM/YYYY');
 
         firestore()
           .collection('Subscribed')
-          .doc(auth().currentUser.uid)
+          .doc(uid)
           .set({
             subscribed: true,
-            amount: 6000,
+            amount: 365,
             cardno: cardno,
             fname: fname,
             lname: lname,
+            contact: contact,
+            UserImg: img,
             subscription: 'Annual',
-            createdAt: firestore.Timestamp.fromDate(new Date()),
+            createdAt: expirydate,
           })
           .catch(() => alert('Regiration Failed'));
       })
@@ -111,7 +120,7 @@ function AnnualSubscription({navigation}) {
         <Image source={require('../../assets/subs.png')} />
       </ImageBackground>
       <View flexDirection="row" style={styles.amount}>
-        <Text style={styles.text}>{'\u20B9'} 6000</Text>
+        <Text style={styles.text}>{'\u20B9'} 365</Text>
         <Text>/Annual</Text>
       </View>
       {loading ? (
@@ -157,10 +166,7 @@ function AnnualSubscription({navigation}) {
               )}
             />
           </List.Section>
-          <FormButton
-            buttonTitle="Subscribe"
-            onPress={() => navigation.navigate('SubscriptionsCard')}
-          />
+          <FormButton buttonTitle="Subscribe" onPress={() => onPay()} />
         </View>
       )}
     </ScrollView>

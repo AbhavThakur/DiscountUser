@@ -37,7 +37,7 @@ const SubscriptionNavigator = ({navigation}) => {
           }
         });
     }
-  }, []);
+  }, [uid, isFocused]);
 
   if (subscribe === null) {
     return (

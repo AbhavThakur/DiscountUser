@@ -56,7 +56,7 @@ const data2 = [
 ];
 
 const LineComp = () => {
-  <View style={styles.line}></View>;
+  <View style={styles.line} />;
 };
 
 const Notification = () => {
@@ -65,7 +65,7 @@ const Notification = () => {
       <ScrollView>
         <View>
           <Text style={styles.header}>Today</Text>
-          <View style={styles.line}></View>
+          <View style={styles.line} />
           <FlatList
             nestedScrollEnabled
             data={data1}
@@ -112,14 +112,14 @@ const Notification = () => {
             ListFooterComponent={() => {
               return (
                 <View>
-                  <View style={styles.line}></View>
+                  <View style={styles.line} />
                 </View>
               );
             }}
             ItemSeparatorComponent={() => {
               return (
                 <View>
-                  <View style={styles.line}></View>
+                  <View style={styles.line} />
                 </View>
               );
             }}
@@ -128,7 +128,7 @@ const Notification = () => {
 
         <View>
           <Text style={styles.header2}>Yesterday</Text>
-          <View style={styles.line}></View>
+          <View style={styles.line} />
           <FlatList
             data={data2}
             nestedScrollEnabled
@@ -175,14 +175,14 @@ const Notification = () => {
             ListFooterComponent={() => {
               return (
                 <View>
-                  <View style={styles.line}></View>
+                  <View style={styles.line} />
                 </View>
               );
             }}
             ItemSeparatorComponent={() => {
               return (
                 <View>
-                  <View style={styles.line}></View>
+                  <View style={styles.line} />
                 </View>
               );
             }}

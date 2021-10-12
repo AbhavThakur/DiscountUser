@@ -9,6 +9,7 @@ import {
   Image,
   Dimensions,
   Button,
+  Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SocialButton from '../../components/SocialButton';
@@ -59,6 +60,7 @@ function SignUp({navigation}) {
       await confirm.confirm(code);
     } catch (error) {
       console.log('Invalid code.');
+      Alert.alert('Invalid code!');
     }
   }
 

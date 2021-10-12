@@ -50,7 +50,7 @@ function Home(props) {
           }
         });
     }
-  }, []);
+  }, [uid, isFocused]);
 
   return (
     <>
@@ -59,7 +59,7 @@ function Home(props) {
           <Text style={styles.txt}>Amount Spent</Text>
           <Text style={styles.txt}>{'\u20B9'} 10,000</Text>
         </View>
-        <View style={styles.verticleLine}></View>
+        <View style={styles.verticleLine} />
 
         <View style={{alignItems: 'center'}}>
           <Text style={styles.txt}>Amount Saved</Text>

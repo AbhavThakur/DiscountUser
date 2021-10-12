@@ -1,33 +1,25 @@
-import React, {useState, useEffect} from 'react';
-import {
-  View,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  Image,
-  Dimensions,
-  TextInput,
-  PermissionsAndroid,
-  Platform,
-} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Image, StyleSheet, Text, View} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import {Title, ActivityIndicator} from 'react-native-paper';
+import {ActivityIndicator, Title} from 'react-native-paper';
 import QRCode from 'react-native-qrcode-svg';
+import moment from 'moment';
+
 import FormButton from '../../components/FormButton';
 
 function Subscriptions({navigation}) {
   const [name, setName] = useState('');
   const [last, setLast] = useState('');
-  const [joindate, setjoindate] = useState();
-  const [cardno, setcardno] = useState();
+  const [expirydate, setexpirydate] = useState('');
+  const [expiry, setexpiry] = useState();
+  const [cardno, setcardno] = useState('');
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const {uid} = auth().currentUser;
 
   useEffect(() => {
     setLoading(true);
-
     const subscriber = firestore()
       .collection('Subscribed')
       .doc(uid)
@@ -36,13 +28,18 @@ function Subscriptions({navigation}) {
         setName(userData.fname);
         setLast(userData.lname);
         setcardno(userData.cardno);
-        setjoindate(new Date(userData.createdAt));
-      });
+        setexpirydate(userData.expiry);
+        setexpiry(userData.expiryAt);
 
+        console.log(
+          'expiry time left',
+          moment().diff(userData.expiryAt, 'days'),
+        );
+      });
     setLoading(false);
 
     return () => subscriber();
-  }, []);
+  }, [uid]);
 
   return (
     <View style={styles.container}>
@@ -56,7 +53,7 @@ function Subscriptions({navigation}) {
           <Image source={require('../../assets/cardlogo.png')} />
           <View style={styles.detailsContainer}>
             <QRCode
-              value={cardno}
+              value={cardno.split(' ').join('')}
               logoSize={30}
               color="black"
               logoBackgroundColor="transparent"
@@ -65,7 +62,7 @@ function Subscriptions({navigation}) {
             <Text style={styles.username}>
               {name} {last}
             </Text>
-            <Text style={styles.date}>Valid Date -</Text>
+            <Text style={styles.date}>Valid Date - {expirydate} </Text>
           </View>
         </View>
       )}

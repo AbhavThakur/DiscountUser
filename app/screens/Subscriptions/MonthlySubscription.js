@@ -1,36 +1,36 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
-  View,
-  StyleSheet,
-  Text,
-  Image,
-  TouchableOpacity,
   Dimensions,
+  Image,
   ImageBackground,
   ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import FormButton from '../../components/FormButton';
-import {ActivityIndicator, List, Paragraph} from 'react-native-paper';
-import moment from 'moment';
-
+import {List} from 'react-native-paper';
 import RazorpayCheckout from 'react-native-razorpay';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from 'moment';
 
 import {RazorpayApiKey} from '../../config/config';
 import Animations from '../../components/Animations';
+import cardno from '../../constants/Cardno';
 
-function HalfYearlySubs({navigation}) {
+function MonthlySubscription({navigation}) {
   const [loading, setloading] = useState(false);
+
   const {uid} = auth().currentUser;
 
   const createOrder = async () => {
     const {data} = await axios.post(
       'https://discountaddapaymentserver.herokuapp.com/createOrder',
       {
-        amount: 224.2 * 100,
+        amount: 1.18 * 100,
         currency: 'INR',
       },
     );
@@ -68,34 +68,36 @@ function HalfYearlySubs({navigation}) {
         const validSignature = await verifyPayment(order.id, transaction);
         const fname = await AsyncStorage.getItem('fname');
         const lname = await AsyncStorage.getItem('lname');
+        const contact = await AsyncStorage.getItem('contact');
+        const img = await AsyncStorage.getItem('img');
         console.log('Is Valid Payment: ' + validSignature);
         setloading(false);
         // alert('Successfully registered');
-        var code = Math.floor(
-          Math.pow(10, 12 - 1) +
-            Math.random() * (Math.pow(10, 12) - Math.pow(10, 12 - 1) - 1),
-        );
-        var cardno = code
-          .toString()
-          .replace(/(\d{4})/g, '$1 ')
-          .replace(/(^\s+|\s+$)/, '');
-        var currentDate = moment();
+
+        var currentDate = moment().format();
         var expirydate = moment(currentDate)
-          .add(6, 'months')
+          .add(1, 'month')
           .format('DD/MM/YYYY');
+        var expiryat = moment(currentDate).add(1, 'month').format();
+
+        const value = {
+          subscribed: true,
+          amount: 1,
+          cardno: cardno,
+          fname: fname,
+          lname: lname,
+          phone: contact,
+          Userimg: img,
+          subscription: 'Monthly',
+          expiry: expirydate,
+          createAt: currentDate,
+          expiryAt: expiryat,
+        };
 
         firestore()
           .collection('Subscribed')
           .doc(uid)
-          .set({
-            subscribed: true,
-            amount: 3000,
-            cardno: cardno,
-            fname: fname,
-            lname: lname,
-            subscription: 'HalfYearly',
-            createdAt: expirydate,
-          })
+          .set(value)
           .catch(() => alert('Regiration Failed'));
       })
       .then(() => navigation.replace('SubscriptionsCard'))
@@ -117,9 +119,11 @@ function HalfYearlySubs({navigation}) {
         }}>
         <Image source={require('../../assets/subs.png')} />
       </ImageBackground>
+      <Text style={{alignSelf: 'center'}}>This is only one Time offer</Text>
+
       <View flexDirection="row" style={styles.amount}>
-        <Text style={styles.text}>{'\u20B9'} 190</Text>
-        <Text>/HalfYearly</Text>
+        <Text style={styles.text}>{'\u20B9'} 1</Text>
+        <Text>/Month</Text>
       </View>
       {loading ? (
         <View style={{flex: 1, backgroundColor: '#fff'}}>
@@ -129,8 +133,7 @@ function HalfYearlySubs({navigation}) {
         <View style={{padding: 15}}>
           <List.Section>
             <Text style={{fontSize: 16, marginBottom: 10}}>
-              In addition to all the features in Half Yearly, Annual also
-              includes:
+              In addition to all the features in monthly, Monthly also includes:
             </Text>
             <List.Item
               title="Access on all types of shops"
@@ -188,4 +191,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HalfYearlySubs;
+export default MonthlySubscription;
