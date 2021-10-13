@@ -31,6 +31,14 @@ function MainVerification({navigation}) {
             await AsyncStorage.setItem('fname', documentSnapshot.data().fname);
             await AsyncStorage.setItem('lname', documentSnapshot.data().lname);
             await AsyncStorage.setItem('img', documentSnapshot.data().userImg);
+            await AsyncStorage.setItem(
+              '@createdAt',
+              new Date(documentSnapshot.data().createdAt.toDate())
+                .toDateString()
+                .split(' ')
+                .slice(1)
+                .join(' '),
+            );
 
             navigation.reset({
               index: 0,

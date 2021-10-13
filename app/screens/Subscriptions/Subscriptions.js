@@ -15,30 +15,21 @@ function Subscriptions({navigation}) {
   const [expiry, setexpiry] = useState();
   const [cardno, setcardno] = useState('');
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const {uid} = auth().currentUser;
 
   useEffect(() => {
-    setLoading(true);
-    const subscriber = firestore()
+    firestore()
       .collection('Subscribed')
       .doc(uid)
       .onSnapshot(documentSnapshot => {
         const userData = documentSnapshot.data();
-        setName(userData.fname);
-        setLast(userData.lname);
-        setcardno(userData.cardno);
-        setexpirydate(userData.expiry);
-        setexpiry(userData.expiryAt);
-
-        console.log(
-          'expiry time left',
-          moment().diff(userData.expiryAt, 'days'),
-        );
+        setName(userData.firstName);
+        setLast(userData.lastName);
+        setcardno(userData.cardNumber);
+        setexpirydate(userData.expiryDate);
+        setLoading(false);
       });
-    setLoading(false);
-
-    return () => subscriber();
   }, [uid]);
 
   return (
@@ -47,13 +38,13 @@ function Subscriptions({navigation}) {
       <Title>at max discount !!</Title>
 
       {loading ? (
-        <ActivityIndicator animating={true} color="#D02824" />
+        <ActivityIndicator animating={true} color="#D02824" size="large" />
       ) : (
         <View style={styles.imgContainer}>
           <Image source={require('../../assets/cardlogo.png')} />
           <View style={styles.detailsContainer}>
             <QRCode
-              value={cardno.split(' ').join('')}
+              value={cardno}
               logoSize={30}
               color="black"
               logoBackgroundColor="transparent"

@@ -71,7 +71,7 @@ const Notification = () => {
             data={data1}
             keyExtractor={item => item.id}
             renderItem={({item}) =>
-              item.card == 1 ? (
+              item.card === 1 ? (
                 <View style={styles.box}>
                   <Image source={item.img} style={styles.imgCont} />
                   <View style={styles.box1}>
@@ -134,7 +134,7 @@ const Notification = () => {
             nestedScrollEnabled
             keyExtractor={item => item.id}
             renderItem={({item}) =>
-              item.card == 1 ? (
+              item.card === 1 ? (
                 <View style={styles.box}>
                   <Image source={item.img} style={styles.imgCont} />
                   <View style={styles.box1}>
@@ -196,7 +196,6 @@ const Notification = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 20,
     backgroundColor: 'white',
   },
   header: {

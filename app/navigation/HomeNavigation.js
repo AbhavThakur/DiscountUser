@@ -65,7 +65,9 @@ const HomeNavigation = ({navigation}) => {
             <Headerleft onPress={() => navigation.openDrawer()} />
           ),
           headerTitle: ' ',
-          headerRight: () => <Headerright />,
+          headerRight: () => (
+            <Headerright onPress={() => navigation.navigate('Notification')} />
+          ),
           headerShown: true,
         }}
       />
@@ -77,7 +79,9 @@ const HomeNavigation = ({navigation}) => {
             <Headerleft onPress={() => navigation.openDrawer()} />
           ),
           headerTitle: ' ',
-          headerRight: () => <Headerright />,
+          headerRight: () => (
+            <Headerright onPress={() => navigation.navigate('Notification')} />
+          ),
           headerShown: true,
         }}
       />

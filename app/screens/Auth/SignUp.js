@@ -60,7 +60,7 @@ function SignUp({navigation}) {
       await confirm.confirm(code);
     } catch (error) {
       console.log('Invalid code.');
-      Alert.alert('Invalid code!');
+      Alert.alert('Invalid otp check again!');
     }
   }
 
@@ -91,7 +91,7 @@ function SignUp({navigation}) {
             autoFocus
             value={code}
             onChangeText={text => setCode(text)}
-            placeholderText="Enter your OTP here"
+            placeholderText="Enter your 6 digits OTP here"
             keyboardType="numeric"
           />
           <Text style={{color: '#fff', fontSize: 15}}>

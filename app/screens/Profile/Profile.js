@@ -25,14 +25,12 @@ function Profile({navigation}) {
   const {uid} = auth().currentUser;
 
   const [date, setdate] = useState('');
-  const [joindate, setjoindate] = useState();
+  const [joindate, setjoindate] = useState('');
 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
-
-    const subscriber = firestore()
+    firestore()
       .collection('Discountusers')
       .doc(uid)
       .onSnapshot(documentSnapshot => {
@@ -51,11 +49,9 @@ function Profile({navigation}) {
             .slice(1)
             .join(' '),
         );
+
+        setLoading(false);
       });
-
-    setLoading(false);
-
-    return () => subscriber();
   }, [uid]);
 
   const logout = async () => {

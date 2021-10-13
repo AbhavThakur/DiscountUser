@@ -3,6 +3,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {View, TouchableOpacity, Image, Text} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import moment from 'moment';
 
 import {useIsFocused} from '@react-navigation/native';
 
@@ -33,7 +34,18 @@ const SubscriptionNavigator = ({navigation}) => {
           console.log('User subscribed: ', documentSnapshot.exists);
 
           if (documentSnapshot.exists === true) {
-            setsubscribe(true);
+            var currentdate = moment().format();
+            var daysCount = moment(documentSnapshot.data().expiryAt).diff(
+              currentdate,
+              'days',
+            );
+            if (daysCount > 0) {
+              console.log('positive', daysCount);
+              setsubscribe(true);
+            } else {
+              console.log('neg', daysCount);
+              setsubscribe(false);
+            }
           }
         });
     }

@@ -21,7 +21,7 @@ function DrawerContent(props) {
   };
 
   useEffect(() => {
-    const subscriber = firestore()
+    firestore()
       .collection('Discountusers')
       .doc(uid)
       .onSnapshot(documentSnapshot => {
@@ -39,8 +39,6 @@ function DrawerContent(props) {
           setImg(userData.userImg);
         }
       });
-
-    return () => subscriber();
   }, [uid]);
 
   return (

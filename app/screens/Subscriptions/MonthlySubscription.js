@@ -70,6 +70,7 @@ function MonthlySubscription({navigation}) {
         const lname = await AsyncStorage.getItem('lname');
         const contact = await AsyncStorage.getItem('contact');
         const img = await AsyncStorage.getItem('img');
+        const createAt = await AsyncStorage.getItem('@createdAt');
         console.log('Is Valid Payment: ' + validSignature);
         setloading(false);
         // alert('Successfully registered');
@@ -81,18 +82,32 @@ function MonthlySubscription({navigation}) {
         var expiryat = moment(currentDate).add(1, 'month').format();
 
         const value = {
+          firstName: fname,
+          lastName: lname,
+          contactNumber: contact,
+          cardNumber: cardno,
+          image: img,
+          expiryDate: expirydate,
+          dateCreated: createAt,
           subscribed: true,
           amount: 1,
-          cardno: cardno,
-          fname: fname,
-          lname: lname,
-          phone: contact,
-          Userimg: img,
           subscription: 'Monthly',
-          expiry: expirydate,
-          createAt: currentDate,
           expiryAt: expiryat,
         };
+
+        let config = {
+          headers: {
+            accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        };
+        axios
+          .post(
+            'https://usercard.herokuapp.com/api/v1/AddDetails/',
+            value,
+            config,
+          )
+          .catch(err => console.error(err));
 
         firestore()
           .collection('Subscribed')

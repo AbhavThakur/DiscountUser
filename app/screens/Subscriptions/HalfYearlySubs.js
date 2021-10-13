@@ -21,6 +21,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {RazorpayApiKey} from '../../config/config';
 import Animations from '../../components/Animations';
+import cardno from '../../constants/Cardno';
 
 function HalfYearlySubs({navigation}) {
   const [loading, setloading] = useState(false);
@@ -68,34 +69,51 @@ function HalfYearlySubs({navigation}) {
         const validSignature = await verifyPayment(order.id, transaction);
         const fname = await AsyncStorage.getItem('fname');
         const lname = await AsyncStorage.getItem('lname');
+        const contact = await AsyncStorage.getItem('contact');
+        const img = await AsyncStorage.getItem('img');
+        const createAt = await AsyncStorage.getItem('@createdAt');
+
         console.log('Is Valid Payment: ' + validSignature);
         setloading(false);
         // alert('Successfully registered');
-        var code = Math.floor(
-          Math.pow(10, 12 - 1) +
-            Math.random() * (Math.pow(10, 12) - Math.pow(10, 12 - 1) - 1),
-        );
-        var cardno = code
-          .toString()
-          .replace(/(\d{4})/g, '$1 ')
-          .replace(/(^\s+|\s+$)/, '');
-        var currentDate = moment();
-        var expirydate = moment(currentDate)
-          .add(6, 'months')
-          .format('DD/MM/YYYY');
 
+        var currentDate = moment().format();
+        var expirydate = moment(currentDate)
+          .add(1, 'month')
+          .format('DD/MM/YYYY');
+        var expiryat = moment(currentDate).add(1, 'month').format();
+
+        const value = {
+          firstName: fname,
+          lastName: lname,
+          contactNumber: contact,
+          cardNumber: cardno,
+          image: img,
+          expiryDate: expirydate,
+          dateCreated: createAt,
+          subscribed: true,
+          amount: 195,
+          subscription: 'Half yealy',
+          expiryAt: expiryat,
+        };
+
+        let config = {
+          headers: {
+            accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        };
+        axios
+          .post(
+            'https://usercard.herokuapp.com/api/v1/AddDetails/',
+            value,
+            config,
+          )
+          .catch(err => console.error(err));
         firestore()
           .collection('Subscribed')
           .doc(uid)
-          .set({
-            subscribed: true,
-            amount: 3000,
-            cardno: cardno,
-            fname: fname,
-            lname: lname,
-            subscription: 'HalfYearly',
-            createdAt: expirydate,
-          })
+          .set()
           .catch(() => alert('Regiration Failed'));
       })
       .then(() => navigation.replace('SubscriptionsCard'))

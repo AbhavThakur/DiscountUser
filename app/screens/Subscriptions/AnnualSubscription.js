@@ -19,6 +19,7 @@ import moment from 'moment';
 import {RazorpayApiKey} from '../../config/config';
 import Animations from '../../components/Animations';
 import FormButton from '../../components/FormButton';
+import cardno from '../../constants/Cardno';
 
 function AnnualSubscription({navigation}) {
   const [loading, setloading] = useState(false);
@@ -68,36 +69,49 @@ function AnnualSubscription({navigation}) {
         const lname = await AsyncStorage.getItem('lname');
         const contact = await AsyncStorage.getItem('contact');
         const img = await AsyncStorage.getItem('img');
+        const createAt = await AsyncStorage.getItem('@createdAt');
+
         console.log('Is Valid Payment: ' + validSignature);
         setloading(false);
         // alert('Successfully registered');
-        var code = Math.floor(
-          Math.pow(10, 12 - 1) +
-            Math.random() * (Math.pow(10, 12) - Math.pow(10, 12 - 1) - 1),
-        );
-        var cardno = code
-          .toString()
-          .replace(/(\d{4})/g, '$1 ')
-          .replace(/(^\s+|\s+$)/, '');
-        var currentDate = moment();
+
+        var currentDate = moment().format();
         var expirydate = moment(currentDate)
-          .add(1, 'year')
+          .add(1, 'month')
           .format('DD/MM/YYYY');
+        var expiryat = moment(currentDate).add(1, 'month').format();
+
+        const value = {
+          firstName: fname,
+          lastName: lname,
+          contactNumber: contact,
+          cardNumber: cardno,
+          image: img,
+          expiryDate: expirydate,
+          dateCreated: createAt,
+          subscribed: true,
+          amount: 365,
+          subscription: 'Annual',
+          expiryAt: expiryat,
+        };
+        let config = {
+          headers: {
+            accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        };
+        axios
+          .post(
+            'https://usercard.herokuapp.com/api/v1/AddDetails/',
+            value,
+            config,
+          )
+          .catch(err => console.error(err));
 
         firestore()
           .collection('Subscribed')
           .doc(uid)
-          .set({
-            subscribed: true,
-            amount: 365,
-            cardno: cardno,
-            fname: fname,
-            lname: lname,
-            contact: contact,
-            UserImg: img,
-            subscription: 'Annual',
-            createdAt: expirydate,
-          })
+          .set(value)
           .catch(() => alert('Regiration Failed'));
       })
       .then(() => navigation.replace('SubscriptionsCard'))

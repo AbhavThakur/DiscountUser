@@ -91,6 +91,14 @@ function Register({navigation}) {
         createdAt: firestore.Timestamp.fromDate(new Date()),
         userImg: img,
       })
+      .then(async () => {
+        await AsyncStorage.setItem('fname', db.name);
+        await AsyncStorage.setItem('lname', db.last);
+        await AsyncStorage.setItem(
+          '@createdAt',
+          firestore.Timestamp.fromDate(new Date()),
+        );
+      })
       .catch(() => alert('Details not submitted'));
     mail(db.email);
   };
