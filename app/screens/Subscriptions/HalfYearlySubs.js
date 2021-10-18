@@ -8,6 +8,7 @@ import {
   Dimensions,
   ImageBackground,
   ScrollView,
+  Alert,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -53,7 +54,7 @@ function HalfYearlySubs({navigation}) {
 
     const order = await createOrder();
     var options = {
-      name: 'Welocme to DiscountAdda',
+      name: 'Welcome to DiscountAdda',
       description: 'Payment to Discount Adda',
       order_id: order.id,
       key: RazorpayApiKey,
@@ -114,11 +115,11 @@ function HalfYearlySubs({navigation}) {
           .collection('Subscribed')
           .doc(uid)
           .set()
-          .catch(() => alert('Regiration Failed'));
+          .catch(() => Alert.alert('Regiration Failed'));
       })
       .then(() => navigation.replace('SubscriptionsCard'))
       .catch(() => {
-        alert('Payment Failed.');
+        Alert.alert('Payment Failed.');
         navigation.navigate('SubscriptionsScreen');
         setloading(false);
       });
