@@ -7,6 +7,7 @@ import Category from '../screens/Home/Category';
 import GroceryList from '../screens/Home/GroceryList';
 import ShopView from '../screens/Home/ShopView';
 import Notification from '../screens/Notification/Notification';
+import ViewImage from '../screens/Home/ViewImage';
 
 const Stack = createStackNavigator();
 
@@ -88,6 +89,13 @@ const HomeNavigation = ({navigation}) => {
       <Stack.Screen
         name="Shop"
         component={ShopView}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="ViewImage"
+        component={ViewImage}
         options={{
           headerShown: false,
         }}

@@ -107,6 +107,7 @@ const WindowHeight = Dimensions.get('window').height;
 
 function GroceryList({navigation}) {
   const [isModalVisible, setModalVisible] = useState(false);
+  const [info, setinfo] = useState([]);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -114,17 +115,17 @@ function GroceryList({navigation}) {
   useEffect(() => {
     firestore()
       .collection('StoreName')
+      .orderBy('createdAt', 'asc')
       .get()
-      .then(querySnapshot => {
-        console.log('Total users: ', querySnapshot.size);
+      .then(snapshot => {
+        let shops = snapshot.docs.map(doc => {
+          const data = doc.data();
+          const id = doc.id;
 
-        querySnapshot.forEach(documentSnapshot => {
-          console.log(
-            'User ID: ',
-            documentSnapshot.id,
-            documentSnapshot.data(),
-          );
+          return {id, ...data};
         });
+        console.log('shops ', shops);
+        setinfo(shops);
       });
   });
   return (
@@ -161,21 +162,21 @@ function GroceryList({navigation}) {
         </View>
       </Modal>
       <FlatList
-        data={value}
+        data={info}
         renderItem={({item}) => {
           return (
             <StoreCard
-              Title={item.Title}
-              img={item.img}
-              discount={item.discount}
-              distance={item.distance}
-              location={item.location}
-              time={item.time}
-              contact={item.contact}
-              ratings={item.ratings}
-              views={item.views}
-              ratingvalue={item.ratingvalue}
-              onPress={() => navigation.navigate('Shop')}
+              Title={item.StoreName}
+              img={require('../../assets/shop1.png')}
+              discount={'26'}
+              distance={'400'}
+              location={'hp ddd ddd'}
+              time={'10'}
+              contact={'12122232323'}
+              ratings={'4'}
+              views={'140'}
+              ratingvalue={'4.4'}
+              onPress={() => navigation.navigate('Shop', item.id)}
             />
           );
         }}
