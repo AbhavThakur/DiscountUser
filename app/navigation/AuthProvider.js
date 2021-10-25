@@ -50,11 +50,7 @@ export const AuthProvider = ({children, navigation}) => {
         },
         logout: async () => {
           try {
-            await GoogleSignin.revokeAccess();
-            await GoogleSignin.signOut();
             auth().signOut();
-
-            // setuserInfo([]);
           } catch (error) {
             console.log(error);
           }

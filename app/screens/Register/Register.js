@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {
   Alert,
   BackHandler,
@@ -19,6 +19,7 @@ import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 
 import FormInput from '../../components/FormInput';
 import FormButton from '../../components/FormButton';
+import {AuthContext} from '../../navigation/AuthProvider';
 
 function Register({navigation}) {
   const [loading, setLoading] = useState(false);
@@ -28,11 +29,11 @@ function Register({navigation}) {
 
   const [code, setCode] = useState('');
 
+  // const {logout} = useContext(AuthContext);
+
   const logout = async () => {
     try {
-      auth().signOut();
-
-      // setuserInfo([]);
+      await auth().signOut();
     } catch (error) {
       console.log(error);
     }

@@ -93,6 +93,7 @@ function SignUp({navigation}) {
             onChangeText={text => setCode(text)}
             placeholderText="Enter your 6 digits OTP here"
             keyboardType="numeric"
+            maxLength={6}
           />
           <Text style={{color: '#fff', fontSize: 15}}>
             Get otp in {timerCount}
@@ -148,6 +149,7 @@ function SignUp({navigation}) {
                 onBlur={() => setFieldTouched('contact')}
                 placeholderText="Enter your Phone Number here"
                 keyboardType="phone-pad"
+                maxLength={10}
               />
               {touched.contact && errors.contact && (
                 <Text style={{fontSize: 15, color: '#FF0D10'}}>

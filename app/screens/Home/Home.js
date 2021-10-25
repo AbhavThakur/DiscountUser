@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {useIsFocused} from '@react-navigation/native';
 import Modal from 'react-native-modal';
@@ -34,6 +35,31 @@ function Home(props) {
 
   useEffect(() => {
     if (isFocused) {
+      firestore()
+        .collection('Discountusers')
+        .doc(uid)
+        .get()
+        .then(async function (documentSnapshot) {
+          if (documentSnapshot.exists === false) {
+            props.navigation.navigate('register');
+          }
+
+          console.log('User exists: ', documentSnapshot.exists);
+
+          if (documentSnapshot.exists === true) {
+            await AsyncStorage.setItem('fname', documentSnapshot.data().fname);
+            await AsyncStorage.setItem('lname', documentSnapshot.data().lname);
+            await AsyncStorage.setItem('img', documentSnapshot.data().userImg);
+            await AsyncStorage.setItem(
+              '@createdAt',
+              new Date(documentSnapshot.data().createdAt.toDate())
+                .toDateString()
+                .split(' ')
+                .slice(1)
+                .join(' '),
+            );
+          }
+        });
       firestore()
         .collection('Subscribed')
         .doc(uid)

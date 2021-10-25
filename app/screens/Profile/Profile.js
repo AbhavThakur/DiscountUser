@@ -56,9 +56,7 @@ function Profile({navigation}) {
 
   const logout = async () => {
     try {
-      auth().signOut();
-
-      // setuserInfo([]);
+      await auth().signOut();
     } catch (error) {
       console.log(error);
     }

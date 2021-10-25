@@ -7,7 +7,7 @@ import {AuthContext} from './AuthProvider';
 import RegisterNavigator from './RegisterNavigator';
 
 const Routes = () => {
-  const [user, setUser] = useState(AuthContext);
+  const [user, setUser] = useState(null);
   const [initializing, setInitializing] = useState(true);
 
   // Handle user state changes
