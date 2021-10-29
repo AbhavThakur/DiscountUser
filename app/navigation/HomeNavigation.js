@@ -26,7 +26,7 @@ const Headerleft = ({onPress}) => (
   </View>
 );
 
-const Headerright = ({onPress}) => (
+const Headerright = ({onPress, onPresscard}) => (
   <View style={styles.headerrightstyle}>
     <TouchableOpacity onPress={onPress} style={{marginEnd: 10}}>
       <Image
@@ -34,10 +34,12 @@ const Headerright = ({onPress}) => (
         style={{width: 25, height: 30}}
       />
     </TouchableOpacity>
-    <Image
-      source={require('../assets/card.png')}
-      style={{width: 50, height: 50}}
-    />
+    <TouchableOpacity onPress={onPresscard}>
+      <Image
+        source={require('../assets/card.png')}
+        style={{width: 50, height: 50}}
+      />
+    </TouchableOpacity>
   </View>
 );
 
@@ -53,7 +55,10 @@ const HomeNavigation = ({navigation}) => {
           ),
           headerTitle: ' ',
           headerRight: () => (
-            <Headerright onPress={() => navigation.navigate('Notification')} />
+            <Headerright
+              onPress={() => navigation.navigate('Notification')}
+              onPresscard={() => navigation.navigate('Subscriptions')}
+            />
           ),
           headerShown: true,
         }}

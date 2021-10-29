@@ -38,6 +38,7 @@
     "react-native-qrcode-generator": "^1.2.2",
     "react-native-qrcode-scanner": "^1.5.4",
     "react-native-qrcode-svg": "^6.1.1",
+    "react-native-ratings": "^8.1.0",
     "react-native-razorpay": "^2.2.7",
     "react-native-reanimated": "^2.2.0",
     "react-native-safe-area-context": "^3.3.0",

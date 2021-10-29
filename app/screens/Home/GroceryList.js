@@ -124,7 +124,7 @@ function GroceryList({navigation}) {
 
           return {id, ...data};
         });
-        console.log('shops ', shops);
+        // console.log('shops ', shops);
         setinfo(shops);
       });
   });
@@ -163,6 +163,7 @@ function GroceryList({navigation}) {
       </Modal>
       <FlatList
         data={info}
+        keyExtractor={(item, index) => index.toString()}
         renderItem={({item}) => {
           return (
             <StoreCard
@@ -170,9 +171,9 @@ function GroceryList({navigation}) {
               img={require('../../assets/shop1.png')}
               discount={'26'}
               distance={'400'}
-              location={'hp ddd ddd'}
+              location={item.address}
               time={'10'}
-              contact={'12122232323'}
+              contact={item.contactNumber}
               ratings={'4'}
               views={'140'}
               ratingvalue={'4.4'}

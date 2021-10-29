@@ -19,17 +19,15 @@ import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 
 import FormInput from '../../components/FormInput';
 import FormButton from '../../components/FormButton';
-import {AuthContext} from '../../navigation/AuthProvider';
 
 function Register({navigation}) {
   const [loading, setLoading] = useState(false);
   const [contact, setcontact] = useState('');
   const [img, setImg] = useState(null);
   const [confirm, setConfirm] = useState(null);
+  const [email, setEmail] = useState('');
 
   const [code, setCode] = useState('');
-
-  // const {logout} = useContext(AuthContext);
 
   const logout = async () => {
     try {
@@ -79,34 +77,38 @@ function Register({navigation}) {
   }, [isFocused]);
 
   const startLoading = db => {
-    setLoading(true);
     firestore()
       .collection('Discountusers')
       .doc(UserID)
       .set({
         fname: db.name,
         lname: db.last,
-        email: db.email,
+        email: email,
         address: db.address,
         contact: contact,
         createdAt: firestore.Timestamp.fromDate(new Date()),
-        userImg: img,
+        userImg: 'https://static.thenounproject.com/png/363640-200.png',
       })
       .then(async () => {
         await AsyncStorage.setItem('fname', db.name);
         await AsyncStorage.setItem('lname', db.last);
         await AsyncStorage.setItem(
           '@createdAt',
-          firestore.Timestamp.fromDate(new Date()),
+          JSON.stringify(firestore.Timestamp.fromDate(new Date())),
         );
       })
+      .then(() =>
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Drawer'}],
+        }),
+      )
       .catch(() => alert('Details not submitted'));
-    mail(db.email);
   };
 
-  const mail = mailid => {
+  const mail = () => {
     const params = new URLSearchParams();
-    params.append('To', mailid);
+    params.append('To', email);
 
     const config = {
       headers: {
@@ -116,14 +118,10 @@ function Register({navigation}) {
     const url = 'https://discountadda.herokuapp.com/v1/send';
     axios
       .post(url, params, config)
-      .then(result => {
-        // console.log('result', result);
-        setLoading(true);
-      })
-      .then(() => alert('OTP is sent to your mail check spam'))
+      .then(() => Alert.alert('OTP is sent to your mail check spam folder'))
       .catch(err => {
         console.log('error', err);
-        alert('OTP is not sent to your mail check mail');
+        Alert.alert('OTP is not sent to your mail check mail');
       });
   };
 
@@ -139,19 +137,13 @@ function Register({navigation}) {
     const url = 'https://discountadda.herokuapp.com/v1/verify';
     axios
       .post(url, params, config)
-      .then(result => {
-        alert('Successfully registered');
+      .then(() => {
+        Alert.alert('Successfully registered');
       })
-      .then(() =>
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'Drawer'}],
-        }),
-      )
+      .then(() => setLoading(true))
       .catch(err => {
         console.log('error', err);
-
-        alert(err);
+        Alert.alert(err);
       });
   };
 
@@ -159,40 +151,16 @@ function Register({navigation}) {
     <ScrollView contentContainerStyle={styles.scrollView}>
       <Text style={styles.title}>Register </Text>
       {loading ? (
-        <View style={styles.screen}>
-          <FormInput
-            title="Enter OTP "
-            autoFocus
-            value={code}
-            onChangeText={text => setCode(text)}
-            placeholderText="Enter your OTP here"
-            keyboardType="numeric"
-          />
-          <FormButton
-            buttonTitle="Confirm OTP"
-            onPress={() => confirmCode(code)}
-          />
-          <FormButton
-            buttonTitle="Try another mail"
-            onPress={() => setLoading(false)}
-          />
-        </View>
-      ) : (
         <Formik
           initialValues={{
             name: '',
             last: '',
             address: '',
-            email: '',
           }}
           onSubmit={values => startLoading(values)}
           validationSchema={yup.object().shape({
             name: yup.string().required('Please, provide your name!'),
             address: yup.string().required('Please, provide address!'),
-            email: yup
-              .string()
-              .email('Invalid email format')
-              .required('Required'),
           })}>
           {({
             values,
@@ -233,20 +201,8 @@ function Register({navigation}) {
                   {errors.name}
                 </Text>
               )}
-              <FormInput
-                title="Email"
-                value={values.email}
-                onChangeText={handleChange('email')}
-                onBlur={() => setFieldTouched('email')}
-                placeholderText="Email"
-                autoCapitalize="none"
-                autoCorrect={false}
-              />
-              {touched.email && errors.email && (
-                <Text style={{fontSize: 12, color: '#FF0D10'}}>
-                  {errors.email}
-                </Text>
-              )}
+              <FormInput title="Email" value={email} />
+
               <FormInput
                 title="Address"
                 value={values.address}
@@ -272,6 +228,29 @@ function Register({navigation}) {
             </View>
           )}
         </Formik>
+      ) : (
+        <View style={styles.screen}>
+          <FormInput
+            title="Email"
+            autoFocus
+            value={email}
+            onChangeText={text => setEmail(text)}
+            placeholderText="Enter your Mail"
+          />
+          <FormButton buttonTitle="  Send  " onPress={() => mail()} />
+          <FormInput
+            title="Enter OTP Sent to the Mail"
+            autoFocus
+            value={code}
+            onChangeText={text => setCode(text)}
+            placeholderText="Enter your OTP here"
+            keyboardType="numeric"
+          />
+          <FormButton
+            buttonTitle="  Confirm OTP  "
+            onPress={() => confirmCode()}
+          />
+        </View>
       )}
       <Text
         style={{

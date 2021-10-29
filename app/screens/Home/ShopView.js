@@ -124,6 +124,7 @@ export default function ShopView({navigation, route}) {
   const [about, setAbout] = useState('');
   const [contact, setContact] = useState('');
   const [address, setAddress] = useState('');
+  const [discount, setdiscount] = useState('');
 
   const [userPost, setUserPosts] = useState([]);
 
@@ -233,14 +234,8 @@ export default function ShopView({navigation, route}) {
         .doc(uid)
         .get()
         .then(documentSnapshot => {
-          console.log('User exists: ', documentSnapshot.exists);
-          if (documentSnapshot.exists === false) {
-            navigation.replace('EditStore');
-          }
-          if (documentSnapshot.exists) {
-            console.log('User data: ', documentSnapshot.data());
-            setAbout(documentSnapshot.data().About);
-          }
+          console.log('User data: ', documentSnapshot.data());
+          setAbout(documentSnapshot.data().About);
         })
         .then(() => Post())
         .then(() => {
@@ -272,6 +267,7 @@ export default function ShopView({navigation, route}) {
           console.log('User data: ', documentSnapshot.data());
           setName(documentSnapshot.data().StoreName);
           setAddress(documentSnapshot.data().address);
+          setdiscount(documentSnapshot.data().discount);
         }
       });
 
@@ -462,7 +458,7 @@ export default function ShopView({navigation, route}) {
 
   return (
     <>
-      <View>
+      <View style={{flex: 0.2}}>
         <TouchableOpacity
           style={styles.back}
           onPress={() => navigation.goBack()}>
@@ -542,37 +538,18 @@ export default function ShopView({navigation, route}) {
           </View>
           {/* Discount on products */}
 
-          <View
-            style={{
-              marginTop: 10,
-              alignItems: 'center',
-              borderWidth: 1,
-              padding: 10,
-              width: windowWidth * 0.92,
-              borderColor: '#ccc',
-              borderRadius: 5,
-              justifyContent: 'flex-start',
-              height: windowHeight * 0.17,
-            }}>
-            <FlatList
-              data={value}
-              nestedScrollEnabled
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({item: data}) => {
-                return (
-                  <View
-                    flexDirection="row"
-                    style={{
-                      alignItems: 'center',
-                      width: windowWidth,
-                      marginBottom: 10,
-                    }}>
-                    <Image source={require('../../assets/discount.png')} />
-                    <Text style={{marginStart: 10}}>{data.value}</Text>
-                  </View>
-                );
-              }}
-            />
+          <View style={{marginTop: 5}}>
+            <Text style={styles.txt}>Discounts </Text>
+            <Text
+              style={{
+                borderWidth: 1,
+                padding: 10,
+                width: windowWidth * 0.92,
+                borderColor: '#ccc',
+                borderRadius: 5,
+              }}>
+              {discount}
+            </Text>
           </View>
           {/* Types of products */}
           <Text style={styles.txt}>Types Of Products</Text>
@@ -654,6 +631,23 @@ export default function ShopView({navigation, route}) {
               {address}
             </Text>
           </View>
+          <TouchableOpacity
+            activeOpacity={0.4}
+            onPress={() =>
+              navigation.navigate('rating', {ShpName: name, Shopid: uid})
+            }
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              backgroundColor: '#eee',
+              padding: 10,
+              marginTop: 10,
+              borderRadius: 7,
+            }}>
+            <Text>Review and Rating</Text>
+            <Text>{'>'}</Text>
+          </TouchableOpacity>
         </ScrollView>
       </View>
       <Pagination index={index} />

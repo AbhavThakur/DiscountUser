@@ -113,7 +113,14 @@ function Profile({navigation}) {
               style={styles.image}
               source={require('../../assets/abhav.jpg')}
             /> */}
-              {img === null ? null : (
+              {img === null ? (
+                <Image
+                  style={styles.image}
+                  source={{
+                    uri: 'https://static.thenounproject.com/png/363640-200.png',
+                  }}
+                />
+              ) : (
                 <Image style={styles.image} source={{uri: img}} />
               )}
               <Text style={styles.imgtxt}>USER SINCE {joindate}</Text>

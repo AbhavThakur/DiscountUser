@@ -49,7 +49,15 @@ function Home(props) {
           if (documentSnapshot.exists === true) {
             await AsyncStorage.setItem('fname', documentSnapshot.data().fname);
             await AsyncStorage.setItem('lname', documentSnapshot.data().lname);
-            await AsyncStorage.setItem('img', documentSnapshot.data().userImg);
+            documentSnapshot.data().userImg === null
+              ? await AsyncStorage.setItem(
+                  'img',
+                  'https://static.thenounproject.com/png/363640-200.png',
+                )
+              : await AsyncStorage.setItem(
+                  'img',
+                  documentSnapshot.data().userImg,
+                );
             await AsyncStorage.setItem(
               '@createdAt',
               new Date(documentSnapshot.data().createdAt.toDate())

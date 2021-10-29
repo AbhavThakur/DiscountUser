@@ -6,6 +6,7 @@ import MainVerification from '../screens/MainVerification';
 
 import DrawerNavigator from './DrawerNavigator';
 import BottomNavigator from './BottomNavigator';
+import RatingReview from '../screens/Home/RatingReview';
 
 const Stack = createStackNavigator();
 
@@ -17,6 +18,7 @@ const RegisterNavigator = () => {
       {/* <Stack.Screen name="Main" component={MainVerification} /> */}
       <Stack.Screen name="Drawer" component={DrawerNavigator} />
       <Stack.Screen name="register" component={Register} />
+      <Stack.Screen name="rating" component={RatingReview} />
     </Stack.Navigator>
   );
 };
