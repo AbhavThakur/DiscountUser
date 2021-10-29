@@ -46,16 +46,30 @@ function RatingReview({navigation, route}) {
         if (resJson.success === true) {
           setvalue(resJson.feedbacklist);
           setresponse('');
-          setEditreview(true);
         } else {
-          setresponse('No Review s found');
-          setEditreview(false);
+          setresponse('No Review  found');
         }
       })
       .catch(err => {
         console.log('Error: ', err);
       })
       .finally(() => setLoading(false));
+
+    const contact = await AsyncStorage.getItem('contact');
+    const userFeedback = `https://usercard.herokuapp.com/api/v1/feedbackuser/${contact}`;
+    fetch(userFeedback)
+      .then(res => res.json())
+      .then(resJson => {
+        // console.log('data', resJson);
+        if (resJson.success === true) {
+          setEditreview(true);
+        } else {
+          setEditreview(false);
+        }
+      })
+      .catch(err => {
+        console.log('Error: ', err);
+      });
   };
 
   function ratingCompleted(rating) {
