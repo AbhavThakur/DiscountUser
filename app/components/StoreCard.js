@@ -28,7 +28,7 @@ function StoreCard({
       <View style={{position: 'absolute'}}>
         <Image
           source={require('../assets/tag.png')}
-          style={{width: 45, height: 45}}
+          style={{width: 47, height: 47}}
         />
         <Text style={{position: 'absolute', color: '#fff', right: 5, top: 2}}>
           {discount}% off

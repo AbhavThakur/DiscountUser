@@ -58,7 +58,12 @@ function Home(props) {
             //       'img',
             //       documentSnapshot.data().userImg,
             //     );
-            await AsyncStorage.setItem('img', documentSnapshot.data().userImg);
+            await AsyncStorage.setItem(
+              'img',
+              documentSnapshot.data().userImg === null
+                ? 'https://static.thenounproject.com/png/363640-200.png'
+                : documentSnapshot.data().userImg,
+            );
             await AsyncStorage.setItem(
               '@createdAt',
               new Date(documentSnapshot.data().createdAt.toDate())
@@ -153,7 +158,12 @@ function Home(props) {
         )}
 
         {/* top categories */}
-        <Discount />
+        {/* <Discount /> */}
+        <Title style={styles.title}>Discounts on Top Catogories</Title>
+        <Image
+          source={require('../../assets/sale.png')}
+          style={{marginBottom: 10}}
+        />
       </ScrollView>
     </>
   );
@@ -163,6 +173,7 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: '#fff',
+    alignItems: 'center',
   },
   header: {
     flexDirection: 'row',
@@ -187,26 +198,17 @@ const styles = StyleSheet.create({
     width: windowWidth,
     height: 290,
     backgroundColor: '#fff',
-    paddingTop: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-
-    elevation: 6,
+    paddingTop: 7,
   },
   subcategory: {
     flex: 1,
     flexDirection: 'column',
-    margin: 1,
-    marginVertical: 10,
     alignItems: 'center',
+    margin: 5,
   },
   subtxt: {
     color: '#293645',
+    fontSize: 12,
   },
   modelContaner: {
     backgroundColor: '#fff',
@@ -220,6 +222,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 8,
+  },
+  title: {
+    marginVertical: 13,
+    alignSelf: 'flex-start',
+    marginStart: 30,
   },
 });
 

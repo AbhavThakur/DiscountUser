@@ -52,13 +52,15 @@ const value = [
   },
 ];
 
+const windowHeight = Dimensions.get('window').height;
+
 function Category(props) {
   const category = ({item}) => (
     <TouchableOpacity
       activeOpacity={0.4}
       onPress={() => props.navigation.navigate(item.screen)}
-      style={{backgroundColor: '#fff', marginTop: 15}}>
-      <Image source={item.img} />
+      style={{backgroundColor: '#fff', margin: 5, marginVertical: 10}}>
+      <Image source={item.img} style={{width: 180, height: 100}} />
     </TouchableOpacity>
   );
 
@@ -69,6 +71,13 @@ function Category(props) {
       </Text>
       <FlatList
         data={value}
+        contentContainerStyle={{
+          // backgroundColor: 'yellow',
+          height: windowHeight * 0.7,
+          marginTop: 20,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
         numColumns={2}
         keyExtractor={(item, index) => item.id}
         renderItem={category}

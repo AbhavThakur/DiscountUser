@@ -8,10 +8,11 @@ import {
   Dimensions,
   Button,
   FlatList,
+  TextInput,
+  ActivityIndicator,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import firestore from '@react-native-firebase/firestore';
-import {List, Card} from 'react-native-paper';
 
 import StoreCard from '../../components/StoreCard';
 
@@ -109,10 +110,14 @@ function GroceryList({navigation}) {
   const [isModalVisible, setModalVisible] = useState(false);
   const [info, setinfo] = useState([]);
 
+  const [search, setsearch] = useState('');
+  const [loading, setloading] = useState(false);
+
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
   useEffect(() => {
+    setloading(true);
     firestore()
       .collection('StoreName')
       .orderBy('createdAt', 'asc')
@@ -126,8 +131,9 @@ function GroceryList({navigation}) {
         });
         // console.log('shops ', shops);
         setinfo(shops);
+        setloading(false);
       });
-  });
+  }, []);
   return (
     <View style={styles.container}>
       <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
@@ -161,27 +167,52 @@ function GroceryList({navigation}) {
           {/* customer rating */}
         </View>
       </Modal>
-      <FlatList
-        data={info}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({item}) => {
-          return (
-            <StoreCard
-              Title={item.StoreName}
-              img={require('../../assets/shop1.png')}
-              discount={'26'}
-              distance={'400'}
-              location={item.address}
-              time={'10'}
-              contact={item.contactNumber}
-              ratings={'4'}
-              views={'140'}
-              ratingvalue={'4.4'}
-              onPress={() => navigation.navigate('Shop', item.id)}
-            />
-          );
-        }}
-      />
+      <View style={styles.searchbox}>
+        <TextInput
+          value={search}
+          placeholder="Search for shops here..."
+          placeholderTextColor="#ccc"
+          style={{
+            color: '#000',
+          }}
+          onChangeText={txt => setsearch(txt)}
+        />
+        {search.length !== 0 ? (
+          <TouchableOpacity onPress={() => setsearch('')}>
+            <Text style={{color: '#000', fontSize: 20}}>✖</Text>
+          </TouchableOpacity>
+        ) : (
+          <Image
+            source={require('../../assets/find.png')}
+            style={{width: 20, height: 20, tintColor: '#000'}}
+          />
+        )}
+      </View>
+      {loading ? (
+        <ActivityIndicator size={'large'} color="#D02824" />
+      ) : (
+        <FlatList
+          data={info}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({item}) => {
+            return (
+              <StoreCard
+                Title={item.StoreName}
+                img={require('../../assets/shop1.png')}
+                discount={item.discount}
+                distance={'400'}
+                location={item.address}
+                time={'10'}
+                contact={item.contactNumber}
+                ratings={'4'}
+                views={'140'}
+                ratingvalue={'4.4'}
+                onPress={() => navigation.navigate('Shop', item.id)}
+              />
+            );
+          }}
+        />
+      )}
     </View>
   );
 }
@@ -216,6 +247,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 8,
+  },
+  searchbox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    borderRadius: 20,
+    borderWidth: 0.8,
+    borderColor: '#ccc',
+    width: WindowWidth * 0.9,
+    height: 40,
+    margin: 10,
   },
 });
 

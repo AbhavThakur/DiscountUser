@@ -15,6 +15,8 @@ import {
 } from 'react-native';
 import {ProgressBar} from 'react-native-paper';
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+
 import axios from 'axios';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -31,7 +33,14 @@ function RatingReview({navigation, route}) {
   const [modaledit, setModalEdit] = useState(false);
   const [editreview, setEditreview] = useState(null);
 
+  const [name, setName] = useState('');
+  const [last, setLast] = useState('');
+  const [contact, setContact] = useState('');
+  const [img, setImg] = useState(null);
+
   const shopdetails = route.params;
+
+  const {uid} = auth().currentUser;
 
   useEffect(() => {
     Info();
@@ -55,20 +64,30 @@ function RatingReview({navigation, route}) {
       })
       .finally(() => setLoading(false));
 
-    const contact = await AsyncStorage.getItem('contact');
-    const userFeedback = `https://usercard.herokuapp.com/api/v1/feedbackuser/${contact}`;
+    const cont = await AsyncStorage.getItem('contact');
+    const userFeedback = `https://usercard.herokuapp.com/api/v1/feedbackuser/${cont}&${shopdetails.Shopid}`;
     fetch(userFeedback)
       .then(res => res.json())
       .then(resJson => {
-        // console.log('data', resJson);
+        console.log('data', resJson);
         if (resJson.success === true) {
           setEditreview(true);
-        } else {
+        } else if (resJson.success === false) {
           setEditreview(false);
         }
       })
       .catch(err => {
         console.log('Error: ', err);
+      });
+    firestore()
+      .collection('Discountusers')
+      .doc(uid)
+      .onSnapshot(documentSnapshot => {
+        const userData = documentSnapshot.data();
+        setName(userData.fname);
+        setLast(userData.lname);
+        setContact(userData.contact);
+        setImg(userData.userImg);
       });
   };
 
@@ -78,18 +97,17 @@ function RatingReview({navigation, route}) {
   }
 
   const AddReview = async () => {
-    const fname = await AsyncStorage.getItem('fname');
-    const lname = await AsyncStorage.getItem('lname');
-    const contact = await AsyncStorage.getItem('contact');
-    const img = await AsyncStorage.getItem('img');
     var currentDate = moment().format('DD/MM/YYYY');
 
     const valueinfo = {
       merchantId: shopdetails.Shopid,
       contact: contact,
-      userName: fname + ' ' + lname,
+      userName: name + ' ' + last,
       comment: review,
-      img: img,
+      img:
+        img === null
+          ? 'https://static.thenounproject.com/png/363640-200.png'
+          : img,
       rating: ratingvalue === undefined ? 3 : ratingvalue,
       dateCreated: currentDate,
     };
@@ -119,13 +137,15 @@ function RatingReview({navigation, route}) {
       .catch(err => console.error(err));
   };
   const EditReview = async () => {
-    const contact = await AsyncStorage.getItem('contact');
-    const img = await AsyncStorage.getItem('img');
     var currentDate = moment().format('DD/MM/YYYY');
 
     const valueinfo = {
+      userName: name + ' ' + last,
       comment: review,
-      img: img,
+      img:
+        img === null
+          ? 'https://static.thenounproject.com/png/363640-200.png'
+          : img,
       rating: ratingvalue === undefined ? 3 : ratingvalue,
       dateCreated: currentDate,
     };
@@ -143,7 +163,7 @@ function RatingReview({navigation, route}) {
 
     axios
       .put(
-        `https://usercard.herokuapp.com/api/v1/editfeedback/${contact}`,
+        `https://usercard.herokuapp.com/api/v1/editfeedback/${contact}&${shopdetails.Shopid}`,
         valueinfo,
         config,
       )

@@ -125,6 +125,7 @@ export default function ShopView({navigation, route}) {
   const [contact, setContact] = useState('');
   const [address, setAddress] = useState('');
   const [discount, setdiscount] = useState('');
+  const [discountText, setdiscountText] = useState('');
 
   const [userPost, setUserPosts] = useState([]);
 
@@ -268,6 +269,7 @@ export default function ShopView({navigation, route}) {
           setName(documentSnapshot.data().StoreName);
           setAddress(documentSnapshot.data().address);
           setdiscount(documentSnapshot.data().discount);
+          setdiscountText(documentSnapshot.data().discountstatus);
         }
       });
 
@@ -548,7 +550,7 @@ export default function ShopView({navigation, route}) {
                 borderColor: '#ccc',
                 borderRadius: 5,
               }}>
-              {discount}
+              {discount}% {discountText}
             </Text>
           </View>
           {/* Types of products */}
