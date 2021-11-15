@@ -8,6 +8,7 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -72,6 +73,9 @@ function Home(props) {
                 .slice(1)
                 .join(' '),
             );
+            documentSnapshot.data().userImg === null
+              ? Alert.alert('Please add image to your Profile')
+              : null;
           }
         });
       firestore()
@@ -112,10 +116,13 @@ function Home(props) {
         <ImageCarousel />
         {isModalVisible ? (
           <View style={styles.category}>
-            <View style={styles.modaelheader}>
+            <TouchableOpacity
+              activeOpacity="0.7"
+              style={styles.modaelheader}
+              onPress={() => props.navigation.navigate('Subscriptions')}>
               <Text style={{fontSize: 22, color: '#fff'}}>Subscribe</Text>
-            </View>
-            <Card>
+            </TouchableOpacity>
+            <Card style={{height: 200}}>
               <Card.Content>
                 <Title>Subscribe to discount adda </Title>
                 <Paragraph>
@@ -196,7 +203,7 @@ const styles = StyleSheet.create({
   },
   category: {
     width: windowWidth,
-    height: 290,
+    height: 320,
     backgroundColor: '#fff',
     paddingTop: 7,
   },

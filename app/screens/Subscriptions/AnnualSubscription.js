@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Dimensions,
   Image,
@@ -24,6 +24,10 @@ import cardno from '../../constants/Cardno';
 
 function AnnualSubscription({navigation}) {
   const [loading, setloading] = useState(false);
+  const [name, setName] = useState('');
+  const [last, setLast] = useState('');
+  const [contact, setContact] = useState('');
+  const [img, setImg] = useState(null);
   const {uid} = auth().currentUser;
 
   const createOrder = async () => {
@@ -47,80 +51,98 @@ function AnnualSubscription({navigation}) {
     return data.validSignature;
   };
 
+  useEffect(() => {
+    firestore()
+      .collection('Discountusers')
+      .doc(uid)
+      .onSnapshot(documentSnapshot => {
+        const userData = documentSnapshot.data();
+        setName(userData.fname);
+        setLast(userData.lname);
+        setContact(userData.contact);
+        setImg(userData.userImg);
+      });
+    if (img !== null) {
+      console.log('image clicked');
+    } else if (img === null) {
+      Alert.alert('Please add an image to your Profile');
+    }
+  }, []);
+
   const onPay = async () => {
     setloading(true);
+    if (img !== null) {
+      const order = await createOrder();
+      var options = {
+        name: 'Welcome to DiscountAdda',
+        description: 'Payment to Discount Adda',
+        order_id: order.id,
+        key: RazorpayApiKey,
+        prefill: {
+          email: '',
+          contact: '',
+          name: '',
+        },
+        theme: {color: '#a29bfe'},
+      };
+      RazorpayCheckout.open(options)
+        .then(async transaction => {
+          const validSignature = await verifyPayment(order.id, transaction);
 
-    const order = await createOrder();
-    var options = {
-      name: 'Welcome to DiscountAdda',
-      description: 'Payment to Discount Adda',
-      order_id: order.id,
-      key: RazorpayApiKey,
-      prefill: {
-        email: '',
-        contact: '',
-        name: '',
-      },
-      theme: {color: '#a29bfe'},
-    };
-    RazorpayCheckout.open(options)
-      .then(async transaction => {
-        const validSignature = await verifyPayment(order.id, transaction);
-        const fname = await AsyncStorage.getItem('fname');
-        const lname = await AsyncStorage.getItem('lname');
-        const contact = await AsyncStorage.getItem('contact');
-        const img = await AsyncStorage.getItem('img');
-        const createAt = await AsyncStorage.getItem('@createdAt');
+          const createAt = await AsyncStorage.getItem('@createdAt');
 
-        console.log('Is Valid Payment: ' + validSignature);
-        setloading(false);
-        // alert('Successfully registered');
+          console.log('Is Valid Payment: ' + validSignature);
+          setloading(false);
+          // alert('Successfully registered');
 
-        var currentDate = moment().format();
-        var expirydate = moment(currentDate)
-          .add(1, 'month')
-          .format('DD/MM/YYYY');
-        var expiryat = moment(currentDate).add(1, 'month').format();
+          var currentDate = moment().format();
+          var expirydate = moment(currentDate)
+            .add(1, 'month')
+            .format('DD/MM/YYYY');
+          var expiryat = moment(currentDate).add(1, 'month').format();
 
-        const value = {
-          firstName: fname,
-          lastName: lname,
-          contactNumber: contact,
-          cardNumber: cardno,
-          image: img,
-          expiryDate: expirydate,
-          dateCreated: createAt,
-          subscribed: true,
-          amount: 365,
-          subscription: 'Annual',
-          expiryAt: expiryat,
-        };
-        let config = {
-          headers: {
-            accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        };
-        axios
-          .post(
-            'https://usercard.herokuapp.com/api/v1/AddDetails/',
-            value,
-            config,
-          )
-          .catch(err => console.error(err));
+          const value = {
+            firstName: name,
+            lastName: last,
+            contactNumber: contact,
+            cardNumber: cardno,
+            image: img,
+            expiryDate: expirydate,
+            dateCreated: createAt,
+            subscribed: true,
+            amount: 365,
+            subscription: 'Annual',
+            expiryAt: expiryat,
+          };
+          let config = {
+            headers: {
+              accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+          };
+          axios
+            .post(
+              'https://usercard.herokuapp.com/api/v1/AddDetails/',
+              value,
+              config,
+            )
+            .catch(err => console.error(err));
 
-        firestore()
-          .collection('Subscribed')
-          .doc(uid)
-          .set(value)
-          .catch(() => Alert.alert('Registration Failed'));
-      })
-      .then(() => navigation.replace('SubscriptionsCard'))
-      .catch(() => {
-        Alert.alert('Payment Failed.');
-        navigation.navigate('SubscriptionsScreen');
-        setloading(false);
-      });
+          firestore()
+            .collection('Subscribed')
+            .doc(uid)
+            .set(value)
+            .catch(() => Alert.alert('Registration Failed'));
+        })
+        .then(() => navigation.replace('SubscriptionsCard'))
+        .catch(() => {
+          Alert.alert('Payment Failed.');
+          navigation.navigate('SubscriptionsScreen');
+          setloading(false);
+        });
+    } else if (img === null) {
+      Alert.alert('Please add an image to your Profile');
+    }
   };
 
   return (

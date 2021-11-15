@@ -437,9 +437,9 @@ function RatingReview({navigation, route}) {
                 }}>
                 <Image
                   source={{
-                    uri: 'https://static.thenounproject.com/png/363640-200.png',
+                    uri: item.img,
                   }}
-                  style={{width: 50, height: 50}}
+                  style={{width: 50, height: 50, borderRadius: 25}}
                 />
                 <View style={{marginStart: 10}}>
                   <Text>{item.userName}</Text>

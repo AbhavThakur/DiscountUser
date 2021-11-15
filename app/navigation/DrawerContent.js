@@ -54,7 +54,10 @@ function DrawerContent(props) {
               }}>
               <Avatar.Image
                 source={{
-                  uri: img,
+                  uri:
+                    img === null
+                      ? 'https://static.thenounproject.com/png/363640-200.png'
+                      : img,
                 }}
                 size={100}
               />

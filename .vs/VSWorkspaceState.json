@@ -2,9 +2,11 @@
   "ExpandedNodes": [
     "",
     "\\app",
-    "\\app\\navigation",
-    "\\app\\screens"
+    "\\app\\config",
+    "\\app\\screens",
+    "\\app\\screens\\Home",
+    "\\app\\screens\\Subscriptions"
   ],
-  "SelectedNode": "\\app\\navigation\\DrawerNavigator.js",
+  "SelectedNode": "\\app\\screens\\Home\\Home.js",
   "PreviewInSolutionExplorer": false
 }

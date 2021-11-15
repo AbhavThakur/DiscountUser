@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import {View, TouchableOpacity, Image, Text} from 'react-native';
+import {View, TouchableOpacity, Image, Text, Alert} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {useIsFocused} from '@react-navigation/native';
 
@@ -40,16 +42,31 @@ const SubscriptionNavigator = ({navigation}) => {
               'days',
             );
             if (daysCount > 0) {
-              console.log('positive', daysCount);
+              console.log('no. of days', daysCount);
               setsubscribe(true);
-            } else {
-              console.log('neg', daysCount);
+            } else if (daysCount < 3) {
+              Alert.alert(
+                `Subscriptions is going to Expire in ${daysCount} days`,
+              );
+            }
+            if (daysCount === 0) {
               setsubscribe(false);
+              DeleteCard();
+              firestore().collection('Subscribed').doc(uid).update({
+                subscribed: false,
+              });
+
+              console.log('DeleteCard');
             }
           }
         });
     }
   }, [uid, isFocused]);
+
+  const DeleteCard = async () => {
+    const cont = await AsyncStorage.getItem('contact');
+    axios.delete(`https://usercard.herokuapp.com/api/v1/deletecard/${cont}`);
+  };
 
   if (subscribe === null) {
     return (

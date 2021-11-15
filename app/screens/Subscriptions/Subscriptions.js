@@ -55,7 +55,6 @@ function Subscriptions({navigation}) {
           <View style={styles.detailsContainer}>
             <QRCode
               value={cardno}
-              logoSize={30}
               color="black"
               logoBackgroundColor="transparent"
             />
