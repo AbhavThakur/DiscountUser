@@ -10,9 +10,11 @@ import {
   FlatList,
   TextInput,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import firestore from '@react-native-firebase/firestore';
+import {useIsFocused} from '@react-navigation/native';
 
 import StoreCard from '../../components/StoreCard';
 
@@ -106,21 +108,50 @@ const value = [
 const WindowWidth = Dimensions.get('window').width;
 const WindowHeight = Dimensions.get('window').height;
 
-function GroceryList({navigation}) {
+function CategoryList({navigation, route}) {
   const [isModalVisible, setModalVisible] = useState(false);
   const [info, setinfo] = useState([]);
+  const [filterdData, setfilterdData] = useState([]);
 
   const [search, setsearch] = useState('');
   const [loading, setloading] = useState(false);
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const isFocused = useIsFocused();
+
+  const CategoryName = route.params.ShopName;
+  const Category = route.params.Categoryitem;
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
   useEffect(() => {
+    if (isFocused) {
+      ShopData();
+    }
+  }, [isFocused]);
+
+  const ShopData = () => {
     setloading(true);
+    // firestore()
+    //   .collection('StoreName')
+    //   .orderBy('createdAt', 'asc')
+    //   .get()
+    //   .then(snapshot => {
+    //     let shops = snapshot.docs.map(doc => {
+    //       const data = doc.data();
+    //       const id = doc.id;
+
+    //       return {id, ...data};
+    //     });
+    //     // console.log('shops ', shops);
+    //     setinfo(shops);
+    //     setfilterdData(shops);
+    //     setloading(false);
+    //   });
     firestore()
       .collection('StoreName')
-      .orderBy('createdAt', 'asc')
+      .where('Category', 'array-contains-any', Category)
       .get()
       .then(snapshot => {
         let shops = snapshot.docs.map(doc => {
@@ -129,16 +160,41 @@ function GroceryList({navigation}) {
 
           return {id, ...data};
         });
-        // console.log('shops ', shops);
+        console.log('shops ', shops);
         setinfo(shops);
+        setfilterdData(shops);
         setloading(false);
       });
-  }, []);
+  };
+
+  const searchFilter = text => {
+    if (text) {
+      const newData = info.filter(item => {
+        const itemData = item.StoreName
+          ? item.StoreName.toUpperCase()
+          : ''.toUpperCase();
+        const textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1;
+      });
+      setinfo(newData);
+      setsearch(text);
+    } else {
+      setinfo(filterdData);
+      setsearch(text);
+    }
+  };
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    ShopData();
+    setRefreshing(false);
+  }, [refreshing]);
+
   return (
     <View style={styles.container}>
       <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
         <Text style={{fontSize: 15, color: '#D02824', alignSelf: 'flex-start'}}>
-          CATEGORY {'>'} {'>'} SUBCATEGORY {'>'} {'>'} GROCERY
+          CATEGORY {'>'} {'>'} SUBCATEGORY {'>'} {'>'} {CategoryName}
         </Text>
         <TouchableOpacity onPress={toggleModal}>
           <Image source={require('../../assets/Filter2.png')} />
@@ -175,18 +231,13 @@ function GroceryList({navigation}) {
           style={{
             color: '#000',
           }}
-          onChangeText={txt => setsearch(txt)}
+          onChangeText={txt => searchFilter(txt)}
         />
-        {search.length !== 0 ? (
-          <TouchableOpacity onPress={() => setsearch('')}>
-            <Text style={{color: '#000', fontSize: 20}}>✖</Text>
-          </TouchableOpacity>
-        ) : (
-          <Image
-            source={require('../../assets/find.png')}
-            style={{width: 20, height: 20, tintColor: '#000'}}
-          />
-        )}
+
+        <Image
+          source={require('../../assets/find.png')}
+          style={{width: 20, height: 20, tintColor: '#000'}}
+        />
       </View>
       {loading ? (
         <ActivityIndicator size={'large'} color="#D02824" />
@@ -194,11 +245,14 @@ function GroceryList({navigation}) {
         <FlatList
           data={info}
           keyExtractor={(item, index) => index.toString()}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
           renderItem={({item}) => {
             return (
               <StoreCard
                 Title={item.StoreName}
-                img={require('../../assets/shop1.png')}
+                img={item.shopimage}
                 discount={item.discount}
                 distance={'400'}
                 location={item.address}
@@ -261,4 +315,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GroceryList;
+export default CategoryList;

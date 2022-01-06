@@ -27,6 +27,8 @@ const windowHeight = Dimensions.get('window').height;
 
 function Home(props) {
   const [isModalVisible, setModalVisible] = useState(false);
+  const [amount, setamount] = useState([]);
+  const [Savedamount, setSavedamount] = useState([]);
 
   // const toggleModal = () => {
   //   setModalVisible(!isModalVisible);
@@ -50,15 +52,7 @@ function Home(props) {
           if (documentSnapshot.exists === true) {
             await AsyncStorage.setItem('fname', documentSnapshot.data().fname);
             await AsyncStorage.setItem('lname', documentSnapshot.data().lname);
-            // documentSnapshot.data().userImg === null
-            //   ? await AsyncStorage.setItem(
-            //       'img',
-            //       'https://static.thenounproject.com/png/363640-200.png',
-            //     )
-            //   : await AsyncStorage.setItem(
-            //       'img',
-            //       documentSnapshot.data().userImg,
-            //     );
+
             await AsyncStorage.setItem(
               'img',
               documentSnapshot.data().userImg === null
@@ -73,9 +67,6 @@ function Home(props) {
                 .slice(1)
                 .join(' '),
             );
-            documentSnapshot.data().userImg === null
-              ? Alert.alert('Please add image to your Profile')
-              : null;
           }
         });
       firestore()
@@ -88,33 +79,66 @@ function Home(props) {
           }
           console.log('User subscribed: ', documentSnapshot.exists);
 
-          if (documentSnapshot.exists === true) {
+          if (documentSnapshot.exists) {
             console.log('subscribed');
             setModalVisible(false);
+            UserDiscount(documentSnapshot.data().cardNumber);
           }
         });
     }
-  }, [uid, isFocused]);
+  }, [isFocused]);
+
+  const UserDiscount = card => {
+    const Discountlist = `https://usercard.herokuapp.com/api/v1/discountuser/${card}`;
+    fetch(Discountlist)
+      .then(res => res.json())
+      .then(resJson => {
+        if (resJson.success === true) {
+          // console.log('array size', resJson.discountList.length);
+          setSavedamount([]);
+          setamount([]);
+          for (let i = 0; i < resJson.discountList.length; i++) {
+            setamount(amt => [...amt, resJson.discountList[i].amount]);
+            setSavedamount(amt => [
+              ...amt,
+              resJson.discountList[i].amountsaved,
+            ]);
+          }
+        } else {
+          setamount([]);
+          setSavedamount([]);
+        }
+      })
+      .catch(err => {
+        console.log('Error: ', err);
+      });
+  };
 
   return (
     <>
       <View style={styles.header}>
         <View style={{alignItems: 'center'}}>
-          <Text style={styles.txt}>Amount Spent</Text>
-          <Text style={styles.txt}>{'\u20B9'} 10,000</Text>
+          <Text style={styles.txt}>Total Amount</Text>
+          <Text style={styles.txt}>
+            {'\u20B9'} {amount.reduce((a, b) => a + b, 0)}
+          </Text>
         </View>
         <View style={styles.verticleLine} />
 
         <View style={{alignItems: 'center'}}>
           <Text style={styles.txt}>Amount Saved</Text>
-          <Text style={styles.txt}>{'\u20B9'} 2,000</Text>
+          <Text style={styles.txt}>
+            {'\u20B9'} {Savedamount.reduce((a, b) => a + b, 0)}
+          </Text>
         </View>
       </View>
       <ScrollView
         nestedScrollEnabled={true}
         contentContainerStyle={styles.container}>
         <ImageCarousel />
-        {isModalVisible ? (
+        {/* <Discount /> */}
+
+        {isModalVisible  ? (
           <View style={styles.category}>
             <TouchableOpacity
               activeOpacity="0.7"
@@ -147,12 +171,17 @@ function Home(props) {
               numColumns={4}
               nestedScrollEnabled={true}
               horizontal={false}
-              keyExtractor={(item, index) => index.toString()}
+              keyExtractor={(item, index) => item.id}
               renderItem={({item}) => (
                 <TouchableOpacity
                   activeOpacity={0.4}
                   style={styles.subcategory}
-                  onPress={() => props.navigation.navigate(item.screen)}>
+                  onPress={() =>
+                    props.navigation.navigate(item.screen, {
+                      ShopName: item.name,
+                      Categoryitem: item.category,
+                    })
+                  }>
                   <Image
                     source={item.img}
                     style={{width: item.width, height: item.height}}
@@ -165,7 +194,6 @@ function Home(props) {
         )}
 
         {/* top categories */}
-        {/* <Discount /> */}
         <Title style={styles.title}>Discounts on Top Catogories</Title>
         <Image
           source={require('../../assets/sale.png')}

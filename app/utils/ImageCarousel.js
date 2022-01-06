@@ -14,23 +14,45 @@ import {useIsFocused} from '@react-navigation/native';
 
 const {width: windowWidth, height: windowHeight} = Dimensions.get('window');
 
-// const slideList = Array.from({length: 3}).map((_, i) => {
+// const slideList = Array.from({length: 4}).map((_, i) => {
 //   return {
 //     id: i,
 //     image: `https://picsum.photos/1440/2842?random=${i}`,
-//     title: `This is the title ${i + 1}!`,
+//     title: `This is the title! ${i + 1}`,
 //     subtitle: `This is the subtitle ${i + 1}!`,
 //   };
 // });
 
-const slideList = Array.from({length: 4}).map((_, i) => {
-  return {
-    id: i,
-    image: `https://picsum.photos/1440/2842?random=${i}`,
-    title: `This is the title! ${i + 1}`,
-    subtitle: `This is the subtitle ${i + 1}!`,
-  };
-});
+const slideList = [
+  {
+    id: 1,
+    title: 'Host multiple charging points',
+    subtitle:
+      'Increase footfall to your establishment by enabling EV charging.We provide free installation veCharge point.',
+    image: require('../assets/posters/userappbanner1.png'),
+  },
+  {
+    id: 2,
+    title: 'Host and earn income',
+    subtitle:
+      'Earn additional income by setting up your own prices for the charging. Withdraw the money to your account easily. We will also provide branding for your brand in future.',
+    image: require('../assets/posters/userappbanner2.png'),
+  },
+  {
+    id: 3,
+    title: 'Complete automated solution',
+    subtitle:
+      'Monitor and analyze the charging status of all your devices in realtime via veCharge dashboard. The device is a zero maintenance product requiring no human intervention.',
+    image: require('../assets/posters/userappbanner3.png'),
+  },
+  {
+    id: 4,
+    title: 'Complete automated solution',
+    subtitle:
+      'Monitor and analyze the charging status of all your devices in realtime via veCharge dashboard. The device is a zero maintenance product requiring no human intervention.',
+    image: require('../assets/posters/userappbanner4.png'),
+  },
+];
 
 function Pagination({index}) {
   return (
@@ -74,7 +96,7 @@ export default function ImageCarousel() {
           width: windowWidth,
         }}>
         <Image
-          source={{uri: data.image}}
+          source={data.image}
           style={{
             width: windowWidth,
             height: windowHeight * 0.2,

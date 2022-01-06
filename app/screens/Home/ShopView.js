@@ -9,6 +9,9 @@ import {
   TouchableOpacity,
   ScrollView,
   Pressable,
+  Platform,
+  Linking,
+  Alert,
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
@@ -134,7 +137,7 @@ export default function ShopView({navigation, route}) {
   const [StatusValue, setStatusValue] = useState(null);
   // Category states
 
-  // category
+  //! category
   const [resturants, setResturants] = useState('');
   const [resturantsubcategory, setRestursetSubcategory] = useState('');
   const [clothesfootwear, setClothesFootwear] = useState('');
@@ -150,6 +153,10 @@ export default function ShopView({navigation, route}) {
   const [travel, setTravel] = useState('');
   const [fitness, setFitness] = useState('');
 
+  const [shops, setshops] = useState('');
+  const [education, seteducation] = useState('');
+
+  //! end
   const [loading, setLoading] = useState(null);
   const [isModalVisible, setModalVisible] = useState(true);
 
@@ -456,7 +463,54 @@ export default function ShopView({navigation, route}) {
           setFitness(documentSnapshot.data().fitness);
         }
       });
+    firestore()
+      .collection('mycategory')
+      .doc(auth().currentUser.uid)
+      .collection('shops')
+      .doc(auth().currentUser.uid)
+      .get()
+      .then(documentSnapshot => {
+        if (documentSnapshot.exists === false) {
+          setshops(null);
+        }
+        if (documentSnapshot.exists) {
+          setshops(documentSnapshot.data().shops);
+        }
+      });
+    firestore()
+      .collection('mycategory')
+      .doc(auth().currentUser.uid)
+      .collection('education')
+      .doc(auth().currentUser.uid)
+      .get()
+      .then(documentSnapshot => {
+        if (documentSnapshot.exists === false) {
+          seteducation(null);
+        }
+        if (documentSnapshot.exists) {
+          seteducation(documentSnapshot.data().education);
+        }
+      });
   }
+
+  const callNumber = () => {
+    console.log('callNumber ----> ', contact);
+    let phoneNumber = contact;
+    if (Platform.OS !== 'android') {
+      phoneNumber = `telprompt:${contact}`;
+    } else {
+      phoneNumber = `tel:${contact}`;
+    }
+    Linking.canOpenURL(phoneNumber)
+      .then(supported => {
+        if (!supported) {
+          Alert.alert('Phone number is not available');
+        } else {
+          return Linking.openURL(phoneNumber);
+        }
+      })
+      .catch(err => console.log(err));
+  };
 
   return (
     <>
@@ -506,9 +560,13 @@ export default function ShopView({navigation, route}) {
                 {Status} now
               </Text>
             </View>
-            <View
-              flexDirection="row"
-              style={{marginTop: 10, alignItems: 'center'}}>
+            <TouchableOpacity
+              onPress={callNumber}
+              style={{
+                marginTop: 10,
+                alignItems: 'center',
+                flexDirection: 'row',
+              }}>
               <Image source={require('../../assets/call.png')} />
               <Text
                 style={{
@@ -521,7 +579,7 @@ export default function ShopView({navigation, route}) {
                 }}>
                 +91 {contact}
               </Text>
-            </View>
+            </TouchableOpacity>
           </View>
           {/* About the store */}
           <View style={{marginTop: 5}}>
@@ -613,6 +671,16 @@ export default function ShopView({navigation, route}) {
             {fitness === null ? null : (
               <View style={styles.txtproducts}>
                 <Text style={styles.textCategory}>{fitness}</Text>
+              </View>
+            )}
+            {shops === null ? null : (
+              <View style={styles.txtproducts}>
+                <Text style={styles.textCategory}>{shops}</Text>
+              </View>
+            )}
+            {education === null ? null : (
+              <View style={styles.txtproducts}>
+                <Text style={styles.textCategory}>{education}</Text>
               </View>
             )}
           </View>

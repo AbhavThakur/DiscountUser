@@ -24,7 +24,7 @@ function StoreCard({
 }) {
   return (
     <View style={styles.card}>
-      <Image source={img} style={{margin: 5, width: 100, height: 100}} />
+      <Image source={{uri: img}} style={{margin: 5, width: 100, height: 100}} />
       <View style={{position: 'absolute'}}>
         <Image
           source={require('../assets/tag.png')}

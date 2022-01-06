@@ -33,7 +33,8 @@ function Profile({navigation}) {
     firestore()
       .collection('Discountusers')
       .doc(uid)
-      .onSnapshot(documentSnapshot => {
+      .get()
+      .then(documentSnapshot => {
         const userData = documentSnapshot.data();
         setName(userData.fname);
         setLast(userData.lname);

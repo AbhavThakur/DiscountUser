@@ -109,7 +109,7 @@ function Register({navigation}) {
   const mail = () => {
     const params = new URLSearchParams();
     params.append('To', email);
-
+    Alert.alert('Verifying email address');
     const config = {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',

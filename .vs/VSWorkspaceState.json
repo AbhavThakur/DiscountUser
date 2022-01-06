@@ -2,11 +2,7 @@
   "ExpandedNodes": [
     "",
     "\\app",
-    "\\app\\config",
-    "\\app\\screens",
-    "\\app\\screens\\Home",
-    "\\app\\screens\\Subscriptions"
+    "\\app\\constants"
   ],
-  "SelectedNode": "\\app\\screens\\Home\\Home.js",
   "PreviewInSolutionExplorer": false
 }

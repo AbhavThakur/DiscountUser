@@ -24,7 +24,8 @@ function DrawerContent(props) {
     firestore()
       .collection('Discountusers')
       .doc(uid)
-      .onSnapshot(documentSnapshot => {
+      .get()
+      .then(documentSnapshot => {
         if (documentSnapshot.exists === false) {
           null;
         }

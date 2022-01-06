@@ -4,7 +4,7 @@ import {Image, View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import Home from '../screens/Home/Home';
 import Category from '../screens/Home/Category';
-import GroceryList from '../screens/Home/GroceryList';
+import CategoryList from '../screens/Home/CategoryList';
 import ShopView from '../screens/Home/ShopView';
 import Notification from '../screens/Notification/Notification';
 import ViewImage from '../screens/Home/ViewImage';
@@ -72,21 +72,27 @@ const HomeNavigation = ({navigation}) => {
           ),
           headerTitle: ' ',
           headerRight: () => (
-            <Headerright onPress={() => navigation.navigate('Notification')} />
+            <Headerright
+              onPress={() => navigation.navigate('Notification')}
+              onPresscard={() => navigation.navigate('Subscriptions')}
+            />
           ),
           headerShown: true,
         }}
       />
       <Stack.Screen
-        name="Grocery"
-        component={GroceryList}
+        name="categoryList"
+        component={CategoryList}
         options={{
           headerLeft: () => (
             <Headerleft onPress={() => navigation.openDrawer()} />
           ),
           headerTitle: ' ',
           headerRight: () => (
-            <Headerright onPress={() => navigation.navigate('Notification')} />
+            <Headerright
+              onPress={() => navigation.navigate('Notification')}
+              onPresscard={() => navigation.navigate('Subscriptions')}
+            />
           ),
           headerShown: true,
         }}
