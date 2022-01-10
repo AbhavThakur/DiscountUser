@@ -7,12 +7,14 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
 import FormButton from '../../components/FormButton';
 import FormText from '../../components/FormText';
+import {AuthContext} from '../../navigation/AuthProvider';
 
 function Profile({navigation}) {
   const [name, setName] = useState('');
@@ -28,6 +30,8 @@ function Profile({navigation}) {
   const [joindate, setjoindate] = useState('');
 
   const [loading, setLoading] = useState(true);
+
+  const {logout, signOut} = useContext(AuthContext);
 
   useEffect(() => {
     firestore()
@@ -55,13 +59,63 @@ function Profile({navigation}) {
       });
   }, [uid]);
 
-  const logout = async () => {
-    try {
-      await auth().signOut();
-    } catch (error) {
-      console.log(error);
-    }
+  const DeleteDetails = () => {
+    const data = {
+      Name: name + ' ' + last,
+      Email: mail,
+      Contact: contact,
+      Address: address,
+      Joindate: joindate,
+      DeletedAt: new Date().toLocaleString(),
+    };
+    console.log(
+      '🚀😄 ~ file: Profile.js ~ line 74 ~ DeleteDetails ~ data',
+      data,
+    );
+    firestore()
+      .collection('DeletedUsers')
+      .doc(uid)
+      .set(data)
+      .finally(() => signOut());
   };
+
+  const DeleteAccount = () => {
+    Alert.alert(
+      //title
+      'Delete Account',
+      //body
+      'Are you sure you want to delete the Account ?',
+      [
+        {
+          text: 'Yes',
+          onPress: () => ConfirmDeleteAccount(),
+        },
+        {
+          text: 'No',
+        },
+      ],
+      {cancelable: true},
+    );
+  };
+  const ConfirmDeleteAccount = () => {
+    Alert.alert(
+      //title
+      'Confirm Delete Account',
+      //body
+      'It will delete all ypur exisiting data from account?',
+      [
+        {
+          text: 'Yes',
+          onPress: () => DeleteDetails(),
+        },
+        {
+          text: 'No',
+        },
+      ],
+      {cancelable: true},
+    );
+  };
+
   return (
     <>
       <View
@@ -151,6 +205,10 @@ function Profile({navigation}) {
         )}
 
         <FormButton buttonTitle="Logout" onPress={() => logout()} />
+        <FormButton
+          buttonTitle="Delete Account"
+          onPress={() => DeleteAccount()}
+        />
       </ScrollView>
     </>
   );

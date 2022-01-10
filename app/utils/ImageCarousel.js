@@ -1,4 +1,11 @@
-import React, {useCallback, memo, useRef, useState, useEffect} from 'react';
+import React, {
+  useCallback,
+  memo,
+  useRef,
+  useState,
+  createRef,
+  useEffect,
+} from 'react';
 import {
   FlatList,
   View,
@@ -26,30 +33,22 @@ const {width: windowWidth, height: windowHeight} = Dimensions.get('window');
 const slideList = [
   {
     id: 1,
-    title: 'Host multiple charging points',
-    subtitle:
-      'Increase footfall to your establishment by enabling EV charging.We provide free installation veCharge point.',
+
     image: require('../assets/posters/userappbanner1.png'),
   },
   {
     id: 2,
-    title: 'Host and earn income',
-    subtitle:
-      'Earn additional income by setting up your own prices for the charging. Withdraw the money to your account easily. We will also provide branding for your brand in future.',
+
     image: require('../assets/posters/userappbanner2.png'),
   },
   {
     id: 3,
-    title: 'Complete automated solution',
-    subtitle:
-      'Monitor and analyze the charging status of all your devices in realtime via veCharge dashboard. The device is a zero maintenance product requiring no human intervention.',
+
     image: require('../assets/posters/userappbanner3.png'),
   },
   {
     id: 4,
-    title: 'Complete automated solution',
-    subtitle:
-      'Monitor and analyze the charging status of all your devices in realtime via veCharge dashboard. The device is a zero maintenance product requiring no human intervention.',
+
     image: require('../assets/posters/userappbanner4.png'),
   },
 ];
@@ -79,15 +78,11 @@ export default function ImageCarousel() {
   const indexRef = useRef(index);
   indexRef.current = index;
 
+  let flatList = createRef();
+
   const [loading, setloading] = useState(true);
 
   const isFocused = useIsFocused();
-
-  function Timer({value}) {
-    return setTimeout(() => {
-      setloading(false);
-    }, value);
-  }
 
   const Slide = memo(function Slide({data}) {
     return (
@@ -154,6 +149,7 @@ export default function ImageCarousel() {
       <FlatList
         data={slideList}
         // style={styles.carousel}
+        FlatListRef={React.createRef()}
         renderItem={renderItem}
         pagingEnabled
         horizontal

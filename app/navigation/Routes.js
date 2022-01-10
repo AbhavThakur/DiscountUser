@@ -1,26 +1,24 @@
 import React, {useContext, useState, useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
+import RNBootSplash from 'react-native-bootsplash';
 
-import AuthNavigation from './AuthNavigation';
 import {AuthContext} from './AuthProvider';
+import AuthNavigation from './AuthNavigation';
 import RegisterNavigator from './RegisterNavigator';
 
 const Routes = () => {
-  const [user, setUser] = useState(null);
+  const {user, setUser} = useContext(AuthContext);
   const [initializing, setInitializing] = useState(true);
 
-  // Handle user state changes
-
-  function onAuthStateChanged(user) {
+  const onAuthStateChanged = user => {
     setUser(user);
     if (initializing) {
       setInitializing(false);
     }
-  }
+  };
 
   useEffect(() => {
-    console.log('routes');
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber; // unsubscribe on unmount
   }, []);
@@ -30,7 +28,7 @@ const Routes = () => {
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer onReady={() => RNBootSplash.hide()}>
       {user ? <RegisterNavigator /> : <AuthNavigation />}
     </NavigationContainer>
   );

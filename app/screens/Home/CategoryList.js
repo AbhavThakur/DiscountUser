@@ -241,6 +241,10 @@ function CategoryList({navigation, route}) {
       </View>
       {loading ? (
         <ActivityIndicator size={'large'} color="#D02824" />
+      ) : info.length === 0 ? (
+        <Text style={{color: 'black', fontWeight: 'bold', marginTop: 20}}>
+          No Shop found
+        </Text>
       ) : (
         <FlatList
           data={info}

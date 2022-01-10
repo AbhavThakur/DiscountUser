@@ -1,51 +1,31 @@
 import React, {createContext, useState} from 'react';
-import {View, StyleSheet, Text} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 export const AuthContext = createContext();
 
-export const AuthProvider = ({children, navigation}) => {
+export const AuthProvider = ({children}) => {
   const [user, setUser] = useState(null);
-  const [confirm, setConfirm] = useState(null);
 
   return (
     <AuthContext.Provider
       value={{
         user,
         setUser,
-        googleLogin: async () => {
+        signOut: async () => {
           try {
-            await GoogleSignin.hasPlayServices();
-            const {accessToken, idToken} = await GoogleSignin.signIn();
+            firestore()
+              .collection('Discountusers')
+              .doc(auth().currentUser.uid)
+              .delete()
+              .then(() => {
+                auth().currentUser.delete();
+              });
 
-            const credential = auth.GoogleAuthProvider.credential(
-              idToken,
-              accessToken,
-            );
-            await auth().signInWithCredential(credential);
+            auth().signOut();
+            setUser(false);
           } catch (error) {
-            console.log(error);
-          }
-        },
-
-        phone: async phoneNumber => {
-          try {
-            const confirmation = await auth().signInWithPhoneNumber(
-              '+91' + phoneNumber,
-            );
-
-            setConfirm(confirmation);
-          } catch (error) {
-            console.log(error);
-          }
-        },
-        confirmCode: async (code, screen) => {
-          try {
-            await confirm.confirm(code);
-          } catch (error) {
-            console.log('Invalid code.');
+            console.error(error);
           }
         },
         logout: async () => {

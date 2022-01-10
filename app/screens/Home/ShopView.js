@@ -494,22 +494,9 @@ export default function ShopView({navigation, route}) {
   }
 
   const callNumber = () => {
-    console.log('callNumber ----> ', contact);
-    let phoneNumber = contact;
-    if (Platform.OS !== 'android') {
-      phoneNumber = `telprompt:${contact}`;
-    } else {
-      phoneNumber = `tel:${contact}`;
-    }
-    Linking.canOpenURL(phoneNumber)
-      .then(supported => {
-        if (!supported) {
-          Alert.alert('Phone number is not available');
-        } else {
-          return Linking.openURL(phoneNumber);
-        }
-      })
-      .catch(err => console.log(err));
+    let phoneNumber = `tel:${contact}`;
+
+    Linking.openURL(phoneNumber);
   };
 
   return (

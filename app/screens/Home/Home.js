@@ -136,9 +136,8 @@ function Home(props) {
         nestedScrollEnabled={true}
         contentContainerStyle={styles.container}>
         <ImageCarousel />
-        {/* <Discount /> */}
 
-        {isModalVisible  ? (
+        {isModalVisible === false ? (
           <View style={styles.category}>
             <TouchableOpacity
               activeOpacity="0.7"
