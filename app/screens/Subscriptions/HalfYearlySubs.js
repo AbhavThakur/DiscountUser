@@ -31,7 +31,9 @@ function HalfYearlySubs({navigation}) {
   const [name, setName] = useState('');
   const [last, setLast] = useState('');
   const [contact, setContact] = useState('');
-  const [img, setImg] = useState(null);
+  const [mail, setEmail] = useState('');
+
+  const [img, setImg] = useState();
 
   const createOrder = async () => {
     const {data} = await axios.post(
@@ -58,23 +60,23 @@ function HalfYearlySubs({navigation}) {
     firestore()
       .collection('Discountusers')
       .doc(uid)
-      .onSnapshot(documentSnapshot => {
+      .get()
+      .then(documentSnapshot => {
         const userData = documentSnapshot.data();
         setName(userData.fname);
         setLast(userData.lname);
         setContact(userData.contact);
+        setEmail(userData.email);
         setImg(userData.userImg);
       });
-    if (img !== null) {
-      console.log('image clicked');
-    } else if (img === null) {
+    if (img === null) {
       Alert.alert('Please add an image to your Profile');
     }
   }, []);
 
   const onPay = async () => {
-    setloading(true);
     if (img !== null) {
+      setloading(true);
       const order = await createOrder();
       var options = {
         name: 'Welcome to DiscountAdda',
@@ -82,27 +84,25 @@ function HalfYearlySubs({navigation}) {
         order_id: order.id,
         key: RazorpayApiKey,
         prefill: {
-          email: '',
-          contact: '',
-          name: '',
+          email: mail,
+          contact: contact,
+          name: name + last,
         },
         theme: {color: '#a29bfe'},
       };
       RazorpayCheckout.open(options)
         .then(async transaction => {
           const validSignature = await verifyPayment(order.id, transaction);
-
+          // console.log('Is Valid Payment: ' + validSignature);
           const createAt = await AsyncStorage.getItem('@createdAt');
 
-          console.log('Is Valid Payment: ' + validSignature);
           setloading(false);
-          // alert('Successfully registered');
 
           var currentDate = moment().format();
           var expirydate = moment(currentDate)
-            .add(1, 'month')
+            .add(6, 'month')
             .format('DD/MM/YYYY');
-          var expiryat = moment(currentDate).add(1, 'month').format();
+          var expiryat = moment(currentDate).add(6, 'month').format();
 
           const value = {
             firstName: name,
@@ -134,19 +134,61 @@ function HalfYearlySubs({navigation}) {
           firestore()
             .collection('Subscribed')
             .doc(uid)
-            .set()
+            .set(value)
+            .then(() => navigation.replace('SubscriptionsCard'))
             .catch(() => Alert.alert('Regiration Failed'));
         })
-        .then(() => navigation.replace('SubscriptionsCard'))
         .catch(() => {
           Alert.alert('Payment Failed.');
           navigation.navigate('SubscriptionsScreen');
+        })
+        .finally(() => {
           setloading(false);
         });
     } else if (img === null) {
       Alert.alert('Please add an image to your Profile');
     }
   };
+
+  // const onPay = async () => {
+  //   const createAt = await AsyncStorage.getItem('@createdAt');
+
+  //   setloading(false);
+
+  //   var currentDate = moment().format();
+  //   var expirydate = moment(currentDate).add(6, 'month').format('DD MMM YYYY');
+  //   var expiryat = moment(currentDate).add(6, 'month').format();
+
+  //   const value = {
+  //     firstName: name,
+  //     lastName: last,
+  //     contactNumber: contact,
+  //     cardNumber: cardno,
+  //     image: img,
+  //     expiryDate: expirydate,
+  //     dateCreated: createAt,
+  //     subscribed: true,
+  //     amount: 195,
+  //     subscription: 'Half yealy',
+  //     expiryAt: expiryat,
+  //   };
+
+  //   let config = {
+  //     headers: {
+  //       accept: 'application/json',
+  //       'Content-Type': 'application/json',
+  //     },
+  //   };
+  //   axios
+  //     .post('https://usercard.herokuapp.com/api/v1/AddDetails/', value, config)
+  //     .catch(err => console.error(err));
+  //   firestore()
+  //     .collection('Subscribed')
+  //     .doc(uid)
+  //     .set(value)
+  //     .then(() => navigation.replace('SubscriptionsCard'))
+  //     .catch(() => Alert.alert('Regiration Failed'));
+  // };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -159,9 +201,9 @@ function HalfYearlySubs({navigation}) {
         }}>
         <Image source={require('../../assets/subs.png')} />
       </ImageBackground>
-      <View flexDirection="row" style={styles.amount}>
-        <Text style={styles.text}>{'\u20B9'} 190</Text>
-        <Text>/HalfYearly</Text>
+      <View flexDirection="column" style={styles.amount}>
+        <Text style={styles.text}>{'\u20B9'} 999</Text>
+        <Text>190 / HalfYearly</Text>
       </View>
       {loading ? (
         <View style={{flex: 1, backgroundColor: '#fff'}}>
@@ -196,7 +238,7 @@ function HalfYearlySubs({navigation}) {
               )}
             />
             <List.Item
-              title="50% off on 1st shop using the card"
+              title="Access more than 2000 + stores"
               left={props => (
                 <Image
                   {...props}
@@ -226,7 +268,9 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#000',
-    fontSize: 28,
+    fontSize: 22,
+    textDecorationLine: 'line-through',
+    textDecorationStyle: 'dotted',
   },
 });
 

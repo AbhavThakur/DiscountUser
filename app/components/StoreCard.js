@@ -43,9 +43,8 @@ function StoreCard({
         <Text style={{marginVertical: 5}}>
           {distance} m , {location}
         </Text>
-        <Text style={{marginBottom: 10}}>
-          Open . Closes {time} PM . {contact}
-        </Text>
+        <Text style={{marginBottom: 10}}>Open . Closes {time} PM .</Text>
+        <Text style={{marginBottom: 10}}>{contact}</Text>
       </TouchableOpacity>
     </View>
   );

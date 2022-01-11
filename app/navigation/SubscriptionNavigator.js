@@ -36,27 +36,27 @@ const SubscriptionNavigator = ({navigation}) => {
           console.log('User subscribed: ', documentSnapshot.exists);
 
           if (documentSnapshot.exists === true) {
-            var currentdate = moment().format();
-            var daysCount = moment(documentSnapshot.data().expiryAt).diff(
+            let currentdate = moment().format();
+            let daysCount = moment(documentSnapshot.data().expiryAt).diff(
               currentdate,
               'days',
             );
             if (daysCount > 0) {
-              console.log('no. of days', daysCount);
               setsubscribe(true);
-            } else if (daysCount < 3) {
+            } else if (daysCount < 3 && daysCount > 0) {
               Alert.alert(
                 `Subscriptions is going to Expire in ${daysCount} days`,
               );
             }
-            if (daysCount === 0) {
+            if (daysCount <= 0) {
               setsubscribe(false);
+              Alert.alert(
+                `Your Subscriptions is already Expired  ${-daysCount} days back`,
+              );
               DeleteCard();
               firestore().collection('Subscribed').doc(uid).update({
                 subscribed: false,
               });
-
-              console.log('DeleteCard');
             }
           }
         });

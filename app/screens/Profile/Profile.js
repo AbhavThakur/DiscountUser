@@ -73,7 +73,7 @@ function Profile({navigation}) {
       data,
     );
     firestore()
-      .collection('DeletedUsers')
+      .collection('DeleteDetailsUserApp')
       .doc(uid)
       .set(data)
       .finally(() => signOut());

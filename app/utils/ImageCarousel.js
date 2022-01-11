@@ -149,7 +149,7 @@ export default function ImageCarousel() {
       <FlatList
         data={slideList}
         // style={styles.carousel}
-        FlatListRef={React.createRef()}
+        ref={React.createRef()}
         renderItem={renderItem}
         pagingEnabled
         horizontal

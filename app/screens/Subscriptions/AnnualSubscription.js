@@ -27,7 +27,8 @@ function AnnualSubscription({navigation}) {
   const [name, setName] = useState('');
   const [last, setLast] = useState('');
   const [contact, setContact] = useState('');
-  const [img, setImg] = useState(null);
+  const [img, setImg] = useState();
+  const [mail, setEmail] = useState('');
   const {uid} = auth().currentUser;
 
   const createOrder = async () => {
@@ -55,23 +56,23 @@ function AnnualSubscription({navigation}) {
     firestore()
       .collection('Discountusers')
       .doc(uid)
-      .onSnapshot(documentSnapshot => {
+      .get()
+      .then(documentSnapshot => {
         const userData = documentSnapshot.data();
         setName(userData.fname);
         setLast(userData.lname);
         setContact(userData.contact);
+        setEmail(userData.email);
         setImg(userData.userImg);
       });
-    if (img !== null) {
-      console.log('image clicked');
-    } else if (img === null) {
+    if (img === null) {
       Alert.alert('Please add an image to your Profile');
     }
   }, []);
 
   const onPay = async () => {
-    setloading(true);
     if (img !== null) {
+      setloading(true);
       const order = await createOrder();
       var options = {
         name: 'Welcome to DiscountAdda',
@@ -79,9 +80,9 @@ function AnnualSubscription({navigation}) {
         order_id: order.id,
         key: RazorpayApiKey,
         prefill: {
-          email: '',
-          contact: '',
-          name: '',
+          email: mail,
+          contact: contact,
+          name: name + last,
         },
         theme: {color: '#a29bfe'},
       };
@@ -89,23 +90,24 @@ function AnnualSubscription({navigation}) {
         .then(async transaction => {
           const validSignature = await verifyPayment(order.id, transaction);
 
+          // console.log('Is Valid Payment: ' + validSignature);
           const createAt = await AsyncStorage.getItem('@createdAt');
 
-          console.log('Is Valid Payment: ' + validSignature);
           setloading(false);
           // alert('Successfully registered');
 
           var currentDate = moment().format();
           var expirydate = moment(currentDate)
-            .add(1, 'month')
-            .format('DD/MM/YYYY');
-          var expiryat = moment(currentDate).add(1, 'month').format();
+            .add(12, 'month')
+            .format('DD MMM YYYY');
+          var expiryat = moment(currentDate).add(12, 'month').format();
 
           const value = {
             firstName: name,
             lastName: last,
             contactNumber: contact,
             cardNumber: cardno,
+            email: mail,
             image: img,
             expiryDate: expirydate,
             dateCreated: createAt,
@@ -132,12 +134,14 @@ function AnnualSubscription({navigation}) {
             .collection('Subscribed')
             .doc(uid)
             .set(value)
+            .then(() => navigation.replace('SubscriptionsCard'))
             .catch(() => Alert.alert('Registration Failed'));
         })
-        .then(() => navigation.replace('SubscriptionsCard'))
         .catch(() => {
           Alert.alert('Payment Failed.');
           navigation.navigate('SubscriptionsScreen');
+        })
+        .finally(() => {
           setloading(false);
         });
     } else if (img === null) {
@@ -156,9 +160,9 @@ function AnnualSubscription({navigation}) {
         }}>
         <Image source={require('../../assets/subs.png')} />
       </ImageBackground>
-      <View flexDirection="row" style={styles.amount}>
-        <Text style={styles.text}>{'\u20B9'} 365</Text>
-        <Text>/Annual</Text>
+      <View flexDirection="column" style={styles.amount}>
+        <Text style={styles.text}>{'\u20B9'} 1999</Text>
+        <Text> 365/Annual</Text>
       </View>
       {loading ? (
         <View style={{flex: 1, backgroundColor: '#fff'}}>
@@ -193,7 +197,7 @@ function AnnualSubscription({navigation}) {
               )}
             />
             <List.Item
-              title="50% off on 1st shop using the card"
+              title="Access more than 2000 + stores"
               left={props => (
                 <Image
                   {...props}
@@ -223,7 +227,9 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#000',
-    fontSize: 28,
+    fontSize: 22,
+    textDecorationLine: 'line-through',
+    textDecorationStyle: 'solid',
   },
 });
 

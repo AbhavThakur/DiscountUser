@@ -32,7 +32,8 @@ function Subscriptions({navigation}) {
     firestore()
       .collection('Subscribed')
       .doc(uid)
-      .onSnapshot(documentSnapshot => {
+      .get()
+      .then(documentSnapshot => {
         const userData = documentSnapshot.data();
         setName(userData.firstName);
         setLast(userData.lastName);

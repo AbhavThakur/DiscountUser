@@ -80,9 +80,13 @@ function Home(props) {
           console.log('User subscribed: ', documentSnapshot.exists);
 
           if (documentSnapshot.exists) {
-            console.log('subscribed');
-            setModalVisible(false);
             UserDiscount(documentSnapshot.data().cardNumber);
+            console.log(documentSnapshot.data().subscribed);
+            if (documentSnapshot.data().subscribed === true) {
+              setModalVisible(false);
+            } else if (documentSnapshot.data().subscribed === false) {
+              setModalVisible(true);
+            }
           }
         });
     }
@@ -137,7 +141,7 @@ function Home(props) {
         contentContainerStyle={styles.container}>
         <ImageCarousel />
 
-        {isModalVisible === false ? (
+        {isModalVisible ? (
           <View style={styles.category}>
             <TouchableOpacity
               activeOpacity="0.7"
