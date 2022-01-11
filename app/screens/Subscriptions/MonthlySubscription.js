@@ -147,7 +147,7 @@ function MonthlySubscription({navigation}) {
           setloading(false);
         });
     } else if (img === null) {
-      Alert.alert('Add image to your account');
+      Alert.alert('Please Add image to your account');
     }
   };
 

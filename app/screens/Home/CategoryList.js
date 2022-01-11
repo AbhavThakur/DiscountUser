@@ -11,6 +11,7 @@ import {
   TextInput,
   ActivityIndicator,
   RefreshControl,
+  Linking,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import firestore from '@react-native-firebase/firestore';
@@ -73,7 +74,7 @@ function CategoryList({navigation, route}) {
 
           return {id, ...data};
         });
-        console.log('shops ', shops);
+        // console.log('shops ', shops);
         setinfo(shops);
         setfilterdData(shops);
         setloading(false);
@@ -102,6 +103,12 @@ function CategoryList({navigation, route}) {
     ShopData();
     setRefreshing(false);
   }, [refreshing]);
+
+  const callNumber = contact => {
+    let phoneNumber = `tel:${contact}`;
+
+    Linking.openURL(phoneNumber);
+  };
 
   return (
     <View style={styles.container}>
@@ -161,7 +168,11 @@ function CategoryList({navigation, route}) {
       ) : (
         <FlatList
           data={info}
-          keyExtractor={(item, index) => index.toString()}
+          style={{
+            backgroundColor: '#fff',
+          }}
+          contentContainerStyle={{alignItems: 'center'}}
+          keyExtractor={(item, index) => item.id}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
@@ -171,14 +182,15 @@ function CategoryList({navigation, route}) {
                 Title={item.StoreName}
                 img={item.shopimage}
                 discount={item.discount}
-                distance={'400'}
+                // distance={'400'}
                 location={item.address}
-                time={'10'}
+                time={item.status}
                 contact={item.contactNumber}
                 ratings={'4'}
                 views={'140'}
                 ratingvalue={'4.4'}
                 onPress={() => navigation.navigate('Shop', item.id)}
+                onPressConatct={() => callNumber(item.contactNumber)}
               />
             );
           }}

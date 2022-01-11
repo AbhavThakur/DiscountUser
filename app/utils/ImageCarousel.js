@@ -18,6 +18,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {useIsFocused} from '@react-navigation/native';
+import {AutoScrollFlatList} from 'react-native-autoscroll-flatlist';
 
 const {width: windowWidth, height: windowHeight} = Dimensions.get('window');
 
@@ -143,13 +144,12 @@ export default function ImageCarousel() {
     <View
       style={{
         height: windowHeight * 0.23,
-        marginTop: 5,
+        // marginTop: 5,
         alignItems: 'center',
       }}>
-      <FlatList
+      <AutoScrollFlatList
         data={slideList}
         // style={styles.carousel}
-        ref={React.createRef()}
         renderItem={renderItem}
         pagingEnabled
         horizontal

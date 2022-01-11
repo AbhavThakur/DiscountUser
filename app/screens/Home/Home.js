@@ -141,7 +141,7 @@ function Home(props) {
         contentContainerStyle={styles.container}>
         <ImageCarousel />
 
-        {isModalVisible ? (
+        {isModalVisible === false ? (
           <View style={styles.category}>
             <TouchableOpacity
               activeOpacity="0.7"
