@@ -134,8 +134,8 @@ android {
         applicationId "com.discountuser"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
-        versionName "BETA VERSION_1_8"
+        versionCode 3
+        versionName "version 1"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
     }
@@ -209,7 +209,7 @@ dependencies {
     implementation project(':react-native-razorpay')
     implementation project(':lottie-react-native')
     implementation 'androidx.multidex:multidex:2.0.1'
-    
+
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
     }

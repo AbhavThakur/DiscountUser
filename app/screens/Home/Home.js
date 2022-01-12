@@ -18,15 +18,14 @@ import {useIsFocused} from '@react-navigation/native';
 import Modal from 'react-native-modal';
 import {Card, Title, Paragraph, Button} from 'react-native-paper';
 
-import Discount from '../../utils/Discount';
-import ImageCarousel from '../../utils/ImageCarousel';
 import {Info} from '../../constants/Categories';
+import Slider from '../../utils/ImageCarousel';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 function Home(props) {
-  const [isModalVisible, setModalVisible] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(true);
   const [amount, setamount] = useState([]);
   const [Savedamount, setSavedamount] = useState([]);
 
@@ -136,11 +135,10 @@ function Home(props) {
           </Text>
         </View>
       </View>
+      <Slider />
       <ScrollView
         nestedScrollEnabled={true}
         contentContainerStyle={styles.container}>
-        <ImageCarousel />
-
         {isModalVisible === false ? (
           <View style={styles.category}>
             <TouchableOpacity

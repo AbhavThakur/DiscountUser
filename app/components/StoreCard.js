@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
+import {Divider} from 'react-native-paper';
+
 import {windowWidth} from '../utils/Dimentions';
 import StarRating from './StarRating';
 
@@ -23,49 +25,60 @@ function StoreCard({
   ratingvalue,
   onPress,
   onPressConatct,
+  onPressShare,
 }) {
   return (
     <View style={styles.card}>
+      <Image
+        source={{uri: img}}
+        style={{
+          width: windowWidth * 0.85,
+          height: 140,
+        }}
+      />
+      <View style={{position: 'absolute'}}>
+        <Image
+          source={require('../assets/tag.png')}
+          style={{width: 47, height: 47}}
+        />
+        <Text style={{position: 'absolute', color: '#fff', right: 5, top: 2}}>
+          {discount}% off
+        </Text>
+      </View>
+      <TouchableOpacity
+        onPress={onPressShare}
+        activeOpacity={0.5}
+        style={{position: 'absolute', right: 5}}>
+        <Image
+          source={require('../assets/sharestore.png')}
+          style={{width: 47, height: 47}}
+        />
+      </TouchableOpacity>
       <TouchableOpacity
         activeOpacity={0.5}
         onPress={onPress}
         style={{
-          backgroundColor: '#fff',
+          // backgroundColor: 'yellow',
           width: windowWidth * 0.85,
-          flex: 1,
           padding: 10,
         }}>
-        <Image
-          source={{uri: img}}
-          style={{
-            width: windowWidth * 0.8,
-            height: '70%',
-          }}
-        />
-        <View style={{position: 'absolute'}}>
-          <Image
-            source={require('../assets/tag.png')}
-            style={{width: 47, height: 47}}
-          />
-          <Text style={{position: 'absolute', color: '#fff', right: 5, top: 2}}>
-            {discount}% off
-          </Text>
-        </View>
         <Text style={{fontSize: 21, marginTop: 5}}>{Title}</Text>
         <StarRating ratings={ratings} views={views} ratingvalue={ratingvalue} />
       </TouchableOpacity>
-      <View style={{padding: 10}}>
+      <View style={{padding: 5, flex: 2}}>
         <Text style={{}}>
-          {distance} {location}
+          📍 {distance} {location}
         </Text>
+        <Divider style={{marginTop: 5, backgroundColor: '#ccc'}} />
       </View>
       <View
         style={{
           padding: 10,
           flexDirection: 'row',
           justifyContent: 'space-around',
+          backgroundColor: '#f9f9f9',
         }}>
-        <Text> {time} Now</Text>
+        <Text> 🛒 {time} Now</Text>
         <TouchableOpacity onPress={onPressConatct}>
           <Text>📞 {contact}</Text>
         </TouchableOpacity>
