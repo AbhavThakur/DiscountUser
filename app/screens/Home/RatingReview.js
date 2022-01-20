@@ -22,6 +22,7 @@ import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {Rating, AirbnbRating} from 'react-native-ratings';
+import {API_URL, API_VERSION, Endpoint} from '../../config/config';
 
 function RatingReview({navigation, route}) {
   const [loading, setLoading] = useState(true);
@@ -47,7 +48,7 @@ function RatingReview({navigation, route}) {
   }, []);
 
   const Info = async () => {
-    const Feedbacklist = `https://usercard.herokuapp.com/api/v1/feedbacklist/${shopdetails.Shopid}`;
+    const Feedbacklist = `${API_URL}/${API_VERSION}/${Endpoint.Feedback.feedbacklist}/${shopdetails.Shopid}`;
     fetch(Feedbacklist)
       .then(res => res.json())
       .then(resJson => {
@@ -65,7 +66,8 @@ function RatingReview({navigation, route}) {
       .finally(() => setLoading(false));
 
     const cont = await AsyncStorage.getItem('contact');
-    const userFeedback = `https://usercard.herokuapp.com/api/v1/feedbackuser/${cont}&${shopdetails.Shopid}`;
+
+    const userFeedback = `${API_URL}/${API_VERSION}/${Endpoint.Feedback.checkfeedback}/${cont}&${shopdetails.Shopid}`;
     fetch(userFeedback)
       .then(res => res.json())
       .then(resJson => {
@@ -111,10 +113,10 @@ function RatingReview({navigation, route}) {
       rating: ratingvalue === undefined ? 3 : ratingvalue,
       dateCreated: currentDate,
     };
-    console.log(
-      '🚀😄 ~ file: RatingReview.js ~ line 80 ~ AddReview ~ valueinfo',
-      valueinfo,
-    );
+    // console.log(
+    //   '🚀😄 ~ file: RatingReview.js ~ line 80 ~ AddReview ~ valueinfo',
+    //   valueinfo,
+    // );
 
     let config = {
       headers: {
@@ -125,7 +127,7 @@ function RatingReview({navigation, route}) {
 
     axios
       .post(
-        'https://usercard.herokuapp.com/api/v1/feedback/',
+        `${API_URL}/${API_VERSION}/${Endpoint.Feedback.addfeedback}`,
         valueinfo,
         config,
       )
@@ -163,7 +165,7 @@ function RatingReview({navigation, route}) {
 
     axios
       .put(
-        `https://usercard.herokuapp.com/api/v1/editfeedback/${contact}&${shopdetails.Shopid}`,
+        `${API_URL}/${API_VERSION}/${Endpoint.Feedback.editfeedback}/${contact}&${shopdetails.Shopid}`,
         valueinfo,
         config,
       )

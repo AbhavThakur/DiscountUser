@@ -15,12 +15,18 @@ import firestore from '@react-native-firebase/firestore';
 import FormButton from '../../components/FormButton';
 import {ActivityIndicator, List, Paragraph} from 'react-native-paper';
 import moment from 'moment';
+import {useIsFocused} from '@react-navigation/native';
 
 import RazorpayCheckout from 'react-native-razorpay';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {RazorpayApiKey} from '../../config/config';
+import {
+  API_URL,
+  API_VERSION,
+  Endpoint,
+  RazorpayApiKey,
+} from '../../config/config';
 import Animations from '../../components/Animations';
 import cardno from '../../constants/Cardno';
 
@@ -34,6 +40,8 @@ function HalfYearlySubs({navigation}) {
   const [mail, setEmail] = useState('');
 
   const [img, setImg] = useState();
+
+  const isFocused = useIsFocused();
 
   const createOrder = async () => {
     const {data} = await axios.post(
@@ -57,22 +65,24 @@ function HalfYearlySubs({navigation}) {
   };
 
   useEffect(() => {
-    firestore()
-      .collection('Discountusers')
-      .doc(uid)
-      .get()
-      .then(documentSnapshot => {
-        const userData = documentSnapshot.data();
-        setName(userData.fname);
-        setLast(userData.lname);
-        setContact(userData.contact);
-        setEmail(userData.email);
-        setImg(userData.userImg);
-      });
-    if (img === null) {
-      Alert.alert('Please add an image to your Profile');
+    if (isFocused) {
+      firestore()
+        .collection('Discountusers')
+        .doc(uid)
+        .get()
+        .then(documentSnapshot => {
+          const userData = documentSnapshot.data();
+          setName(userData.fname);
+          setLast(userData.lname);
+          setContact(userData.contact);
+          setEmail(userData.email);
+          setImg(userData.userImg);
+        });
+      if (img === null) {
+        Alert.alert('Please add an image to your Profile');
+      }
     }
-  }, []);
+  }, [isFocused]);
 
   const onPay = async () => {
     if (img !== null) {
@@ -126,7 +136,7 @@ function HalfYearlySubs({navigation}) {
           };
           axios
             .post(
-              'https://usercard.herokuapp.com/api/v1/AddDetails/',
+              `${API_URL}/${API_VERSION}/${Endpoint.AddCardDetails}`,
               value,
               config,
             )

@@ -16,8 +16,14 @@ import RazorpayCheckout from 'react-native-razorpay';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
+import {useIsFocused} from '@react-navigation/native';
 
-import {RazorpayApiKey} from '../../config/config';
+import {
+  API_URL,
+  API_VERSION,
+  Endpoint,
+  RazorpayApiKey,
+} from '../../config/config';
 import Animations from '../../components/Animations';
 import FormButton from '../../components/FormButton';
 import cardno from '../../constants/Cardno';
@@ -30,6 +36,8 @@ function AnnualSubscription({navigation}) {
   const [img, setImg] = useState();
   const [mail, setEmail] = useState('');
   const {uid} = auth().currentUser;
+
+  const isFocused = useIsFocused();
 
   const createOrder = async () => {
     const {data} = await axios.post(
@@ -53,22 +61,24 @@ function AnnualSubscription({navigation}) {
   };
 
   useEffect(() => {
-    firestore()
-      .collection('Discountusers')
-      .doc(uid)
-      .get()
-      .then(documentSnapshot => {
-        const userData = documentSnapshot.data();
-        setName(userData.fname);
-        setLast(userData.lname);
-        setContact(userData.contact);
-        setEmail(userData.email);
-        setImg(userData.userImg);
-      });
-    if (img === null) {
-      Alert.alert('Please add an image to your Profile');
+    if (isFocused) {
+      firestore()
+        .collection('Discountusers')
+        .doc(uid)
+        .get()
+        .then(documentSnapshot => {
+          const userData = documentSnapshot.data();
+          setName(userData.fname);
+          setLast(userData.lname);
+          setContact(userData.contact);
+          setEmail(userData.email);
+          setImg(userData.userImg);
+        });
+      if (img === null) {
+        Alert.alert('Please add an image to your Profile');
+      }
     }
-  }, []);
+  }, [isFocused]);
 
   const onPay = async () => {
     if (img !== null) {
@@ -98,9 +108,9 @@ function AnnualSubscription({navigation}) {
 
           var currentDate = moment().format();
           var expirydate = moment(currentDate)
-            .add(12, 'month')
+            .add(12, 'months')
             .format('DD MMM YYYY');
-          var expiryat = moment(currentDate).add(12, 'month').format();
+          var expiryat = moment(currentDate).add(12, 'months').format();
 
           const value = {
             firstName: name,
@@ -124,7 +134,7 @@ function AnnualSubscription({navigation}) {
           };
           axios
             .post(
-              'https://usercard.herokuapp.com/api/v1/AddDetails/',
+              `${API_URL}/${API_VERSION}/${Endpoint.AddCardDetails}`,
               value,
               config,
             )

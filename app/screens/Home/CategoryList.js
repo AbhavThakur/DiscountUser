@@ -35,6 +35,7 @@ function CategoryList({navigation, route}) {
 
   const CategoryName = route.params.ShopName;
   const Category = route.params.Categoryitem;
+  const typecheck = route.params.Type;
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -47,25 +48,17 @@ function CategoryList({navigation, route}) {
 
   const ShopData = () => {
     setloading(true);
-    // firestore()
-    //   .collection('StoreName')
-    //   .orderBy('createdAt', 'asc')
-    //   .get()
-    //   .then(snapshot => {
-    //     let shops = snapshot.docs.map(doc => {
-    //       const data = doc.data();
-    //       const id = doc.id;
-
-    //       return {id, ...data};
-    //     });
-    //     // console.log('shops ', shops);
-    //     setinfo(shops);
-    //     setfilterdData(shops);
-    //     setloading(false);
-    //   });
+    console.log(
+      '🚀👨🏻‍💻 ~ file: CategoryList.js ~ line 54 ~ ShopData ~ typecheck',
+      typecheck,
+    );
+    console.log(
+      '🚀👨🏻‍💻 ~ file: CategoryList.js ~ line 56 ~ ShopData ~ Category',
+      Category,
+    );
     firestore()
       .collection('StoreName')
-      .where('Category', 'array-contains-any', Category)
+      .where('Category', typecheck, Category)
       .get()
       .then(snapshot => {
         let shops = snapshot.docs.map(doc => {

@@ -12,7 +12,6 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {ActivityIndicator, Title} from 'react-native-paper';
 import QRCode from 'react-native-qrcode-svg';
-import moment from 'moment';
 
 import FormButton from '../../components/FormButton';
 

@@ -13,13 +13,13 @@ import {
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import {useIsFocused} from '@react-navigation/native';
 import Modal from 'react-native-modal';
 import {Card, Title, Paragraph, Button} from 'react-native-paper';
 
 import {Info} from '../../constants/Categories';
 import Slider from '../../utils/ImageCarousel';
+import {API_URL, API_VERSION, Endpoint} from '../../config/config';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -80,7 +80,7 @@ function Home(props) {
 
           if (documentSnapshot.exists) {
             UserDiscount(documentSnapshot.data().cardNumber);
-            console.log(documentSnapshot.data().subscribed);
+            // console.log(documentSnapshot.data().subscribed);
             if (documentSnapshot.data().subscribed === true) {
               setModalVisible(false);
             } else if (documentSnapshot.data().subscribed === false) {
@@ -92,7 +92,7 @@ function Home(props) {
   }, [isFocused]);
 
   const UserDiscount = card => {
-    const Discountlist = `https://usercard.herokuapp.com/api/v1/discountuser/${card}`;
+    const Discountlist = `${API_URL}/${API_VERSION}/${Endpoint.discount}/${card}`;
     fetch(Discountlist)
       .then(res => res.json())
       .then(resJson => {
@@ -121,7 +121,7 @@ function Home(props) {
     <>
       <View style={styles.header}>
         <View style={{alignItems: 'center'}}>
-          <Text style={styles.txt}>Total Amount</Text>
+          <Text style={styles.txt}>Total Amount Spent</Text>
           <Text style={styles.txt}>
             {'\u20B9'} {amount.reduce((a, b) => a + b, 0)}
           </Text>
@@ -139,7 +139,7 @@ function Home(props) {
       <ScrollView
         nestedScrollEnabled={true}
         contentContainerStyle={styles.container}>
-        {isModalVisible === false ? (
+        {isModalVisible ? (
           <View style={styles.category}>
             <TouchableOpacity
               activeOpacity="0.7"
@@ -181,6 +181,7 @@ function Home(props) {
                     props.navigation.navigate(item.screen, {
                       ShopName: item.name,
                       Categoryitem: item.category,
+                      Type: item.type,
                     })
                   }>
                   <Image

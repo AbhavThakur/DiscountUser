@@ -2,8 +2,9 @@ export const Info = [
   {
     id: 1,
     img: require('../assets/food.png'),
-    category: ['resturants'],
+    category: 'resturants',
     name: 'Restaurants',
+    type: 'array-contains',
     width: 70,
     height: 70,
     screen: 'categoryList',
@@ -11,8 +12,9 @@ export const Info = [
   {
     id: 2,
     img: require('../assets/DairyProduct.png'),
-    category: ['dailyneed', 'grocery'],
+    category: 'grocery',
     name: 'Essentials',
+    type: 'array-contains',
     width: 70,
     height: 70,
     screen: 'categoryList',
@@ -20,8 +22,9 @@ export const Info = [
   {
     id: 2,
     img: require('../assets/doctor.png'),
-    category: ['medical'],
+    category: 'medical',
     name: 'Doctors',
+    type: 'array-contains',
     width: 70,
     height: 70,
     screen: 'categoryList',
@@ -29,8 +32,9 @@ export const Info = [
   {
     id: 4,
     img: require('../assets/shopping.png'),
-    category: ['generalshops', 'shopping'],
+    category: 'shopping',
     name: 'Shopping',
+    type: 'array-contains',
     width: 70,
     height: 70,
     screen: 'categoryList',
@@ -38,8 +42,9 @@ export const Info = [
   {
     id: 5,
     img: require('../assets/hospital.png'),
-    category: ['medical'],
     name: 'Hospitals',
+    category: 'medical',
+    type: 'array-contains',
     width: 70,
     height: 70,
     screen: 'categoryList',
@@ -47,8 +52,9 @@ export const Info = [
   {
     id: 6,
     img: require('../assets/education.png'),
-    category: ['education'],
     name: 'Education',
+    category: ['education'],
+    type: 'in',
     width: 70,
     height: 70,
     screen: 'categoryList',
@@ -56,8 +62,9 @@ export const Info = [
   {
     id: 7,
     img: require('../assets/globe.png'),
-    category: ['travel'],
+    category: 'travel',
     name: 'Travel',
+    type: 'array-contains',
     width: 70,
     height: 70,
     screen: 'categoryList',
@@ -65,8 +72,9 @@ export const Info = [
   {
     id: 8,
     img: require('../assets/pills.png'),
-    category: ['medical'],
+    category: 'medical',
     name: 'Medical',
+    type: 'array-contains',
     width: 70,
     height: 70,
     screen: 'categoryList',
@@ -74,8 +82,9 @@ export const Info = [
   {
     id: 9,
     img: require('../assets/wedding.png'),
-    category: ['wedding'],
+    category: 'wedding',
     name: 'Wedding',
+    type: 'array-contains',
     width: 70,
     height: 70,
     screen: 'categoryList',
@@ -83,8 +92,9 @@ export const Info = [
   {
     id: 10,
     img: require('../assets/beauty.png'),
-    category: ['demand'],
+    category: 'demand',
     name: 'Saloon',
+    type: 'array-contains',
     width: 70,
     height: 70,
     screen: 'categoryList',
@@ -92,8 +102,9 @@ export const Info = [
   {
     id: 11,
     img: require('../assets/repair.png'),
-    category: ['repair'],
+    category: 'repair',
     name: 'Repair ',
+    type: 'array-contains',
     width: 70,
     height: 70,
     screen: 'categoryList',
@@ -103,6 +114,7 @@ export const Info = [
     img: require('../assets/more.png'),
     category: ['more'],
     name: 'Show More',
+    type: 'array-contains',
     width: 70,
     height: 70,
     screen: 'CategoryScreen',
@@ -115,6 +127,7 @@ export const value = [
     img: require('../assets/grocery.png'),
     category: ['dailyneed', 'grocery', 'shopping'],
     name: 'Grocery',
+    type: 'array-contains-any',
     screen: 'categoryList',
   },
   {
@@ -122,6 +135,7 @@ export const value = [
     img: require('../assets/milk.png'),
     category: ['dailyneed', 'grocery', 'shopping'],
     name: 'Milk',
+    type: 'array-contains-any',
     screen: 'categoryList',
   },
   {
@@ -129,6 +143,7 @@ export const value = [
     img: require('../assets/electrician.png'),
     category: ['demand'],
     name: 'Electrician',
+    type: 'array-contains-any',
     screen: 'categoryList',
   },
   {
@@ -136,6 +151,7 @@ export const value = [
     img: require('../assets/plumber.png'),
     category: ['demand'],
     name: 'Plumber',
+    type: 'array-contains-any',
     screen: 'categoryList',
   },
   {
@@ -143,6 +159,7 @@ export const value = [
     img: require('../assets/water.png'),
     category: ['demand'],
     name: 'Water',
+    type: 'array-contains-any',
     screen: 'categoryList',
   },
   {
@@ -150,6 +167,7 @@ export const value = [
     img: require('../assets/clean.png'),
     category: ['demand'],
     name: 'Clean',
+    type: 'array-contains-any',
     screen: 'categoryList',
   },
   {
@@ -157,6 +175,7 @@ export const value = [
     img: require('../assets/laundary.png'),
     category: ['demand'],
     name: 'Laundary',
+    type: 'array-contains-any',
     screen: 'categoryList',
   },
   {
@@ -164,6 +183,7 @@ export const value = [
     img: require('../assets/foodCategory.png'),
     category: ['resturants', 'grocery'],
     name: 'Food',
+    type: 'array-contains-any',
     screen: 'categoryList',
   },
 ];

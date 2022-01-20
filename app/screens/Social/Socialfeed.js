@@ -19,6 +19,10 @@ import {
   Appbar,
 } from 'react-native-paper';
 import Modal from 'react-native-modal';
+import axios from 'axios';
+
+import {useIsFocused} from '@react-navigation/native';
+import {API_URL, API_VERSION, Endpoint} from '../../config/config';
 
 const info = [
   {
@@ -103,6 +107,10 @@ function Socialfeed({navigation}) {
   const [data, setdata] = useState([]);
   const [selected, setselected] = useState(null);
 
+  const [socialfeedlist, setsocialfeedlist] = useState([]);
+
+  const isFocused = useIsFocused();
+
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
@@ -110,6 +118,25 @@ function Socialfeed({navigation}) {
   useEffect(() => {
     setdata(filter);
   }, []);
+
+  useEffect(() => {
+    if (isFocused) {
+      Socialfeed();
+    }
+  }, [isFocused]);
+
+  // Social feed data from api
+
+  const Socialfeed = async () => {
+    const list = await axios.get(
+      `${API_URL}/${API_VERSION}/${Endpoint.Socialfeed}`,
+    );
+    console.log(
+      '🚀👨🏻‍💻 ~ file: Socialfeed.js ~ line 132 ~ Socialfeed ~ list',
+      list.data,
+    );
+    setsocialfeedlist(list.data);
+  };
 
   const onChangeValue = (itemSelected, index) => {
     const newData = data.map(item => {
@@ -233,18 +260,18 @@ function Socialfeed({navigation}) {
 
       <View style={{backgroundColor: '#2C3A4A', flex: 1}}>
         <FlatList
-          data={info}
+          data={socialfeedlist}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({item}) => (
             <Card style={styles.cardcontainer}>
               <Card.Title
                 title={item.name}
-                subtitle={item.time}
+                subtitle={item.dateCreated}
                 left={props => (
                   <Avatar.Image
                     {...props}
-                    size={60}
-                    source={item.img}
+                    size={50}
+                    source={{uri: item.userImage}}
                     style={{backgroundColor: '#fff'}}
                   />
                 )}
@@ -253,17 +280,21 @@ function Socialfeed({navigation}) {
                     <Image
                       {...props}
                       source={require('../../assets/socialdiscount.png')}
-                      style={{height: 50, width: 145}}
+                      style={{height: 45, width: 130}}
                     />
-                    <View style={{position: 'absolute', left: 40}}>
+                    <View style={{position: 'absolute', left: 30}}>
                       <Text style={{color: '#fff'}}>Saved {item.saved}</Text>
-                      <Text>Got {item.off}%</Text>
+                      <Text>Got {(item.amountsaved / item.amount) * 100}%</Text>
                     </View>
                   </View>
                 )}
               />
               <Card.Content>
-                <Paragraph>{item.info}</Paragraph>
+                <Paragraph>
+                  Shopped at {item.shopName}. Got amazing{' '}
+                  {(item.amountsaved / item.amount) * 100}% off on purchase of
+                  worth {item.amount}
+                </Paragraph>
               </Card.Content>
 
               <Card.Content style={{flexDirection: 'row', marginTop: 10}}>
@@ -274,7 +305,7 @@ function Socialfeed({navigation}) {
                     textDecorationLine: 'underline',
                     marginStart: 20,
                   }}>
-                  {item.storename}
+                  {item.shopName}
                 </Text>
               </Card.Content>
               <View

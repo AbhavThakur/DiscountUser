@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import {useIsFocused} from '@react-navigation/native';
 
 import FormButton from '../../components/FormButton';
 import FormText from '../../components/FormText';
@@ -32,32 +33,35 @@ function Profile({navigation}) {
   const [loading, setLoading] = useState(true);
 
   const {logout, signOut} = useContext(AuthContext);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    firestore()
-      .collection('Discountusers')
-      .doc(uid)
-      .get()
-      .then(documentSnapshot => {
-        const userData = documentSnapshot.data();
-        setName(userData.fname);
-        setLast(userData.lname);
-        setEmail(userData.email);
-        setAddress(userData.address);
-        setContact(userData.contact);
-        setImg(userData.userImg);
-        setdate(userData.dob);
-        setjoindate(
-          new Date(userData.createdAt.toDate())
-            .toDateString()
-            .split(' ')
-            .slice(1)
-            .join(' '),
-        );
+    if (isFocused) {
+      firestore()
+        .collection('Discountusers')
+        .doc(uid)
+        .get()
+        .then(documentSnapshot => {
+          const userData = documentSnapshot.data();
+          setName(userData.fname);
+          setLast(userData.lname);
+          setEmail(userData.email);
+          setAddress(userData.address);
+          setContact(userData.contact);
+          setImg(userData.userImg);
+          setdate(userData.dob);
+          setjoindate(
+            new Date(userData.createdAt.toDate())
+              .toDateString()
+              .split(' ')
+              .slice(1)
+              .join(' '),
+          );
 
-        setLoading(false);
-      });
-  }, [uid]);
+          setLoading(false);
+        });
+    }
+  }, [isFocused, uid]);
 
   const DeleteDetails = () => {
     const data = {

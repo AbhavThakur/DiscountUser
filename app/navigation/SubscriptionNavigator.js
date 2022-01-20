@@ -12,6 +12,7 @@ import {useIsFocused} from '@react-navigation/native';
 import Subscriptions from '../screens/Subscriptions/Subscriptions';
 import SubscriptionTopNavigator from './SubscriptionTopNavigator';
 import Animations from '../components/Animations';
+import {API_URL, API_VERSION, Endpoint} from '../config/config';
 
 const Stack = createStackNavigator();
 
@@ -65,7 +66,7 @@ const SubscriptionNavigator = ({navigation}) => {
 
   const DeleteCard = async () => {
     const cont = await AsyncStorage.getItem('contact');
-    axios.delete(`https://usercard.herokuapp.com/api/v1/deletecard/${cont}`);
+    axios.delete(`${API_URL}/${API_VERSION}/${Endpoint.DeleteCard}/${cont}`);
   };
 
   if (subscribe === null) {

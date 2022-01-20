@@ -45,14 +45,14 @@ export default class Slider extends Component {
     this._stopAutoPlay();
   }
 
-  // TODO _renderItem()
+  //  _renderItem()
   _renderItem({item, index}) {
     return <Image source={item.image} style={styles.sliderItems} />;
   }
 
-  // TODO _keyExtractor()
+  // _keyExtractor()
   _keyExtractor(item, index) {
-    // console.log(item);
+    //  ! console.log(item);
     return index.toString();
   }
   state = {
@@ -88,6 +88,7 @@ export default class Slider extends Component {
           marginBottom: 10,
           height: windowHeight * 0.2,
           alignItems: 'center',
+          backgroundColor: '#fff',
         }}>
         <FlatList
           style={{
