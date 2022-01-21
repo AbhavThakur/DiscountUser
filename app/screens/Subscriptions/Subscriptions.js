@@ -7,6 +7,7 @@ import {
   Modal,
   Alert,
   Pressable,
+  SafeAreaView,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -43,7 +44,7 @@ function Subscriptions({navigation}) {
   }, [uid]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Title>Hurray!! Get your products</Title>
       <Title>at max discount !!</Title>
 
@@ -80,6 +81,7 @@ function Subscriptions({navigation}) {
             <Text style={styles.modalText}>QR Code</Text>
             <QRCode
               value={cardno}
+              size={250}
               color="black"
               logoBackgroundColor="transparent"
             />
@@ -102,7 +104,7 @@ function Subscriptions({navigation}) {
         btnstyle={{marginTop: 20}}
         onPress={() => setModalVisible(true)}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -149,7 +151,7 @@ const styles = StyleSheet.create({
   modalView: {
     margin: 20,
     width: '90%',
-    height: '35%',
+    height: '55%',
     backgroundColor: 'white',
     borderRadius: 20,
     padding: 10,

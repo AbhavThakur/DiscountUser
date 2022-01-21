@@ -59,13 +59,11 @@ export default class Slider extends Component {
     link: [
       {
         id: 1,
-
-        image: require('../assets/posters/userappbanner1.png'),
+        image: require('../assets/posters/userappbanner2.png'),
       },
       {
         id: 2,
-
-        image: require('../assets/posters/userappbanner2.png'),
+        image: require('../assets/posters/userappbanner1.png'),
       },
       {
         id: 3,

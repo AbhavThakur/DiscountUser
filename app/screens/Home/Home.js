@@ -135,6 +135,7 @@ function Home(props) {
           </Text>
         </View>
       </View>
+      {/* Slider for image */}
       <Slider />
       <ScrollView
         nestedScrollEnabled={true}

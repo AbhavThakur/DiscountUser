@@ -23,54 +23,7 @@ import axios from 'axios';
 
 import {useIsFocused} from '@react-navigation/native';
 import {API_URL, API_VERSION, Endpoint} from '../../config/config';
-
-const info = [
-  {
-    img: require('../../assets/avatar.png'),
-    name: 'Anaya Patil',
-    time: 'a mins ago',
-    info: 'Shopped at Harish Grocery Store. Got amazing 50% off on purchase of worth 4000.',
-    storename: 'Harish Stores',
-    saved: '2000',
-    off: '50',
-  },
-  {
-    img: require('../../assets/avatar.png'),
-    name: 'Aana Roy',
-    time: '10 mins ago',
-    info: 'Shopped at Raj Trades. Got amazing 40% off on purchase of worth 3600.',
-    storename: 'Raj Trades',
-    saved: '1000',
-    off: '40',
-  },
-  {
-    img: require('../../assets/avatar.png'),
-    name: 'Shruti Patil',
-    time: '30 mins ago',
-    info: 'Shopped at Harry Sales Grocery Store. Got amazing 50% off on purchase of worth 2940.',
-    storename: 'Harish Stores',
-    saved: '800',
-    off: '45',
-  },
-  {
-    img: require('../../assets/avatar.png'),
-    name: 'Samar Patil',
-    time: 'a mins ago',
-    info: 'Shopped at Harish Grocery Store. Got amazing 50% off on purchase of worth 4000.',
-    storename: 'Harish Stores',
-    saved: '400',
-    off: '20',
-  },
-  {
-    img: require('../../assets/avatar.png'),
-    name: 'Anaya Patil',
-    time: 'a mins ago',
-    info: 'Shopped at Harish Grocery Store. Got amazing 50% off on purchase of worth 4000.',
-    storename: 'Harish Stores',
-    saved: '2000',
-    off: '50',
-  },
-];
+import Animations from '../../components/Animations';
 
 const filter = [
   {
@@ -111,6 +64,8 @@ function Socialfeed({navigation}) {
 
   const isFocused = useIsFocused();
 
+  const [loader, setloader] = useState(false);
+
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
@@ -128,14 +83,16 @@ function Socialfeed({navigation}) {
   // Social feed data from api
 
   const Socialfeed = async () => {
+    setloader(true);
     const list = await axios.get(
       `${API_URL}/${API_VERSION}/${Endpoint.Socialfeed}`,
     );
-    console.log(
-      '🚀👨🏻‍💻 ~ file: Socialfeed.js ~ line 132 ~ Socialfeed ~ list',
-      list.data,
-    );
+    // console.log(
+    //   '🚀👨🏻‍💻 ~ file: Socialfeed.js ~ line 132 ~ Socialfeed ~ list',
+    //   list.data,
+    // );
     setsocialfeedlist(list.data);
+    setloader(false);
   };
 
   const onChangeValue = (itemSelected, index) => {
@@ -259,66 +216,76 @@ function Socialfeed({navigation}) {
       </Modal>
 
       <View style={{backgroundColor: '#2C3A4A', flex: 1}}>
-        <FlatList
-          data={socialfeedlist}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({item}) => (
-            <Card style={styles.cardcontainer}>
-              <Card.Title
-                title={item.name}
-                subtitle={item.dateCreated}
-                left={props => (
-                  <Avatar.Image
-                    {...props}
-                    size={50}
-                    source={{uri: item.userImage}}
-                    style={{backgroundColor: '#fff'}}
-                  />
-                )}
-                right={props => (
-                  <View>
-                    <Image
+        {loader ? (
+          <View style={{flex: 1, backgroundColor: '#fff'}}>
+            <Animations
+              source={require('../../assets/Animation/waiting.json')}
+            />
+          </View>
+        ) : (
+          <FlatList
+            data={socialfeedlist}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item}) => (
+              <Card style={styles.cardcontainer}>
+                <Card.Title
+                  title={item.name}
+                  subtitle={item.dateCreated}
+                  left={props => (
+                    <Avatar.Image
                       {...props}
-                      source={require('../../assets/socialdiscount.png')}
-                      style={{height: 45, width: 130}}
+                      size={50}
+                      source={{uri: item.userImage}}
+                      style={{backgroundColor: '#fff'}}
                     />
-                    <View style={{position: 'absolute', left: 30}}>
-                      <Text style={{color: '#fff'}}>Saved {item.saved}</Text>
-                      <Text>Got {(item.amountsaved / item.amount) * 100}%</Text>
+                  )}
+                  right={props => (
+                    <View>
+                      <Image
+                        {...props}
+                        source={require('../../assets/socialdiscount.png')}
+                        style={{height: 45, width: 130}}
+                      />
+                      <View style={{position: 'absolute', left: 30}}>
+                        <Text style={{color: '#fff'}}>Saved {item.saved}</Text>
+                        <Text>
+                          Got {(item.amountsaved / item.amount) * 100}%
+                        </Text>
+                      </View>
                     </View>
-                  </View>
-                )}
-              />
-              <Card.Content>
-                <Paragraph>
-                  Shopped at {item.shopName}. Got amazing{' '}
-                  {(item.amountsaved / item.amount) * 100}% off on purchase of
-                  worth {item.amount}
-                </Paragraph>
-              </Card.Content>
+                  )}
+                />
+                <Card.Content>
+                  <Paragraph>
+                    Shopped at {item.shopName}. Got amazing{' '}
+                    {(item.amountsaved / item.amount) * 100}% off on purchase of
+                    worth {item.amount}
+                  </Paragraph>
+                </Card.Content>
 
-              <Card.Content style={{flexDirection: 'row', marginTop: 10}}>
-                <Text>Click here to view the shop </Text>
-                <Text
+                <Card.Content style={{flexDirection: 'row', marginTop: 10}}>
+                  <Text>Click here to view the shop </Text>
+                  <Text
+                    style={{
+                      color: '#266AD1',
+                      textDecorationLine: 'underline',
+                      marginStart: 20,
+                    }}>
+                    {item.shopName}
+                  </Text>
+                </Card.Content>
+                <View
                   style={{
-                    color: '#266AD1',
-                    textDecorationLine: 'underline',
-                    marginStart: 20,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginTop: 10,
                   }}>
-                  {item.shopName}
-                </Text>
-              </Card.Content>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginTop: 10,
-                }}>
-                <View style={{flex: 1, height: 1, backgroundColor: '#ccc'}} />
-              </View>
-            </Card>
-          )}
-        />
+                  <View style={{flex: 1, height: 1, backgroundColor: '#ccc'}} />
+                </View>
+              </Card>
+            )}
+          />
+        )}
       </View>
     </>
   );
