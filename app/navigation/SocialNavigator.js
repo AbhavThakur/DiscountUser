@@ -2,6 +2,7 @@ import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import Socialfeed from '../screens/Social/Socialfeed';
+import StoreView from '../screens/Social/StoreView';
 
 const Stack = createStackNavigator();
 
@@ -14,6 +15,7 @@ const SocialNavigator = () => {
       }}
       initialRouteName="Social">
       <Stack.Screen name="Social" component={Socialfeed} />
+      <Stack.Screen name="Store" component={StoreView} />
     </Stack.Navigator>
   );
 };

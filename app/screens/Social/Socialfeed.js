@@ -8,6 +8,7 @@ import {
   Text,
   Dimensions,
   Alert,
+  Pressable,
 } from 'react-native';
 import {
   Avatar,
@@ -20,6 +21,8 @@ import {
 } from 'react-native-paper';
 import Modal from 'react-native-modal';
 import axios from 'axios';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
 import {useIsFocused} from '@react-navigation/native';
 import {API_URL, API_VERSION, Endpoint} from '../../config/config';
@@ -59,12 +62,14 @@ function Socialfeed({navigation}) {
   const [isModalVisible, setModalVisible] = useState(false);
   const [data, setdata] = useState([]);
   const [selected, setselected] = useState(null);
+  const [Subscribed, setSubscribed] = useState(false);
 
   const [socialfeedlist, setsocialfeedlist] = useState([]);
 
   const isFocused = useIsFocused();
 
   const [loader, setloader] = useState(false);
+  const {uid} = auth().currentUser;
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -77,6 +82,24 @@ function Socialfeed({navigation}) {
   useEffect(() => {
     if (isFocused) {
       Socialfeed();
+      firestore()
+        .collection('Subscribed')
+        .doc(uid)
+        .get()
+        .then(async function (documentSnapshot) {
+          if (documentSnapshot.exists === false) {
+            setSubscribed(false);
+          }
+          console.log('User subscribed: ', documentSnapshot.exists);
+
+          if (documentSnapshot.exists) {
+            if (documentSnapshot.data().subscribed === true) {
+              setSubscribed(false);
+            } else if (documentSnapshot.data().subscribed === false) {
+              setSubscribed(true);
+            }
+          }
+        });
     }
   }, [isFocused]);
 
@@ -168,12 +191,12 @@ function Socialfeed({navigation}) {
           <Image source={require('../../assets/left-arrow.png')} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Social Feeds</Text>
-        <TouchableOpacity onPress={toggleModal} style={styles.filter}>
+        {/* <TouchableOpacity onPress={toggleModal} style={styles.filter}>
           <Image
             source={require('../../assets/Filter.png')}
             style={{width: 27, height: 25}}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       {/* fliter list */}
       <View style={{width: '100%', backgroundColor: '#2C3A4A'}}>
@@ -263,16 +286,29 @@ function Socialfeed({navigation}) {
                   </Paragraph>
                 </Card.Content>
 
-                <Card.Content style={{flexDirection: 'row', marginTop: 10}}>
+                <Card.Content
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: 10,
+                    // backgroundColor: 'yellow',
+                    // height: 50,
+                    flexWrap: 'wrap',
+                  }}>
                   <Text>Click here to view the shop </Text>
-                  <Text
-                    style={{
-                      color: '#266AD1',
-                      textDecorationLine: 'underline',
-                      marginStart: 20,
-                    }}>
-                    {item.shopName}
-                  </Text>
+                  <Pressable
+                    disabled={Subscribed}
+                    onPress={() =>
+                      navigation.navigate('Store', item.merchantId)
+                    }>
+                    <Text
+                      style={{
+                        color: Subscribed ? '#000' : '#26ADD1',
+                        textDecorationLine: 'underline',
+                        marginStart: 20,
+                      }}>
+                      {item.shopName}
+                    </Text>
+                  </Pressable>
                 </Card.Content>
                 <View
                   style={{
@@ -299,12 +335,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#2C3A4A',
     height: 55,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    // justifyContent: 'center',
   },
   headerTitle: {
     color: '#fff',
     fontSize: 20,
     marginTop: 10,
+    marginStart: 55,
   },
   filter: {
     padding: 10,
