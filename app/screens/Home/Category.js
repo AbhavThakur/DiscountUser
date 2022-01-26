@@ -20,6 +20,7 @@ function Category(props) {
         props.navigation.navigate(item.screen, {
           ShopName: item.name,
           Categoryitem: item.category,
+          Type: item.type,
         })
       }
       style={{backgroundColor: '#fff', margin: 5, marginVertical: 10}}>

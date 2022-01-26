@@ -125,9 +125,9 @@ export const value = [
   {
     id: 1,
     img: require('../assets/grocery.png'),
-    category: ['dailyneed', 'grocery', 'shopping'],
+    category: 'grocery',
     name: 'Grocery',
-    type: 'array-contains-any',
+    type: 'array-contains',
     screen: 'categoryList',
   },
   {

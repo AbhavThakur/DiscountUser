@@ -25,7 +25,7 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 function Home(props) {
-  const [isModalVisible, setModalVisible] = useState(true);
+  const [isModalVisible, setModalVisible] = useState(false);
   const [amount, setamount] = useState([]);
   const [Savedamount, setSavedamount] = useState([]);
 

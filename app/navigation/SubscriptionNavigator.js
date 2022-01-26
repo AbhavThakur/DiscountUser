@@ -107,13 +107,13 @@ const SubscriptionNavigator = ({navigation}) => {
         name="SubscriptionsCard"
         component={Subscriptions}
         options={{
-          // headerLeft: () => (
-          //   <TouchableOpacity
-          //     style={{marginStart: 10}}
-          //     onPress={() => navigation.goBack()}>
-          //     <Image source={require('../assets/left-arrow.png')} />
-          //   </TouchableOpacity>
-          // ),
+          headerLeft: () => (
+            <TouchableOpacity
+              style={{marginStart: 10}}
+              onPress={() => navigation.goBack()}>
+              <Image source={require('../assets/left-arrow.png')} />
+            </TouchableOpacity>
+          ),
           headerTitle: 'Scan your Card here !!',
           headerTitleAlign: 'center',
           headerStyle: {backgroundColor: '#2C3A4A'},

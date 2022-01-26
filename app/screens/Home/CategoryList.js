@@ -106,7 +106,7 @@ function CategoryList({navigation, route}) {
   const share = async item => {
     const shareOptions = {
       title: item.StoreName,
-      message: `Welcome to 🛒${item.StoreName} which is now available on DiscountAdda User App (https://play.google.com/store/apps/details?id=com.discountadda).\n The store is providing discount of ${item.discount}%.\n Visit the Store on the address 📍${item.address} \n and You can also contact us at 📞 ${item.contactNumber}.`,
+      message: `Welcome to 🛒${item.StoreName} which is now available on DiscountAdda User App (https://play.google.com/store/apps/details?id=com.discountuser).\n The store is providing discount of ${item.discount}%.\n Visit the Store on the address 📍${item.address} \n and You can also contact us at 📞 ${item.contactNumber}.`,
     };
     try {
       await Share.open(shareOptions);
@@ -202,6 +202,8 @@ function CategoryList({navigation, route}) {
                 onPress={() => navigation.navigate('Shop', item.id)}
                 onPressConatct={() => callNumber(item.contactNumber)}
                 onPressShare={() => share(item)}
+                onPressShop={() => navigation.navigate('Shop', item.id)}
+                shopStatus={item.status === 'Open' ? false : true}
               />
             );
           }}

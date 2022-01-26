@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
+  Pressable,
 } from 'react-native';
 import {Divider} from 'react-native-paper';
 
@@ -26,6 +27,8 @@ function StoreCard({
   onPress,
   onPressConatct,
   onPressShare,
+  onPressShop,
+  shopStatus,
 }) {
   return (
     <View style={styles.card}>
@@ -41,14 +44,21 @@ function StoreCard({
           source={require('../assets/tag.png')}
           style={{width: 47, height: 47}}
         />
-        <Text style={{position: 'absolute', color: '#fff', right: 5, top: 2}}>
-          {discount}% off
+        <Text
+          style={{
+            position: 'absolute',
+            color: '#fff',
+            right: 5,
+            top: 5,
+            fontSize: 14,
+          }}>
+          {discount < 10 ? '  ' + discount : discount}% off
         </Text>
       </View>
       <TouchableOpacity
         onPress={onPressShare}
         activeOpacity={0.5}
-        style={{position: 'absolute', right: 5}}>
+        style={{position: 'absolute', right: 4}}>
         <Image
           source={require('../assets/sharestore.png')}
           style={{width: 47, height: 47}}
@@ -62,7 +72,9 @@ function StoreCard({
           width: windowWidth * 0.85,
           padding: 10,
         }}>
-        <Text style={{fontSize: 21, marginTop: 5}}>{Title}</Text>
+        <Text style={{fontSize: 21, marginTop: 5}}>
+          {Title.slice(0, 20) + (Title.length > 20 ? '...' : '')}
+        </Text>
         <StarRating ratings={ratings} views={views} ratingvalue={ratingvalue} />
       </TouchableOpacity>
       <View style={{padding: 5, flex: 2}}>
@@ -78,7 +90,9 @@ function StoreCard({
           justifyContent: 'space-around',
           backgroundColor: '#f9f9f9',
         }}>
-        <Text> 🛒 {time} Now</Text>
+        <Pressable onPress={onPressShop} disabled={shopStatus}>
+          <Text> 🛒 {time} Now</Text>
+        </Pressable>
         <TouchableOpacity onPress={onPressConatct}>
           <Text>📞 {contact}</Text>
         </TouchableOpacity>
@@ -93,7 +107,6 @@ const styles = StyleSheet.create({
     height: 320,
     margin: 10,
     backgroundColor: '#fff',
-    borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

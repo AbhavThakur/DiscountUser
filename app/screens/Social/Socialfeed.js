@@ -292,7 +292,7 @@ function Socialfeed({navigation}) {
                     marginTop: 10,
                     // backgroundColor: 'yellow',
                     // height: 50,
-                    flexWrap: 'wrap',
+                    // flexWrap: 'wrap',
                   }}>
                   <Text>Click here to view the shop </Text>
                   <Pressable
@@ -306,7 +306,8 @@ function Socialfeed({navigation}) {
                         textDecorationLine: 'underline',
                         marginStart: 20,
                       }}>
-                      {item.shopName}
+                      {item.shopName.slice(0, 17) +
+                        (item.shopName.length > 17 ? '...' : '')}
                     </Text>
                   </Pressable>
                 </Card.Content>

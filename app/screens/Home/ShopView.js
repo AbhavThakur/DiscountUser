@@ -508,7 +508,9 @@ export default function ShopView({navigation, route}) {
           <Image source={require('../../assets/back.png')} />
         </TouchableOpacity>
         <View style={styles.slideTitle}>
-          <Text style={{fontSize: 19, color: '#000'}}>{name} Stores</Text>
+          <Text style={{fontSize: name.length > 20 ? 15 : 19, color: '#000'}}>
+            {name} Stores
+          </Text>
         </View>
         {userPost.length === 0 ? (
           <View>
