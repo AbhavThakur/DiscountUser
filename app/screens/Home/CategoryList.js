@@ -196,9 +196,9 @@ function CategoryList({navigation, route}) {
                 location={item.address}
                 time={item.status}
                 contact={item.contactNumber}
-                ratings={'4'}
-                views={'140'}
-                ratingvalue={'4.4'}
+                // ratings={'4'}
+                // views={'140'}
+                // ratingvalue={'4.4'}
                 onPress={() => navigation.navigate('Shop', item.id)}
                 onPressConatct={() => callNumber(item.contactNumber)}
                 onPressShare={() => share(item)}

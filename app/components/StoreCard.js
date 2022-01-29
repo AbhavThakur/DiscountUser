@@ -75,7 +75,7 @@ function StoreCard({
         <Text style={{fontSize: 21, marginTop: 5}}>
           {Title.slice(0, 20) + (Title.length > 20 ? '...' : '')}
         </Text>
-        <StarRating ratings={ratings} views={views} ratingvalue={ratingvalue} />
+        {/* <StarRating ratings={ratings} views={views} ratingvalue={ratingvalue} /> */}
       </TouchableOpacity>
       <View style={{padding: 5, flex: 2}}>
         <Text style={{}}>
