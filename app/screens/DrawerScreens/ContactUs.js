@@ -50,9 +50,9 @@ function ContactUs() {
         style={{
           backgroundColor: '#fff',
           width: '90%',
-          height: '57%',
+          height: 400,
           position: 'absolute',
-          top: '17%',
+          top: '14%',
           borderRadius: 30,
           alignItems: 'center',
           justifyContent: 'center',
@@ -61,7 +61,7 @@ function ContactUs() {
         }}>
         <Image
           source={require('../../assets/ContactUs.png')}
-          style={{width: 150, height: 150, position: 'absolute', top: -70}}
+          style={{width: 140, height: 140, position: 'absolute', top: -70}}
         />
 
         <Text
@@ -127,7 +127,7 @@ function ContactUs() {
           fontSize: 20,
           fontWeight: '700',
           position: 'absolute',
-          bottom: 150,
+          bottom: 120,
         }}>
         Connect with us
       </Text>
@@ -135,7 +135,7 @@ function ContactUs() {
         style={{
           flexDirection: 'row',
           position: 'absolute',
-          bottom: 60,
+          bottom: 50,
           // backgroundColor: 'yellow',
           width: 250,
           justifyContent: 'space-between',

@@ -120,16 +120,26 @@ export const Info = [
     height: 70,
     screen: 'categoryList',
   },
-  // {
-  //   id: 12,
-  //   img: require('../assets/more.png'),
-  //   category: ['more'],
-  //   name: 'Show More',
-  //   type: 'array-contains',
-  //   width: 70,
-  //   height: 70,
-  //   screen: 'CategoryScreen',
-  // },
+  {
+    id: 13,
+    img: require('../assets/emergency.png'),
+    category: 'emergency',
+    name: 'Emergency ',
+    type: 'array-contains',
+    width: 70,
+    height: 70,
+    screen: 'categoryList',
+  },
+  {
+    id: 14,
+    img: require('../assets/more.png'),
+    category: 'emergency',
+    name: 'All Shops',
+    type: 'array-contains',
+    width: 70,
+    height: 70,
+    screen: 'CategoryScreen',
+  },
 ];
 
 export const value = [

@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
   },
   category: {
     width: windowWidth,
-    height: 320,
+    height: 420,
     // backgroundColor: 'yellow',
     flexDirection: 'row',
     flexWrap: 'wrap',

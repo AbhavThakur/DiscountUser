@@ -74,21 +74,33 @@ function Feedback({navigation}) {
     if (Rating === undefined) {
       Alert.alert('Please select the Rating and improve');
     } else {
-      const data = {
-        comment: comment,
-        rating: Rating,
-        improve: status,
-        createdAt: firestore.Timestamp.fromDate(new Date()),
-      };
       firestore()
-        .collection('FeedbackUserApp')
+        .collection('Discountusers')
         .doc(auth().currentUser.uid)
-        .set(data)
-        .then(() => {
-          Alert.alert('Feedback submitted successfully');
-          navigation.goBack();
-        })
-        .catch(() => Alert.alert('category   not updated'));
+        .get()
+        .then(async function (documentSnapshot) {
+          if (documentSnapshot.exists === true) {
+            const data = {
+              comment: comment,
+              rating: Rating,
+              improve: status,
+              Name:
+                documentSnapshot.data().fname + documentSnapshot.data().lname,
+              email: documentSnapshot.data().email,
+              contact: documentSnapshot.data().contact,
+              createdAt: firestore.Timestamp.fromDate(new Date()),
+            };
+            firestore()
+              .collection('FeedbackUserApp')
+              .doc(auth().currentUser.uid)
+              .set(data)
+              .then(() => {
+                Alert.alert('Feedback submitted successfully');
+                navigation.goBack();
+              })
+              .catch(() => Alert.alert('category   not updated'));
+          }
+        });
     }
   };
   return (

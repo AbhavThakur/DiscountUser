@@ -12,6 +12,7 @@ import {
   RefreshControl,
   Linking,
   Platform,
+  Alert,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import firestore from '@react-native-firebase/firestore';
@@ -120,13 +121,16 @@ function CategoryList({navigation, route}) {
   const scheme = Platform.select({ios: 'maps:0,0?q=', android: 'geo:0,0?q='});
 
   const Maps = value => {
-    const latLng = `${value.coordinate.latitude},${value.coordinate.longitude}`;
-    const url = Platform.select({
-      ios: `${scheme}${label}@${latLng}`,
-      android: `${scheme}${latLng}(${label})`,
-    });
-
-    return Linking.openURL(url);
+    if (value.coordinate === undefined) {
+      Alert.alert('Shop address is not available on Maps');
+    } else if (value.coordinate) {
+      const latLng = `${value.coordinate.latitude},${value.coordinate.longitude}`;
+      const url = Platform.select({
+        ios: `${scheme}${label}@${latLng}`,
+        android: `${scheme}${latLng}(${label})`,
+      });
+      return Linking.openURL(url);
+    }
   };
 
   return (
@@ -206,7 +210,7 @@ function CategoryList({navigation, route}) {
                 Title={item.StoreName}
                 img={item.shopimage}
                 discount={item.discount}
-                // distance={'400'}
+                distance={'400'}
                 location={item.address}
                 time={item.status}
                 contact={item.contactNumber}
