@@ -9,14 +9,11 @@ import {
   TouchableOpacity,
   ScrollView,
   Pressable,
-  Platform,
   Linking,
-  Alert,
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import Modal from 'react-native-modal';
-import LottieView from 'lottie-react-native';
 import {useIsFocused} from '@react-navigation/native';
 import TextLessMoreView from '../../components/TextLessMoreView';
 
@@ -94,32 +91,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const slideList = Array.from({length: 4}).map((_, i) => {
-  return {
-    id: i,
-    image: `https://picsum.photos/1440/2842?random=${i}`,
-    title: 'Harish Stores',
-  };
-});
-
-const value = [
-  {
-    value: '20% off on all the products of the store.',
-  },
-  {
-    value: '30% off on all the products of the store.',
-  },
-  {
-    value: '50% off on all the products of the store.',
-  },
-  {
-    value: '10% off on all the products of the store.',
-  },
-  {
-    value: '40% off on all the products of the store.',
-  },
-];
-
 export default function ShopView({navigation, route}) {
   const [index, setIndex] = useState(0);
 
@@ -134,12 +105,10 @@ export default function ShopView({navigation, route}) {
 
   // Status
   const [Status, setStatus] = useState('');
-  const [StatusValue, setStatusValue] = useState(null);
   // Category states
 
   //! category
   const [resturants, setResturants] = useState('');
-  const [resturantsubcategory, setRestursetSubcategory] = useState('');
   const [clothesfootwear, setClothesFootwear] = useState('');
   const [personal, setPersonalCare] = useState('');
   const [demand, setdemand] = useState('');
@@ -157,7 +126,6 @@ export default function ShopView({navigation, route}) {
   const [education, seteducation] = useState('');
 
   //! end
-  const [loading, setLoading] = useState(null);
   const [isModalVisible, setModalVisible] = useState(true);
 
   const indexRef = useRef(index);
@@ -235,8 +203,6 @@ export default function ShopView({navigation, route}) {
   const isFocused = useIsFocused();
   useEffect(() => {
     if (isFocused) {
-      setLoading(true);
-
       firestore()
         .collection('about')
         .doc(uid)
@@ -248,7 +214,6 @@ export default function ShopView({navigation, route}) {
         .then(() => Post())
         .then(() => {
           setModalVisible(false);
-          setLoading(false);
         });
     }
   }, [isFocused, uid]);
@@ -307,11 +272,9 @@ export default function ShopView({navigation, route}) {
       .then(documentSnapshot => {
         if (documentSnapshot.exists === false) {
           setStatus('Close');
-          setStatusValue(false);
         }
         if (documentSnapshot.exists) {
           setStatus(documentSnapshot.data().status);
-          setStatusValue(documentSnapshot.data().value);
         }
       });
     // category section
@@ -329,7 +292,6 @@ export default function ShopView({navigation, route}) {
         }
         if (documentSnapshot.exists) {
           setResturants(documentSnapshot.data().restauranttype);
-          setRestursetSubcategory(documentSnapshot.data().resturantcategory);
         }
       });
     firestore()
@@ -509,7 +471,7 @@ export default function ShopView({navigation, route}) {
         </TouchableOpacity>
         <View style={styles.slideTitle}>
           <Text style={{fontSize: name.length > 20 ? 15 : 19, color: '#000'}}>
-            {name} Stores
+            {name}
           </Text>
         </View>
         {userPost.length === 0 ? (

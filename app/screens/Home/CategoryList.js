@@ -6,12 +6,12 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
-  Button,
   FlatList,
   TextInput,
   ActivityIndicator,
   RefreshControl,
   Linking,
+  Platform,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import firestore from '@react-native-firebase/firestore';
@@ -115,6 +115,20 @@ function CategoryList({navigation, route}) {
     }
   };
 
+  const label = 'Shop address';
+
+  const scheme = Platform.select({ios: 'maps:0,0?q=', android: 'geo:0,0?q='});
+
+  const Maps = value => {
+    const latLng = `${value.coordinate.latitude},${value.coordinate.longitude}`;
+    const url = Platform.select({
+      ios: `${scheme}${label}@${latLng}`,
+      android: `${scheme}${latLng}(${label})`,
+    });
+
+    return Linking.openURL(url);
+  };
+
   return (
     <View style={styles.container}>
       <View
@@ -182,7 +196,7 @@ function CategoryList({navigation, route}) {
             backgroundColor: '#fff',
           }}
           contentContainerStyle={{alignItems: 'center'}}
-          keyExtractor={(item, index) => item.id}
+          keyExtractor={item => item.id}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
@@ -203,6 +217,7 @@ function CategoryList({navigation, route}) {
                 onPressConatct={() => callNumber(item.contactNumber)}
                 onPressShare={() => share(item)}
                 onPressShop={() => navigation.navigate('Shop', item.id)}
+                onPressMap={() => Maps(item)}
                 shopStatus={item.status === 'Open' ? false : true}
               />
             );

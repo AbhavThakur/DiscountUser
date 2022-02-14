@@ -1,13 +1,13 @@
 import React from 'react';
-import {View, Text} from 'react-native';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import DrawerContent from './DrawerContent';
 import BottomNavigator from './BottomNavigator';
-import HomeNavigation from './HomeNavigation';
+import ContactUs from '../screens/DrawerScreens/ContactUs';
+import Feedback from '../screens/DrawerScreens/Feedback';
 
 const Drawer = createDrawerNavigator();
 
-const DrawerNavigator = ({navigation}) => {
+const DrawerNavigator = () => {
   return (
     <Drawer.Navigator
       drawerContent={props => <DrawerContent {...props} />}
@@ -17,11 +17,8 @@ const DrawerNavigator = ({navigation}) => {
         component={BottomNavigator}
         options={{headerShown: false}}
       />
-      {/* <Drawer.Screen
-        name="Home"
-        component={HomeNavigation}
-        options={{headerShown: false}}
-      /> */}
+      <Drawer.Screen name="ContactUs" component={ContactUs} />
+      <Drawer.Screen name="feedback" component={Feedback} />
     </Drawer.Navigator>
   );
 };

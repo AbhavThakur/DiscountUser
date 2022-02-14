@@ -5,7 +5,6 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  Dimensions,
   Pressable,
 } from 'react-native';
 import {Divider} from 'react-native-paper';
@@ -29,6 +28,7 @@ function StoreCard({
   onPressShare,
   onPressShop,
   shopStatus,
+  onPressMap,
 }) {
   return (
     <View style={styles.card}>
@@ -78,9 +78,12 @@ function StoreCard({
         {/* <StarRating ratings={ratings} views={views} ratingvalue={ratingvalue} /> */}
       </TouchableOpacity>
       <View style={{padding: 5, flex: 2}}>
-        <Text style={{}}>
-          📍 {distance} {location}
-        </Text>
+        <TouchableOpacity activeOpacity={0.5} onPress={onPressMap}>
+          <Text style={{}}>
+            📍 {distance} {location}
+          </Text>
+        </TouchableOpacity>
+
         <Divider style={{marginTop: 5, backgroundColor: '#ccc'}} />
       </View>
       <View

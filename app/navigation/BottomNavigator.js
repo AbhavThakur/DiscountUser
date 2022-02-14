@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, View, TouchableOpacity, StyleSheet} from 'react-native';
+import {Image, View} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import HomeNavigation from './HomeNavigation';
@@ -38,7 +38,7 @@ const BottomNavigator = () => (
       }}
     />
     <Tab.Screen
-      name="Social_Feeds"
+      name="Social Feeds"
       component={SocialNavigator}
       options={{
         tabBarIcon: ({focused}) => (
@@ -96,19 +96,5 @@ const BottomNavigator = () => (
     />
   </Tab.Navigator>
 );
-
-const styles = StyleSheet.create({
-  headerstyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginStart: 10,
-    justifyContent: 'center',
-  },
-  headerrightstyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginEnd: 10,
-  },
-});
 
 export default BottomNavigator;

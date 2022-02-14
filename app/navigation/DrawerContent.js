@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {View, StyleSheet, Image} from 'react-native';
-import {Avatar, Title, Caption, Drawer} from 'react-native-paper';
+import {Avatar, Title, Drawer} from 'react-native-paper';
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -71,7 +71,7 @@ function DrawerContent(props) {
               icon={() => (
                 <Image
                   source={require('../assets/Home.png')}
-                  style={{width: 15, height: 15, tintColor: '#c9c9c9'}}
+                  style={{width: 20, height: 20, tintColor: '#c9c9c9'}}
                 />
               )}
               label="Home"
@@ -83,7 +83,7 @@ function DrawerContent(props) {
               icon={() => (
                 <Image
                   source={require('../assets/rss.png')}
-                  style={{width: 15, height: 15, tintColor: '#c9c9c9'}}
+                  style={{width: 20, height: 20, tintColor: '#c9c9c9'}}
                 />
               )}
               label="Social Feeds"
@@ -95,7 +95,7 @@ function DrawerContent(props) {
               icon={() => (
                 <Image
                   source={require('../assets/subscription.png')}
-                  style={{width: 15, height: 15, tintColor: '#c9c9c9'}}
+                  style={{width: 20, height: 20, tintColor: '#c9c9c9'}}
                 />
               )}
               label="Subscriptions"
@@ -107,12 +107,36 @@ function DrawerContent(props) {
               icon={() => (
                 <Image
                   source={require('../assets/profile.png')}
-                  style={{width: 15, height: 15, tintColor: '#c9c9c9'}}
+                  style={{width: 20, height: 20, tintColor: '#c9c9c9'}}
                 />
               )}
               label="Profile"
               onPress={() => {
                 props.navigation.navigate('Profile');
+              }}
+            />
+            <DrawerItem
+              icon={() => (
+                <Image
+                  source={require('../assets/opinion.png')}
+                  style={{width: 20, height: 20, tintColor: '#000'}}
+                />
+              )}
+              label="Feedback"
+              onPress={() => {
+                props.navigation.navigate('feedback');
+              }}
+            />
+            <DrawerItem
+              icon={() => (
+                <Image
+                  source={require('../assets/call-center.png')}
+                  style={{width: 20, height: 20, tintColor: '#000'}}
+                />
+              )}
+              label="Contact Us"
+              onPress={() => {
+                props.navigation.navigate('ContactUs');
               }}
             />
           </Drawer.Section>
@@ -124,7 +148,7 @@ function DrawerContent(props) {
           icon={() => (
             <Image
               source={require('../assets/logout.png')}
-              style={{width: 15, height: 15}}
+              style={{width: 20, height: 20}}
             />
           )}
           label="Log Out"

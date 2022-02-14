@@ -5,7 +5,6 @@ import {
   Text,
   ScrollView,
   Dimensions,
-  FlatList,
   Image,
   TouchableOpacity,
   Alert,
@@ -14,8 +13,8 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useIsFocused} from '@react-navigation/native';
-import Modal from 'react-native-modal';
 import {Card, Title, Paragraph, Button} from 'react-native-paper';
+import GetLocation from 'react-native-get-location';
 
 import {Info} from '../../constants/Categories';
 import Slider from '../../utils/ImageCarousel';
@@ -76,7 +75,7 @@ function Home(props) {
           if (documentSnapshot.exists === false) {
             setModalVisible(true);
           }
-          console.log('User subscribed: ', documentSnapshot.exists);
+          // console.log('User subscribed: ', documentSnapshot.exists);
 
           if (documentSnapshot.exists) {
             UserDiscount(documentSnapshot.data().cardNumber);
@@ -88,11 +87,13 @@ function Home(props) {
             }
           }
         });
+      UserLocation();
     }
   }, [isFocused]);
 
   const UserDiscount = card => {
     const Discountlist = `${API_URL}/${API_VERSION}/${Endpoint.discount}/${card}`;
+    // eslint-disable-next-line no-undef
     fetch(Discountlist)
       .then(res => res.json())
       .then(resJson => {
@@ -114,6 +115,34 @@ function Home(props) {
       })
       .catch(err => {
         console.log('Error: ', err);
+      });
+  };
+
+  const UserLocation = () => {
+    GetLocation.getCurrentPosition({
+      enableHighAccuracy: true,
+      timeout: 150000,
+    })
+      .then(location => {
+        console.log(
+          '🚀👨🏻‍💻 ~ file: Home.js ~ line 127 ~ UserLocation ~ location',
+          location,
+        );
+      })
+      .catch(ex => {
+        const {code} = ex;
+        if (code === 'CANCELLED') {
+          Alert.alert('Location cancelled by user or by another request');
+        }
+        if (code === 'UNAVAILABLE') {
+          Alert.alert('Location service is disabled or unavailable');
+        }
+        if (code === 'TIMEOUT') {
+          Alert.alert('Location request timed out');
+        }
+        if (code === 'UNAUTHORIZED') {
+          Alert.alert('Authorization denied');
+        }
       });
   };
 
@@ -168,31 +197,27 @@ function Home(props) {
           </View>
         ) : (
           <View style={styles.category}>
-            <FlatList
-              data={Info}
-              numColumns={4}
-              nestedScrollEnabled={true}
-              horizontal={false}
-              keyExtractor={(item, index) => item.id}
-              renderItem={({item}) => (
-                <TouchableOpacity
-                  activeOpacity={0.4}
-                  style={styles.subcategory}
-                  onPress={() =>
-                    props.navigation.navigate(item.screen, {
-                      ShopName: item.name,
-                      Categoryitem: item.category,
-                      Type: item.type,
-                    })
-                  }>
-                  <Image
-                    source={item.img}
-                    style={{width: item.width, height: item.height}}
-                  />
-                  <Text style={styles.subtxt}>{item.name}</Text>
-                </TouchableOpacity>
-              )}
-            />
+            {Info.map((item, index) => {
+              return (
+                <View key={index} style={styles.subcategory}>
+                  <TouchableOpacity
+                    activeOpacity={0.4}
+                    onPress={() =>
+                      props.navigation.navigate(item.screen, {
+                        ShopName: item.name,
+                        Categoryitem: item.category,
+                        Type: item.type,
+                      })
+                    }>
+                    <Image
+                      source={item.img}
+                      style={{width: item.width, height: item.height}}
+                    />
+                    <Text style={styles.subtxt}>{item.name}</Text>
+                  </TouchableOpacity>
+                </View>
+              );
+            })}
           </View>
         )}
 
@@ -235,18 +260,18 @@ const styles = StyleSheet.create({
   category: {
     width: windowWidth,
     height: 320,
-    backgroundColor: '#fff',
-    paddingTop: 7,
+    // backgroundColor: 'yellow',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
   },
   subcategory: {
-    flex: 1,
-    flexDirection: 'column',
-    alignItems: 'center',
-    margin: 5,
+    margin: 10,
   },
   subtxt: {
     color: '#293645',
     fontSize: 12,
+    alignSelf: 'center',
   },
   modelContaner: {
     backgroundColor: '#fff',

@@ -28,12 +28,12 @@ const Headerleft = ({onPress}) => (
 
 const Headerright = ({onPress, onPresscard}) => (
   <View style={styles.headerrightstyle}>
-    <TouchableOpacity onPress={onPress} style={{marginEnd: 10}}>
+    {/* <TouchableOpacity onPress={onPress} style={{marginEnd: 10}}>
       <Image
         source={require('../assets/notification.png')}
         style={{width: 25, height: 30}}
       />
-    </TouchableOpacity>
+    </TouchableOpacity> */}
     <TouchableOpacity onPress={onPresscard}>
       <Image
         source={require('../assets/card.png')}

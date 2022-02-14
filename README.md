@@ -51,7 +51,8 @@ I'm a full stack App developer...
 
 ## Documentation
 
-[Documentation](https://linktodocumentation)
+[React Native](https://reactnative.dev/docs/components-and-apis)
+[Firebase](https://rnfirebase.io/)
 
 ## Demo
 

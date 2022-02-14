@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useContext} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Alert,
   BackHandler,
@@ -9,7 +9,6 @@ import {
   View,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 
 import * as yup from 'yup';
 import {Formik} from 'formik';
@@ -21,13 +20,7 @@ import FormInput from '../../components/FormInput';
 import FormButton from '../../components/FormButton';
 
 function Register({navigation}) {
-  const [loading, setLoading] = useState(false);
   const [contact, setcontact] = useState('');
-  const [img, setImg] = useState(null);
-  const [confirm, setConfirm] = useState(null);
-  const [email, setEmail] = useState('');
-
-  const [code, setCode] = useState('');
 
   const logout = async () => {
     try {
@@ -68,7 +61,6 @@ function Register({navigation}) {
       const CurrentUserInfo = async () => {
         const phone = await AsyncStorage.getItem('contact');
         setcontact(phone);
-        console.log('phone', phone);
       };
       CurrentUserInfo();
     }
@@ -83,7 +75,7 @@ function Register({navigation}) {
       .set({
         fname: db.name,
         lname: db.last,
-        email: email,
+        email: db.email,
         address: db.address,
         contact: contact,
         createdAt: firestore.Timestamp.fromDate(new Date()),
@@ -103,155 +95,107 @@ function Register({navigation}) {
           routes: [{name: 'Drawer'}],
         }),
       )
-      .catch(() => alert('Details not submitted'));
-  };
-
-  const mail = () => {
-    const params = new URLSearchParams();
-    params.append('To', email);
-    Alert.alert('Verifying email address');
-    const config = {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    };
-    const url = 'https://discountadda.herokuapp.com/v1/send';
-    axios
-      .post(url, params, config)
-      .then(() => Alert.alert('OTP is sent to your mail check spam folder'))
-      .catch(err => {
-        console.log('error', err);
-        Alert.alert('OTP is not sent to your mail check mail');
-      });
-  };
-
-  const confirmCode = () => {
-    const params = new URLSearchParams();
-    params.append('otpnumber', code);
-
-    const config = {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    };
-    const url = 'https://discountadda.herokuapp.com/v1/verify';
-    axios
-      .post(url, params, config)
-      .then(() => {
-        Alert.alert('Successfully registered');
-      })
-      .then(() => setLoading(true))
-      .catch(err => {
-        console.log('error', err);
-        Alert.alert(err);
-      });
+      .catch(() => Alert.alert('Details not submitted'));
   };
 
   return (
     <ScrollView contentContainerStyle={styles.scrollView}>
       <Text style={styles.title}>Register </Text>
-      {loading ? (
-        <Formik
-          initialValues={{
-            name: '',
-            last: '',
-            address: '',
-          }}
-          onSubmit={values => startLoading(values)}
-          validationSchema={yup.object().shape({
-            name: yup.string().required('Please, provide your name!'),
-            address: yup.string().required('Please, provide address!'),
-          })}>
-          {({
-            values,
-            handleChange,
-            errors,
-            setFieldTouched,
-            touched,
-            isValid,
-            handleSubmit,
-          }) => (
-            <View>
-              <View style={{flexDirection: 'row'}}>
-                <View style={{width: '50%'}}>
-                  <FormInput
-                    title="First Name"
-                    value={values.name}
-                    style={{width: '95%'}}
-                    onChangeText={handleChange('name')}
-                    onBlur={() => setFieldTouched('name')}
-                    placeholderText="First Name"
-                    autoCorrect={false}
-                  />
-                </View>
-                <View style={{width: '50%'}}>
-                  <FormInput
-                    title="Last Name"
-                    value={values.last}
-                    onChangeText={handleChange('last')}
-                    onBlur={() => setFieldTouched('last')}
-                    placeholderText="Last Name"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                  />
-                </View>
+
+      <Formik
+        initialValues={{
+          name: '',
+          last: '',
+          email: '',
+          address: '',
+        }}
+        onSubmit={values => startLoading(values)}
+        validationSchema={yup.object().shape({
+          name: yup.string().required('Please, provide your name!'),
+          email: yup
+            .string()
+            .required('Please, provide your email address!')
+            .email(),
+          address: yup.string().required('Please, provide address!'),
+        })}>
+        {({
+          values,
+          handleChange,
+          errors,
+          setFieldTouched,
+          touched,
+          isValid,
+          handleSubmit,
+        }) => (
+          <View>
+            <View style={{flexDirection: 'row'}}>
+              <View style={{width: '50%'}}>
+                <FormInput
+                  title="First Name"
+                  value={values.name}
+                  style={{width: '95%'}}
+                  onChangeText={handleChange('name')}
+                  onBlur={() => setFieldTouched('name')}
+                  placeholderText="First Name"
+                  autoCorrect={false}
+                />
               </View>
-              {touched.name && errors.name && (
-                <Text style={{fontSize: 12, color: '#FF0D10'}}>
-                  {errors.name}
-                </Text>
-              )}
-              <FormInput title="Email" value={email} />
-
-              <FormInput
-                title="Address"
-                value={values.address}
-                onChangeText={handleChange('address')}
-                onBlur={() => setFieldTouched('address')}
-                placeholderText="Enter your Address here"
-              />
-              {touched.address && errors.address && (
-                <Text style={{fontSize: 12, color: '#FF0D10'}}>
-                  {errors.address}
-                </Text>
-              )}
-              <FormInput title="Contact Details" value={contact} />
-
-              <View style={{marginTop: 30}}>
-                <Button
-                  color="#D02824"
-                  title="Register"
-                  disabled={!isValid}
-                  onPress={handleSubmit}
+              <View style={{width: '50%'}}>
+                <FormInput
+                  title="Last Name"
+                  value={values.last}
+                  onChangeText={handleChange('last')}
+                  onBlur={() => setFieldTouched('last')}
+                  placeholderText="Last Name"
+                  autoCapitalize="none"
+                  autoCorrect={false}
                 />
               </View>
             </View>
-          )}
-        </Formik>
-      ) : (
-        <View style={styles.screen}>
-          <FormInput
-            title="Email"
-            autoFocus
-            value={email}
-            onChangeText={text => setEmail(text)}
-            placeholderText="Enter your Mail"
-          />
-          <FormButton buttonTitle="  Send  " onPress={() => mail()} />
-          <FormInput
-            title="Enter OTP Sent to the Mail"
-            autoFocus
-            value={code}
-            onChangeText={text => setCode(text)}
-            placeholderText="Enter your OTP here"
-            keyboardType="numeric"
-          />
-          <FormButton
-            buttonTitle="  Confirm OTP  "
-            onPress={() => confirmCode()}
-          />
-        </View>
-      )}
+            {touched.name && errors.name && (
+              <Text style={{fontSize: 12, color: '#FF0D10'}}>
+                {errors.name}
+              </Text>
+            )}
+
+            <FormInput
+              title="Email ID"
+              value={values.email}
+              onChangeText={handleChange('email')}
+              onBlur={() => setFieldTouched('email')}
+              placeholderText="Enter your Email Address"
+            />
+            {touched.email && errors.email && (
+              <Text style={{fontSize: 12, color: '#FF0D10'}}>
+                {errors.email}
+              </Text>
+            )}
+            <FormInput
+              title="Address"
+              value={values.address}
+              onChangeText={handleChange('address')}
+              onBlur={() => setFieldTouched('address')}
+              placeholderText="Enter your Address here"
+            />
+            {touched.address && errors.address && (
+              <Text style={{fontSize: 12, color: '#FF0D10'}}>
+                {errors.address}
+              </Text>
+            )}
+            <FormInput title="Contact Details" value={contact} />
+
+            <View style={{marginTop: 30}}>
+              <Button
+                color="#D02824"
+                title="Register"
+                disabled={!isValid}
+                onPress={handleSubmit}
+              />
+            </View>
+          </View>
+        )}
+      </Formik>
+
       <Text
         style={{
           color: '#ccc',
