@@ -23,16 +23,11 @@ function ContactUs() {
 
   const lat = '16.502628';
   const long = '80.640869';
-  const label =
-    'Opposite :- Gateway Hotel,Beside Woodland Showroom, Bander Road , Vijayawada';
 
-  const scheme = Platform.select({ios: 'maps:0,0?q=', android: 'geo:0,0?q='});
-  const latLng = `${lat},${long}`;
-  const url = Platform.select({
-    ios: `${scheme}${label}@${latLng}`,
-    android: `${scheme}${latLng}(${label})`,
-  });
   const Maps = () => {
+    var scheme =
+      Platform.OS === 'ios' ? 'maps://app?daddr=' : 'google.navigation:q=';
+    var url = scheme + `${lat}+${long}`;
     return Linking.openURL(url);
   };
 

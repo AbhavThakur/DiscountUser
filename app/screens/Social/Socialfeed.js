@@ -10,15 +10,7 @@ import {
   Alert,
   Pressable,
 } from 'react-native';
-import {
-  Avatar,
-  Button,
-  Card,
-  Paragraph,
-  List,
-  RadioButton,
-  Appbar,
-} from 'react-native-paper';
+import {Avatar, Button, Card, Paragraph, RadioButton} from 'react-native-paper';
 import Modal from 'react-native-modal';
 import axios from 'axios';
 import firestore from '@react-native-firebase/firestore';
@@ -248,6 +240,7 @@ function Socialfeed({navigation}) {
         ) : (
           <FlatList
             data={socialfeedlist}
+            initialNumToRender={5}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({item}) => (
               <Card style={styles.cardcontainer}>

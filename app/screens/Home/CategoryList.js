@@ -19,6 +19,7 @@ import firestore from '@react-native-firebase/firestore';
 import {useIsFocused} from '@react-navigation/native';
 import Share from 'react-native-share';
 import StoreCard from '../../components/StoreCard';
+import GetLocation from 'react-native-get-location';
 
 const WindowWidth = Dimensions.get('window').width;
 const WindowHeight = Dimensions.get('window').height;
@@ -34,6 +35,8 @@ function CategoryList({navigation, route}) {
 
   const isFocused = useIsFocused();
 
+  const [Location, setLocation] = useState(null);
+
   const CategoryName = route.params.ShopName;
   const Category = route.params.Categoryitem;
   const typecheck = route.params.Type;
@@ -44,6 +47,7 @@ function CategoryList({navigation, route}) {
   useEffect(() => {
     if (isFocused) {
       ShopData();
+      UserLocation();
     }
   }, [isFocused]);
 
@@ -75,6 +79,7 @@ function CategoryList({navigation, route}) {
       });
   };
 
+  //serach functions
   const searchFilter = text => {
     if (text) {
       const newData = info.filter(item => {
@@ -100,7 +105,6 @@ function CategoryList({navigation, route}) {
 
   const callNumber = contact => {
     let phoneNumber = `tel:${contact}`;
-
     Linking.openURL(phoneNumber);
   };
 
@@ -132,6 +136,59 @@ function CategoryList({navigation, route}) {
       return Linking.openURL(url);
     }
   };
+
+  const UserLocation = () => {
+    GetLocation.getCurrentPosition({
+      enableHighAccuracy: true,
+      timeout: 150000,
+    })
+      .then(location => {
+        setLocation(location);
+      })
+      .catch(ex => {
+        const {code} = ex;
+        if (code === 'CANCELLED') {
+          Alert.alert('Location cancelled by user or by another request');
+        }
+        if (code === 'UNAVAILABLE') {
+          Alert.alert('Location service is disabled or unavailable');
+        }
+        if (code === 'TIMEOUT') {
+          Alert.alert('Location request timed out');
+        }
+        if (code === 'UNAUTHORIZED') {
+          Alert.alert('Authorization denied');
+        }
+      });
+  };
+
+  function GetDistanceFromLatLonInKm(lat1, lon1, shoplocation) {
+    if (shoplocation === undefined) {
+      console.log('shoplocation is undefined');
+      return null;
+    } else {
+      var R = 6371; // Radius of the earth in km
+      var dLat = deg2rad(shoplocation.latitude - lat1); // deg2rad below
+      var dLon = deg2rad(shoplocation.longitude - lon1);
+      var a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(deg2rad(lat1)) *
+          Math.cos(deg2rad(shoplocation.latitude)) *
+          Math.sin(dLon / 2) *
+          Math.sin(dLon / 2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      var d = R * c; // Distance in km
+      console.log(
+        '🚀👨🏻‍💻 ~ file: CategoryList.js ~ line 177 ~ GetDistanceFromLatLonInKm ~ d',
+        d,
+      );
+      return <Text>({d.toFixed(2)} km away)</Text>;
+    }
+  }
+
+  function deg2rad(deg) {
+    return deg * (Math.PI / 180);
+  }
 
   return (
     <View style={styles.container}>
@@ -210,7 +267,15 @@ function CategoryList({navigation, route}) {
                 Title={item.StoreName}
                 img={item.shopimage}
                 discount={item.discount}
-                distance={'400'}
+                distance={
+                  Location === null
+                    ? '0'
+                    : GetDistanceFromLatLonInKm(
+                        Location.latitude,
+                        Location.longitude,
+                        item.coordinate,
+                      )
+                }
                 location={item.address}
                 time={item.status}
                 contact={item.contactNumber}

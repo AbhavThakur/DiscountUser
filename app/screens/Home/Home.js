@@ -122,28 +122,21 @@ function Home(props) {
     GetLocation.getCurrentPosition({
       enableHighAccuracy: true,
       timeout: 150000,
-    })
-      .then(location => {
-        console.log(
-          '🚀👨🏻‍💻 ~ file: Home.js ~ line 127 ~ UserLocation ~ location',
-          location,
-        );
-      })
-      .catch(ex => {
-        const {code} = ex;
-        if (code === 'CANCELLED') {
-          Alert.alert('Location cancelled by user or by another request');
-        }
-        if (code === 'UNAVAILABLE') {
-          Alert.alert('Location service is disabled or unavailable');
-        }
-        if (code === 'TIMEOUT') {
-          Alert.alert('Location request timed out');
-        }
-        if (code === 'UNAUTHORIZED') {
-          Alert.alert('Authorization denied');
-        }
-      });
+    }).catch(ex => {
+      const {code} = ex;
+      if (code === 'CANCELLED') {
+        Alert.alert('Location cancelled by user or by another request');
+      }
+      if (code === 'UNAVAILABLE') {
+        Alert.alert('Location service is disabled or unavailable');
+      }
+      if (code === 'TIMEOUT') {
+        Alert.alert('Location request timed out');
+      }
+      if (code === 'UNAUTHORIZED') {
+        Alert.alert('Authorization denied');
+      }
+    });
   };
 
   return (

@@ -30,25 +30,6 @@ function StoreCard({
   shopStatus,
   onPressMap,
 }) {
-  function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
-    var R = 6371; // Radius of the earth in km
-    var dLat = deg2rad(lat2 - lat1); // deg2rad below
-    var dLon = deg2rad(lon2 - lon1);
-    var a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(deg2rad(lat1)) *
-        Math.cos(deg2rad(lat2)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    var d = R * c; // Distance in km
-    return d;
-  }
-
-  function deg2rad(deg) {
-    return deg * (Math.PI / 180);
-  }
-
   return (
     <View style={styles.card}>
       <Image
@@ -96,21 +77,30 @@ function StoreCard({
         </Text>
         {/* <StarRating ratings={ratings} views={views} ratingvalue={ratingvalue} /> */}
       </TouchableOpacity>
-      <View style={{padding: 5, flex: 2}}>
+      <View style={{padding: 5}}>
         <TouchableOpacity activeOpacity={0.5} onPress={onPressMap}>
           <Text style={{fontSize: 15}}>
-            📍 {location} ({distance})
+            📍 {location} {distance}
           </Text>
         </TouchableOpacity>
-
-        <Divider style={{marginTop: 5, backgroundColor: '#ccc'}} />
       </View>
+      {/* <Divider
+        style={{
+          position: 'absolute',
+          backgroundColor: '#ccc',
+          bottom: 70,
+          width: '100%',
+        }}
+      /> */}
       <View
         style={{
           padding: 10,
           flexDirection: 'row',
           justifyContent: 'space-around',
           backgroundColor: '#f9f9f9',
+          position: 'absolute',
+          bottom: 0,
+          width: '100%',
         }}>
         <Pressable onPress={onPressShop} disabled={shopStatus}>
           <Text> 🛒 {time} Now</Text>
