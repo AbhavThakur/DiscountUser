@@ -37,6 +37,8 @@ function CategoryList({navigation, route}) {
 
   const [Location, setLocation] = useState(null);
 
+  const [filterDistance, setfilterDistance] = useState(false);
+
   const CategoryName = route.params.ShopName;
   const Category = route.params.Categoryitem;
   const typecheck = route.params.Type;
@@ -126,7 +128,11 @@ function CategoryList({navigation, route}) {
 
   const Maps = value => {
     if (value.coordinate === undefined) {
-      Alert.alert('Shop address is not available on Maps');
+      const url = Platform.select({
+        ios: scheme + `${value.address}`,
+        android: scheme + `${value.address}`,
+      });
+      return Linking.openURL(url);
     } else if (value.coordinate) {
       const latLng = `${value.coordinate.latitude},${value.coordinate.longitude}`;
       const url = Platform.select({
@@ -201,31 +207,56 @@ function CategoryList({navigation, route}) {
         <Text style={{fontSize: 15, color: '#D02824', alignSelf: 'flex-start'}}>
           {CategoryName}
         </Text>
-        {/* <TouchableOpacity onPress={toggleModal}>
+        <TouchableOpacity onPress={toggleModal}>
           <Image source={require('../../assets/Filter2.png')} />
-        </TouchableOpacity> */}
+        </TouchableOpacity>
       </View>
       {/* Modal for filter */}
       <Modal
-        style={{justifyContent: 'flex-end', alignSelf: 'center', margin: 0}}
+        style={{justifyContent: 'flex-end', margin: 0}}
         isVisible={isModalVisible}>
         <View style={styles.modelContaner}>
           {/* header */}
-          <View style={styles.modaelheader}>
+          <View style={styles.modalheader}>
             <Text style={{fontSize: 22, color: '#fff'}}>Filters</Text>
-            <TouchableOpacity
-              style={{position: 'absolute', right: 20}}
-              onPress={toggleModal}>
-              <Text
-                style={{
-                  fontSize: 25,
-                  color: 'white',
-                }}>
-                X
-              </Text>
-            </TouchableOpacity>
           </View>
           {/* customer rating */}
+          <TouchableOpacity
+            activeOpacity={0.5}
+            onPress={() => setfilterDistance(true)}
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: 5,
+              paddingHorizontal: 20,
+            }}>
+            <Text style={{fontSize: 20, color: '#000', fontWeight: '500'}}>
+              Distance
+            </Text>
+            <View
+              style={{
+                borderWidth: 1,
+                width: 20,
+                height: 20,
+                borderRadius: 10,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: filterDistance ? '#D02824' : '#fff',
+              }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{position: 'absolute', bottom: 20, alignSelf: 'center'}}
+            onPress={toggleModal}>
+            <Text
+              style={{
+                fontSize: 20,
+                color: '#000',
+              }}>
+              Close
+            </Text>
+          </TouchableOpacity>
         </View>
       </Modal>
       <View style={styles.searchbox}>
@@ -318,15 +349,16 @@ const styles = StyleSheet.create({
   modelContaner: {
     backgroundColor: '#fff',
     width: WindowWidth,
-    height: WindowHeight * 0.8,
+    height: WindowHeight * 0.4,
   },
 
-  modaelheader: {
+  modalheader: {
     flexDirection: 'row',
     backgroundColor: '#D02824',
-    alignItems: 'center',
     justifyContent: 'center',
-    padding: 8,
+    alignItems: 'center',
+    padding: 5,
+    marginBottom: 20,
   },
   searchbox: {
     flexDirection: 'row',

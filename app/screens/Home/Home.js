@@ -8,6 +8,7 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  FlatList,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -160,7 +161,7 @@ function Home(props) {
       {/* Slider for image */}
       <Slider />
       <ScrollView
-        nestedScrollEnabled={true}
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.container}>
         {isModalVisible ? (
           <View style={styles.category}>
@@ -190,7 +191,33 @@ function Home(props) {
           </View>
         ) : (
           <View style={styles.category}>
-            {Info.map((item, index) => {
+            <FlatList
+              data={Info}
+              numColumns={4}
+              nestedScrollEnabled
+              showsVerticalScrollIndicator={false}
+              horizontal={false}
+              keyExtractor={item => item.id}
+              renderItem={({item}) => (
+                <TouchableOpacity
+                  activeOpacity={0.4}
+                  style={styles.subcategory}
+                  onPress={() =>
+                    props.navigation.navigate(item.screen, {
+                      ShopName: item.name,
+                      Categoryitem: item.category,
+                      Type: item.type,
+                    })
+                  }>
+                  <Image
+                    source={item.img}
+                    style={{width: item.width, height: item.height}}
+                  />
+                  <Text style={styles.subtxt}>{item.name}</Text>
+                </TouchableOpacity>
+              )}
+            />
+            {/* {Info.map((item, index) => {
               return (
                 <View key={index} style={styles.subcategory}>
                   <TouchableOpacity
@@ -210,7 +237,7 @@ function Home(props) {
                   </TouchableOpacity>
                 </View>
               );
-            })}
+            })} */}
           </View>
         )}
 
@@ -254,9 +281,7 @@ const styles = StyleSheet.create({
     width: windowWidth,
     height: 420,
     // backgroundColor: 'yellow',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
+    alignItems: 'center',
   },
   subcategory: {
     margin: 10,

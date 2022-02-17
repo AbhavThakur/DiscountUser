@@ -71,7 +71,7 @@ function DrawerContent(props) {
               icon={() => (
                 <Image
                   source={require('../assets/Home.png')}
-                  style={{width: 20, height: 20, tintColor: '#c9c9c9'}}
+                  style={{width: 20, height: 20, tintColor: '#ccc'}}
                 />
               )}
               label="Home"
@@ -83,7 +83,7 @@ function DrawerContent(props) {
               icon={() => (
                 <Image
                   source={require('../assets/rss.png')}
-                  style={{width: 20, height: 20, tintColor: '#c9c9c9'}}
+                  style={{width: 20, height: 20, tintColor: '#ccc'}}
                 />
               )}
               label="Social Feeds"
@@ -95,7 +95,7 @@ function DrawerContent(props) {
               icon={() => (
                 <Image
                   source={require('../assets/subscription.png')}
-                  style={{width: 20, height: 20, tintColor: '#c9c9c9'}}
+                  style={{width: 20, height: 20, tintColor: '#ccc'}}
                 />
               )}
               label="Subscriptions"
@@ -107,7 +107,7 @@ function DrawerContent(props) {
               icon={() => (
                 <Image
                   source={require('../assets/profile.png')}
-                  style={{width: 20, height: 20, tintColor: '#c9c9c9'}}
+                  style={{width: 18, height: 20, tintColor: '#ccc'}}
                 />
               )}
               label="Profile"
@@ -119,7 +119,7 @@ function DrawerContent(props) {
               icon={() => (
                 <Image
                   source={require('../assets/opinion.png')}
-                  style={{width: 20, height: 20, tintColor: '#000'}}
+                  style={{width: 22, height: 20, tintColor: '#ccc'}}
                 />
               )}
               label="Feedback"
@@ -131,7 +131,7 @@ function DrawerContent(props) {
               icon={() => (
                 <Image
                   source={require('../assets/call-center.png')}
-                  style={{width: 20, height: 20, tintColor: '#000'}}
+                  style={{width: 20, height: 20, tintColor: '#ccc'}}
                 />
               )}
               label="Contact Us"
