@@ -20,9 +20,9 @@ import {useIsFocused} from '@react-navigation/native';
 import Share from 'react-native-share';
 import StoreCard from '../../components/StoreCard';
 import GetLocation from 'react-native-get-location';
+import {RadioButton} from 'react-native-paper';
 
 const WindowWidth = Dimensions.get('window').width;
-const WindowHeight = Dimensions.get('window').height;
 
 function CategoryList({navigation, route}) {
   const [isModalVisible, setModalVisible] = useState(false);
@@ -37,15 +37,14 @@ function CategoryList({navigation, route}) {
 
   const [Location, setLocation] = useState(null);
 
-  const [filterDistance, setfilterDistance] = useState(false);
+  const [filterOn, setfilter] = useState(false);
+
+  const [value, setValue] = React.useState('first');
 
   const CategoryName = route.params.ShopName;
   const Category = route.params.Categoryitem;
   const typecheck = route.params.Type;
 
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
-  };
   useEffect(() => {
     if (isFocused) {
       ShopData();
@@ -55,6 +54,8 @@ function CategoryList({navigation, route}) {
 
   const ShopData = () => {
     setloading(true);
+    setfilter(false);
+    setValue('');
     console.log(
       '🚀👨🏻‍💻 ~ file: CategoryList.js ~ line 54 ~ ShopData ~ typecheck',
       typecheck,
@@ -170,7 +171,6 @@ function CategoryList({navigation, route}) {
 
   function GetDistanceFromLatLonInKm(lat1, lon1, shoplocation) {
     if (shoplocation === undefined) {
-      console.log('shoplocation is undefined');
       return null;
     } else {
       var R = 6371; // Radius of the earth in km
@@ -184,10 +184,7 @@ function CategoryList({navigation, route}) {
           Math.sin(dLon / 2);
       var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       var d = R * c; // Distance in km
-      console.log(
-        '🚀👨🏻‍💻 ~ file: CategoryList.js ~ line 177 ~ GetDistanceFromLatLonInKm ~ d',
-        d,
-      );
+
       return <Text>({d.toFixed(2)} km away)</Text>;
     }
   }
@@ -195,6 +192,54 @@ function CategoryList({navigation, route}) {
   function deg2rad(deg) {
     return deg * (Math.PI / 180);
   }
+  const DistanceFilter = () => {
+    setfilter(true);
+    setValue('Distance');
+    const newData = info
+      .filter(item => {
+        return item.coordinate;
+      })
+      .sort(function (item, value) {
+        var R = 6371; // Radius of the earth in km
+        var dLat = deg2rad(item.coordinate.latitude - Location.latitude); // deg2rad below
+        var dLon = deg2rad(item.coordinate.longitude - Location.longitude);
+        var dLatValue = deg2rad(value.coordinate.latitude - Location.latitude); // deg2rad below
+        var dLonValue = deg2rad(
+          value.coordinate.longitude - Location.longitude,
+        );
+
+        var a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(deg2rad(Location.latitude)) *
+            Math.cos(deg2rad(item.coordinate.latitude)) *
+            Math.sin(dLon / 2) *
+            Math.sin(dLon / 2);
+
+        var aValue =
+          Math.sin(dLatValue / 2) * Math.sin(dLatValue / 2) +
+          Math.cos(deg2rad(Location.latitude)) *
+            Math.cos(deg2rad(value.coordinate.latitude)) *
+            Math.sin(dLonValue / 2) *
+            Math.sin(dLonValue / 2);
+
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        var cValue = 2 * Math.atan2(Math.sqrt(aValue), Math.sqrt(1 - aValue));
+
+        var d = R * c; // Distance in km
+        var dValue = R * cValue; // Distance in km
+        return d - dValue;
+      });
+    setinfo(newData);
+  };
+
+  const DiscountFilter = (discountvalue, discounttype) => {
+    setfilter(true);
+    setValue(discounttype);
+    const newData = info.filter(item => {
+      return item.discount < discountvalue;
+    });
+    setinfo(newData);
+  };
 
   return (
     <View style={styles.container}>
@@ -204,10 +249,8 @@ function CategoryList({navigation, route}) {
           justifyContent: 'space-between',
           padding: 10,
         }}>
-        <Text style={{fontSize: 15, color: '#D02824', alignSelf: 'flex-start'}}>
-          {CategoryName}
-        </Text>
-        <TouchableOpacity onPress={toggleModal}>
+        <Text style={{fontSize: 17, color: '#D02824'}}>{CategoryName}</Text>
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
           <Image source={require('../../assets/Filter2.png')} />
         </TouchableOpacity>
       </View>
@@ -221,9 +264,9 @@ function CategoryList({navigation, route}) {
             <Text style={{fontSize: 22, color: '#fff'}}>Filters</Text>
           </View>
           {/* customer rating */}
-          <TouchableOpacity
+          {/* <TouchableOpacity
             activeOpacity={0.5}
-            onPress={() => setfilterDistance(true)}
+            onPress={() => DistanceFilter()}
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
@@ -242,13 +285,45 @@ function CategoryList({navigation, route}) {
                 borderRadius: 10,
                 justifyContent: 'center',
                 alignItems: 'center',
-                backgroundColor: filterDistance ? '#D02824' : '#fff',
+                backgroundColor: filterOn ? '#D02824' : '#fff',
               }}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+
+          <RadioButton.Item
+            label="Distance (km)"
+            value="Distance"
+            status={value === 'Distance' ? 'checked' : 'unchecked'}
+            onPress={() => DistanceFilter()}
+          />
+          <RadioButton.Item
+            label="Discount upto 10%"
+            value="10% Discount"
+            status={value === '10% Discount' ? 'checked' : 'unchecked'}
+            onPress={() => DiscountFilter(10, '10% Discount')}
+          />
+          <RadioButton.Item
+            label="Discount upto 20%"
+            value="20% Discount"
+            status={value === '20% Discount' ? 'checked' : 'unchecked'}
+            onPress={() => DiscountFilter(20, '20% Discount')}
+          />
+          <RadioButton.Item
+            label="Discount upto 40%"
+            value="40% Discount"
+            status={value === '40% Discount' ? 'checked' : 'unchecked'}
+            onPress={() => DiscountFilter(40, '40% Discount')}
+          />
+          <RadioButton.Item
+            label="Discount upto 60%"
+            value="60% Discount"
+            status={value === '60% Discount' ? 'checked' : 'unchecked'}
+            onPress={() => DiscountFilter(60, '60% Discount')}
+          />
+
           <TouchableOpacity
             style={{position: 'absolute', bottom: 20, alignSelf: 'center'}}
-            onPress={toggleModal}>
+            onPress={() => setModalVisible(false)}>
             <Text
               style={{
                 fontSize: 20,
@@ -259,6 +334,23 @@ function CategoryList({navigation, route}) {
           </TouchableOpacity>
         </View>
       </Modal>
+      {filterOn ? (
+        <TouchableOpacity
+          style={{
+            backgroundColor: '#D02824',
+            borderRadius: 20,
+            width: 150,
+            alignItems: 'center',
+            padding: 5,
+            marginStart: 10,
+          }}
+          onPress={() => ShopData()}>
+          <Text style={{fontSize: 15, color: '#fff'}}>
+            {value} {'  '} X
+          </Text>
+        </TouchableOpacity>
+      ) : null}
+
       <View style={styles.searchbox}>
         <TextInput
           value={search}
@@ -349,7 +441,7 @@ const styles = StyleSheet.create({
   modelContaner: {
     backgroundColor: '#fff',
     width: WindowWidth,
-    height: WindowHeight * 0.4,
+    height: 370,
   },
 
   modalheader: {
