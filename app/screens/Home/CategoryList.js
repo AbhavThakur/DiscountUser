@@ -56,14 +56,7 @@ function CategoryList({navigation, route}) {
     setloading(true);
     setfilter(false);
     setValue('');
-    console.log(
-      '🚀👨🏻‍💻 ~ file: CategoryList.js ~ line 54 ~ ShopData ~ typecheck',
-      typecheck,
-    );
-    console.log(
-      '🚀👨🏻‍💻 ~ file: CategoryList.js ~ line 56 ~ ShopData ~ Category',
-      Category,
-    );
+
     firestore()
       .collection('StoreName')
       .where('Category', typecheck, Category)
@@ -157,9 +150,7 @@ function CategoryList({navigation, route}) {
         if (code === 'CANCELLED') {
           Alert.alert('Location cancelled by user or by another request');
         }
-        if (code === 'UNAVAILABLE') {
-          Alert.alert('Location service is disabled or unavailable');
-        }
+
         if (code === 'TIMEOUT') {
           Alert.alert('Location request timed out');
         }
@@ -195,6 +186,7 @@ function CategoryList({navigation, route}) {
   const DistanceFilter = () => {
     setfilter(true);
     setValue('Distance');
+    setModalVisible(false);
     const newData = info
       .filter(item => {
         return item.coordinate;
@@ -235,6 +227,8 @@ function CategoryList({navigation, route}) {
   const DiscountFilter = (discountvalue, discounttype) => {
     setfilter(true);
     setValue(discounttype);
+    setModalVisible(false);
+
     const newData = info.filter(item => {
       return item.discount < discountvalue;
     });
@@ -250,7 +244,11 @@ function CategoryList({navigation, route}) {
           padding: 10,
         }}>
         <Text style={{fontSize: 17, color: '#D02824'}}>{CategoryName}</Text>
-        <TouchableOpacity onPress={() => setModalVisible(true)}>
+        <TouchableOpacity
+          onPress={() => {
+            setModalVisible(true);
+            filterOn ? ShopData() : null;
+          }}>
           <Image source={require('../../assets/Filter2.png')} />
         </TouchableOpacity>
       </View>
@@ -264,62 +262,42 @@ function CategoryList({navigation, route}) {
             <Text style={{fontSize: 22, color: '#fff'}}>Filters</Text>
           </View>
           {/* customer rating */}
-          {/* <TouchableOpacity
-            activeOpacity={0.5}
-            onPress={() => DistanceFilter()}
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              padding: 5,
-              paddingHorizontal: 20,
-            }}>
-            <Text style={{fontSize: 20, color: '#000', fontWeight: '500'}}>
-              Distance
-            </Text>
-            <View
-              style={{
-                borderWidth: 1,
-                width: 20,
-                height: 20,
-                borderRadius: 10,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: filterOn ? '#D02824' : '#fff',
-              }}
-            />
-          </TouchableOpacity> */}
-
-          <RadioButton.Item
-            label="Distance (km)"
-            value="Distance"
-            status={value === 'Distance' ? 'checked' : 'unchecked'}
-            onPress={() => DistanceFilter()}
-          />
-          <RadioButton.Item
-            label="Discount upto 10%"
-            value="10% Discount"
-            status={value === '10% Discount' ? 'checked' : 'unchecked'}
-            onPress={() => DiscountFilter(10, '10% Discount')}
-          />
-          <RadioButton.Item
-            label="Discount upto 20%"
-            value="20% Discount"
-            status={value === '20% Discount' ? 'checked' : 'unchecked'}
-            onPress={() => DiscountFilter(20, '20% Discount')}
-          />
-          <RadioButton.Item
-            label="Discount upto 40%"
-            value="40% Discount"
-            status={value === '40% Discount' ? 'checked' : 'unchecked'}
-            onPress={() => DiscountFilter(40, '40% Discount')}
-          />
-          <RadioButton.Item
-            label="Discount upto 60%"
-            value="60% Discount"
-            status={value === '60% Discount' ? 'checked' : 'unchecked'}
-            onPress={() => DiscountFilter(60, '60% Discount')}
-          />
+          {loading ? (
+            <ActivityIndicator size={'large'} color="#D02824" />
+          ) : (
+            <View>
+              <RadioButton.Item
+                label="Distance (km)"
+                value="Distance"
+                status={value === 'Distance' ? 'checked' : 'unchecked'}
+                onPress={() => DistanceFilter()}
+              />
+              <RadioButton.Item
+                label="Discount upto 10%"
+                value="10% Discount"
+                status={value === '10% Discount' ? 'checked' : 'unchecked'}
+                onPress={() => DiscountFilter(10, '10% Discount')}
+              />
+              <RadioButton.Item
+                label="Discount upto 20%"
+                value="20% Discount"
+                status={value === '20% Discount' ? 'checked' : 'unchecked'}
+                onPress={() => DiscountFilter(20, '20% Discount')}
+              />
+              <RadioButton.Item
+                label="Discount upto 40%"
+                value="40% Discount"
+                status={value === '40% Discount' ? 'checked' : 'unchecked'}
+                onPress={() => DiscountFilter(40, '40% Discount')}
+              />
+              <RadioButton.Item
+                label="Discount upto 60%"
+                value="60% Discount"
+                status={value === '60% Discount' ? 'checked' : 'unchecked'}
+                onPress={() => DiscountFilter(60, '60% Discount')}
+              />
+            </View>
+          )}
 
           <TouchableOpacity
             style={{position: 'absolute', bottom: 20, alignSelf: 'center'}}

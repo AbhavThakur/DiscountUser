@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import {View, TouchableOpacity, Image, Text, Alert} from 'react-native';
+import {View, TouchableOpacity, Image, Alert} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
@@ -44,10 +44,6 @@ const SubscriptionNavigator = ({navigation}) => {
             );
             if (daysCount > 0) {
               setsubscribe(true);
-            } else if (daysCount < 3 && daysCount > 0) {
-              Alert.alert(
-                `Subscriptions is going to Expire in ${daysCount} days`,
-              );
             }
             if (daysCount <= 0) {
               setsubscribe(false);
@@ -57,7 +53,12 @@ const SubscriptionNavigator = ({navigation}) => {
               DeleteCard();
               firestore().collection('Subscribed').doc(uid).update({
                 subscribed: false,
+                cardNumber: '0000 0000 0000',
               });
+            } else if (daysCount < 3 && daysCount > 0) {
+              Alert.alert(
+                `Subscriptions is going to Expire in ${daysCount} days`,
+              );
             }
           }
         });

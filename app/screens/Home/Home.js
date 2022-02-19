@@ -79,9 +79,9 @@ function Home(props) {
           // console.log('User subscribed: ', documentSnapshot.exists);
 
           if (documentSnapshot.exists) {
-            UserDiscount(documentSnapshot.data().cardNumber);
             // console.log(documentSnapshot.data().subscribed);
             if (documentSnapshot.data().subscribed === true) {
+              UserDiscount(documentSnapshot.data().cardNumber);
               setModalVisible(false);
             } else if (documentSnapshot.data().subscribed === false) {
               setModalVisible(true);
@@ -128,11 +128,9 @@ function Home(props) {
       if (code === 'CANCELLED') {
         Alert.alert('Location cancelled by user or by another request');
       }
-      if (code === 'UNAVAILABLE') {
-        Alert.alert('Location service is disabled or unavailable');
-      }
+
       if (code === 'TIMEOUT') {
-        Alert.alert('Location request timed out');
+        Alert.alert('Location request timed out ');
       }
       if (code === 'UNAUTHORIZED') {
         Alert.alert('Authorization denied');
@@ -164,13 +162,7 @@ function Home(props) {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.container}>
         {isModalVisible ? (
-          <View style={styles.category}>
-            <TouchableOpacity
-              activeOpacity="0.7"
-              style={styles.modaelheader}
-              onPress={() => props.navigation.navigate('Subscriptions')}>
-              <Text style={{fontSize: 22, color: '#fff'}}>Subscribe</Text>
-            </TouchableOpacity>
+          <View style={styles.subscribeContainer}>
             <Card style={{height: 200}}>
               <Card.Content>
                 <Title>Subscribe to discount adda </Title>
@@ -182,9 +174,9 @@ function Home(props) {
                 style={{alignItems: 'center', justifyContent: 'space-around'}}>
                 <Button
                   mode="contained"
-                  style={{backgroundColor: '#D02824', width: 100}}
+                  style={{backgroundColor: '#D02824', width: 150}}
                   onPress={() => props.navigation.navigate('Subscriptions')}>
-                  Now
+                  Subscribe Now
                 </Button>
               </Card.Actions>
             </Card>
@@ -280,8 +272,34 @@ const styles = StyleSheet.create({
   category: {
     width: windowWidth,
     height: 420,
-    // backgroundColor: 'yellow',
     alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 7,
+    },
+    shadowOpacity: 0.41,
+    shadowRadius: 9.11,
+
+    elevation: 14,
+  },
+  subscribeContainer: {
+    width: windowWidth,
+    height: 250,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 7,
+    },
+    shadowOpacity: 0.41,
+    shadowRadius: 9.11,
+
+    elevation: 14,
   },
   subcategory: {
     margin: 10,
