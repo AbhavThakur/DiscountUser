@@ -13,18 +13,12 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import FormButton from '../../components/FormButton';
 import {List} from 'react-native-paper';
-import RazorpayCheckout from 'react-native-razorpay';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 import {useIsFocused} from '@react-navigation/native';
 
-import {
-  API_URL,
-  API_VERSION,
-  Endpoint,
-  RazorpayApiKey,
-} from '../../config/config';
+import {API_URL, API_VERSION, Endpoint} from '../../config/config';
 import Animations from '../../components/Animations';
 import cardno from '../../constants/Cardno';
 
@@ -39,27 +33,6 @@ function MonthlySubscription({navigation}) {
 
   const {uid} = auth().currentUser;
   const isFocused = useIsFocused();
-
-  const createOrder = async () => {
-    const {data} = await axios.post(
-      'https://discountaddapaymentserver.herokuapp.com/createOrder',
-      {
-        amount: 1.18 * 100,
-        currency: 'INR',
-      },
-    );
-    return data;
-  };
-  const verifyPayment = async (orderID, transaction) => {
-    const {data} = await axios.post(
-      'https://discountaddapaymentserver.herokuapp.com/verifySignature',
-      {
-        orderID: orderID,
-        transaction: transaction,
-      },
-    );
-    return data.validSignature;
-  };
 
   useEffect(() => {
     if (isFocused) {
@@ -82,81 +55,57 @@ function MonthlySubscription({navigation}) {
   }, [isFocused]);
 
   const onPay = async () => {
-    if (img !== null) {
-      setloading(true);
-      const order = await createOrder();
-      var options = {
-        name: 'Welcome to DiscountAdda',
-        description: 'Payment to Discount Adda',
-        order_id: order.id,
-        key: RazorpayApiKey,
-        prefill: {
-          email: mail,
-          contact: contact,
-          name: name + last,
-        },
-        theme: {color: '#a29bfe'},
-      };
-      RazorpayCheckout.open(options)
-        .then(async transaction => {
-          const validSignature = await verifyPayment(order.id, transaction);
-
-          // console.log('Is Valid Payment: ' + validSignature);
-          const createAt = await AsyncStorage.getItem('@createdAt');
-          setloading(false);
-
-          var currentDate = moment().format();
-          var expirydate = moment(currentDate)
-            .add(1, 'month')
-            .format('DD MMM YYYY');
-          var expiryat = moment(currentDate).add(1, 'month').format();
-
-          const value = {
-            firstName: name,
-            lastName: last,
-            contactNumber: contact,
-            cardNumber: cardno,
-            email: mail,
-            image: img,
-            expiryDate: expirydate,
-            dateCreated: createAt,
-            subscribed: true,
-            amount: 1,
-            subscription: 'Monthly',
-            expiryAt: expiryat,
-          };
-
-          let config = {
-            headers: {
-              accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-          };
-
-          axios
-            .post(
-              `${API_URL}/${API_VERSION}/${Endpoint.AddCardDetails}`,
-              value,
-              config,
-            )
-            .catch(err => console.error(err));
-
-          firestore()
-            .collection('Subscribed')
-            .doc(uid)
-            .set(value)
-            .then(() => navigation.replace('SubscriptionsCard'))
-            .catch(() => Alert.alert('Registration Failed'));
-        })
-        .catch(() => {
-          Alert.alert('Payment Failed.');
-          navigation.navigate('SubscriptionsScreen');
-        })
-        .finally(() => {
-          setloading(false);
-        });
-    } else if (img === null) {
+    if (img === null) {
       Alert.alert('Please Add image to your account');
+    } else {
+      setloading(true);
+      const createAt = await AsyncStorage.getItem('@createdAt');
+
+      var currentDate = moment().format();
+      var expirydate = moment(currentDate)
+        .add(1, 'month')
+        .format('DD MMM YYYY');
+      var expiryat = moment(currentDate).add(1, 'month').format();
+
+      const value = {
+        firstName: name,
+        lastName: last,
+        contactNumber: contact,
+        cardNumber: cardno,
+        email: mail,
+        image: img,
+        expiryDate: expirydate,
+        dateCreated: createAt,
+        subscribed: true,
+        amount: 0,
+        subscription: 'Monthly',
+        expiryAt: expiryat,
+      };
+
+      let config = {
+        headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      };
+
+      axios
+        .post(
+          `${API_URL}/${API_VERSION}/${Endpoint.AddCardDetails}`,
+          value,
+          config,
+        )
+        .then(() => {
+          setloading(false);
+        })
+        .catch(err => console.error(err));
+
+      firestore()
+        .collection('Subscribed')
+        .doc(uid)
+        .set(value)
+        .then(() => navigation.replace('SubscriptionsCard'))
+        .catch(() => Alert.alert('Registration Failed'));
     }
   };
 
@@ -175,7 +124,7 @@ function MonthlySubscription({navigation}) {
 
       <View flexDirection="column" style={styles.amount}>
         <Text style={styles.text}>{'\u20B9'} 99</Text>
-        <Text>1/Month</Text>
+        <Text>0/Month</Text>
       </View>
       {loading ? (
         <View style={{flex: 1, backgroundColor: '#fff'}}>
